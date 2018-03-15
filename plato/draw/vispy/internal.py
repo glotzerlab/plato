@@ -1,0 +1,91 @@
+import functools
+import itertools
+import numpy as np
+import vispy, vispy.app
+from vispy import gloo
+from ...prims.internal import array_size_checkers
+
+class GLPrimitive:
+    def __init__(self):
+        # hold intermediate computations wrt convex hull/meshes
+        self._gl_attributes = {}
+
+        # hold unfolded vertex attrib arrays
+        self._gl_vertex_arrays = {}
+        self._dirty_vertex_attribs = set()
+        self._gl_uniforms = {}
+        self._dirty_uniforms = set()
+
+        self._color_programs = []
+        self._plane_programs = []
+        self._all_program_sets = [self._color_programs, self._plane_programs]
+
+        self._webgl = 'webgl' in vispy.app.use_app().backend_name
+
+        for attr in self._GL_UNIFORMS:
+            size_checker = array_size_checkers[attr.dimension]
+            value = size_checker(np.asarray(attr.default, dtype=attr.dtype))
+            self._gl_uniforms[attr.name] = value
+
+    def make_color_program(self, config={}):
+        return gloo.Program(self.shaders['vertex'], self.shaders['fragment'])
+
+    def make_plane_program(self, config={}):
+        return gloo.Program(self.shaders['vertex'], self.shaders['fragment_plane'])
+
+    def render_generic(self, programs, make_program_function, config={}):
+        self.update_arrays()
+
+        for _ in range(len(programs), len(self._gl_vertex_arrays['indices'])):
+            programs.append(make_program_function(config))
+            self._dirty_vertex_attribs.update(self._gl_vertex_arrays)
+            self._dirty_uniforms.update(self._gl_uniforms)
+
+        for name in self._dirty_vertex_attribs:
+            if name == 'indices':
+                continue
+
+            for program_set in self._all_program_sets:
+                for (program, (scat, _)) in zip(
+                        program_set, self._gl_vertex_arrays['indices']):
+                    reshaped = self._gl_vertex_arrays[name]
+                    reshaped = reshaped.reshape((-1, reshaped.shape[-1]))
+                    program[name] = reshaped[scat]
+
+        for name in self._dirty_uniforms:
+            for program in itertools.chain(*self._all_program_sets):
+                program[name] = self._gl_uniforms[name]
+
+        for (program, (_, buf)) in zip(programs, self._gl_vertex_arrays['indices']):
+            program.draw('triangles', indices=buf)
+
+    def render_color(self):
+        self.render_generic(self._color_programs, self.make_color_program)
+
+    def render_planes(self):
+        self.render_generic(self._plane_programs, self.make_plane_program)
+
+def gl_uniform_setter(self, value, name, dtype, dimension, default):
+    size_checker = array_size_checkers[dimension]
+    result = size_checker(np.asarray(value, dtype=dtype))
+    assert result.shape[-1:] == self._UNIFORM_DIMENSIONS[name], 'Invalid shape for uniform {}: {}'.format(name, result.shape)
+    self._dirty_uniforms.add(name)
+    self._gl_uniforms[name] = result
+
+def gl_uniform_getter(self, name):
+    return self._gl_uniforms[name]
+
+def GLShapeDecorator(cls):
+    cls._UNIFORM_DIMENSIONS = {}
+    for attr in cls._GL_UNIFORMS:
+        array_default = array_size_checkers[attr.dimension](attr.default)
+        cls._UNIFORM_DIMENSIONS[attr.name] = array_default.shape[-1:]
+
+        getter = functools.partial(gl_uniform_getter, name=attr.name)
+        setter = functools.partial(
+            gl_uniform_setter, name=attr.name, dtype=attr.dtype,
+            dimension=attr.dimension, default=attr.default)
+        prop = property(getter, setter, doc=attr.description)
+
+        setattr(cls, attr.name, prop)
+    return cls
