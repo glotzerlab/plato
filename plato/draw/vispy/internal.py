@@ -30,10 +30,18 @@ class GLPrimitive:
             self._gl_uniforms[attr.name] = value
 
     def make_color_program(self, config={}):
-        return gloo.Program(self.shaders['vertex'], self.shaders['fragment'])
+        prelude_lines = []
+        if self._webgl:
+            prelude_lines.append('#define WEBGL')
+        prelude = '\n'.join(prelude_lines)
+        return gloo.Program(prelude + self.shaders['vertex'], prelude + self.shaders['fragment'])
 
     def make_plane_program(self, config={}):
-        return gloo.Program(self.shaders['vertex'], self.shaders['fragment_plane'])
+        prelude_lines = []
+        if self._webgl:
+            prelude_lines.append('#define WEBGL')
+        prelude = '\n'.join(prelude_lines)
+        return gloo.Program(prelude + self.shaders['vertex'], prelude + self.shaders['fragment_plane'])
 
     def render_generic(self, programs, make_program_function, config={}):
         self.update_arrays()
