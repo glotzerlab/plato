@@ -13,12 +13,6 @@ class ConvexPolyhedra(prims.ConvexPolyhedra, GLPrimitive):
 
     """
 
-    uniforms = ['camera', 'ambientLight', 'diffuseLight', 'rotation',
-                'translation', 'outline', 'light_levels']
-
-    attributes = ['position', 'orientation', 'color', 'image', 'face_center',
-                  'normal']
-
     shaders = {}
 
     shaders['vertex'] = """
