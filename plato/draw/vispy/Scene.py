@@ -1,3 +1,4 @@
+from .Canvas import Canvas
 from ... import Scene
 import numpy as np
 
@@ -19,6 +20,7 @@ class Scene(Scene):
         self._clip_scale = 1
         self._translation = [0, 0, 0]
         super(Scene, self).__init__(*args, **kwargs)
+        self._canvas = Canvas(self)
 
     @property
     def zoom(self):
@@ -95,3 +97,6 @@ class Scene(Scene):
 
         for prim in self._primitives:
             prim.camera = self.camera
+
+    def show(self):
+        return self._canvas.show()
