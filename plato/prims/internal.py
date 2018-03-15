@@ -44,7 +44,7 @@ class Shape:
 def attribute_setter(self, value, name, dtype, dimension, default):
     size_checker = array_size_checkers[dimension]
     result = size_checker(np.asarray(value, dtype=dtype))
-    assert result.shape[-1] == self._ATTRIBUTE_DIMENSIONS[name], 'Invalid shape for property {}: {}'.format(name, result.shape)
+    assert dimension < 2 or result.shape[-1] == self._ATTRIBUTE_DIMENSIONS[name], 'Invalid shape for property {}: {}'.format(name, result.shape)
     self._dirty_attributes.add(name)
     self._attributes[name] = result
 
