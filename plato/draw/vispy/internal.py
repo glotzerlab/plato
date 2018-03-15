@@ -3,7 +3,9 @@ import itertools
 import numpy as np
 import vispy, vispy.app
 from vispy import gloo
-from ...prims.internal import array_size_checkers
+from ...prims.internal import array_size_checkers, ATTRIBUTE_DOCSTRING_TEMPLATE
+
+ATTRIBUTE_DOCSTRING_HEADER = '\n\nThis primitive has the following opengl-specific attributes:'
 
 class GLPrimitive:
     def __init__(self):
@@ -77,9 +79,14 @@ def gl_uniform_getter(self, name):
 
 def GLShapeDecorator(cls):
     cls._UNIFORM_DIMENSIONS = {}
+    attribute_doc_lines = [ATTRIBUTE_DOCSTRING_HEADER]
+
     for attr in cls._GL_UNIFORMS:
         array_default = array_size_checkers[attr.dimension](attr.default)
         cls._UNIFORM_DIMENSIONS[attr.name] = array_default.shape[-1:]
+
+        attribute_doc_lines.append(ATTRIBUTE_DOCSTRING_TEMPLATE.format(
+            name=attr.name, description=attr.description))
 
         getter = functools.partial(gl_uniform_getter, name=attr.name)
         setter = functools.partial(
@@ -88,4 +95,9 @@ def GLShapeDecorator(cls):
         prop = property(getter, setter, doc=attr.description)
 
         setattr(cls, attr.name, prop)
+
+    if cls.__doc__ is None:
+        cls.__doc__ = ''
+
+    cls.__doc__ += '\n'.join(attribute_doc_lines)
     return cls

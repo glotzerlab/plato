@@ -8,10 +8,7 @@ from vispy import gloo
 
 @GLShapeDecorator
 class ConvexPolyhedra(prims.ConvexPolyhedra, GLPrimitive):
-    """Holds the vispy state (set of programs) required to draw a set of
-    convex polyhedra
-
-    """
+    __doc__ = prims.ConvexPolyhedra.__doc__
 
     shaders = {}
 
