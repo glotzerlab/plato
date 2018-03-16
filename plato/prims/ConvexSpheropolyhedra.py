@@ -13,7 +13,7 @@ class ConvexSpheropolyhedra(Shape):
          'Orientation quaternion of each particle'),
         ('colors', np.float32, (.5, .5, .5, 1), 2,
          'Color, RGBA, [0, 1] for each particle'),
-        ('vertices', np.float32, [(0, 0, 0)], 2,
+        ('vertices', np.float32, (0, 0, 0), 2,
          'Vertices in local coordinates for the shape, to be replicated for each particle'),
         ('radius', np.float32, 1, 0,
          'Rounding radius to be applied to all shapes')

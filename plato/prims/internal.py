@@ -44,7 +44,7 @@ class Shape:
 def attribute_setter(self, value, name, dtype, dimension, default):
     size_checker = array_size_checkers[dimension]
     result = size_checker(np.asarray(value, dtype=dtype))
-    assert result.shape[dimension - 1:] == self._ATTRIBUTE_DIMENSIONS[name], 'Invalid shape for property {}: {}'.format(name, result.shape)
+    assert default.ndim == 0 or result.shape[-default.ndim:] == self._ATTRIBUTE_DIMENSIONS[name], 'Invalid shape for property {}: {}'.format(name, result.shape)
     self._dirty_attributes.add(name)
     self._attributes[name] = result
 
@@ -56,8 +56,8 @@ def ShapeDecorator(cls):
     attribute_doc_lines = [ATTRIBUTE_DOCSTRING_HEADER]
 
     for attr in cls._ATTRIBUTES:
-        array_default = array_size_checkers[attr.dimension](attr.default)
-        cls._ATTRIBUTE_DIMENSIONS[attr.name] = array_default.shape[attr.dimension - 1:]
+        array_default = np.array(attr.default)
+        cls._ATTRIBUTE_DIMENSIONS[attr.name] = array_default.shape
 
         attribute_doc_lines.append(ATTRIBUTE_DOCSTRING_TEMPLATE.format(
             name=attr.name, description=attr.description))
@@ -65,7 +65,7 @@ def ShapeDecorator(cls):
         getter = functools.partial(attribute_getter, name=attr.name)
         setter = functools.partial(
             attribute_setter, name=attr.name, dtype=attr.dtype,
-            dimension=attr.dimension, default=attr.default)
+            dimension=attr.dimension, default=array_default)
         prop = property(getter, setter, doc=attr.description)
 
         setattr(cls, attr.name, prop)
