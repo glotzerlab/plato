@@ -34,14 +34,14 @@ class GLPrimitive:
         prelude_lines = []
         if self._webgl:
             prelude_lines.append('#define WEBGL')
-        prelude = '\n'.join(prelude_lines)
+        prelude = '\n'.join(prelude_lines) + '\n'
         return gloo.Program(prelude + self.shaders['vertex'], prelude + self.shaders['fragment'])
 
     def make_plane_program(self, config={}):
         prelude_lines = []
         if self._webgl:
             prelude_lines.append('#define WEBGL')
-        prelude = '\n'.join(prelude_lines)
+        prelude = '\n'.join(prelude_lines) + '\n'
         return gloo.Program(prelude + self.shaders['vertex'], prelude + self.shaders['fragment_plane'])
 
     def render_generic(self, programs, make_program_function, config={}):
