@@ -18,7 +18,7 @@ class Spheres(Shape):
 
     @property
     def diameters(self):
-        return 2*self.attributes_.get('radii', .5)
+        return 2*self._attributes.get('radii', .5)
 
     @diameters.setter
     def diameters(self, value):
