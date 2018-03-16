@@ -3,6 +3,7 @@ import itertools
 import numpy as np
 import vispy, vispy.app
 from vispy import gloo
+from ... import mesh
 from ...prims.internal import array_size_checkers, ATTRIBUTE_DOCSTRING_TEMPLATE
 
 ATTRIBUTE_DOCSTRING_HEADER = '\n\nThis primitive has the following opengl-specific attributes:'
@@ -74,6 +75,16 @@ class GLPrimitive:
 
     def render_planes(self):
         self.render_generic(self._plane_programs, self.make_plane_program)
+
+    def _finalize_array_updates(self, indices, vertex_arrays):
+        indexDtype = np.uint16 if self._webgl else np.uint32
+        maxIndex = 2**16 - 1 if self._webgl else 2**32 - 1
+        self._gl_vertex_arrays['indices'] = [(scat, gloo.IndexBuffer(np.ascontiguousarray(ind, dtype=indexDtype)))
+            for (scat, ind) in mesh.splitChunks(indices, maxIndex=maxIndex)]
+
+        for (name, value) in zip(self._vertex_attribute_names, vertex_arrays):
+            self._gl_vertex_arrays[name] = value
+            self._dirty_vertex_attribs.add(name)
 
 def gl_uniform_setter(self, value, name, dtype, dimension, default):
     size_checker = array_size_checkers[dimension]

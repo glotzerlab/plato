@@ -187,13 +187,6 @@ class ConvexPolyhedra(prims.ConvexPolyhedra, GLPrimitive):
                        self._gl_attributes['indices'])
             indices = indices.reshape((-1, 3))
 
-            indexDtype = np.uint16 if self._webgl else np.uint32
-            maxIndex = 2**16 - 1 if self._webgl else 2**32 - 1
-            self._gl_vertex_arrays['indices'] = [(scat, gloo.IndexBuffer(np.ascontiguousarray(ind, dtype=indexDtype)))
-                for (scat, ind) in mesh.splitChunks(indices, maxIndex=maxIndex)]
-
-            for (name, value) in zip(self._vertex_attribute_names, vertex_arrays):
-                self._gl_vertex_arrays[name] = value
-                self._dirty_vertex_attribs.add(name)
+            self._finalize_array_updates(indices, vertex_arrays)
 
         self._dirty_attributes.clear()
