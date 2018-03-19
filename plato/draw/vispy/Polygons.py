@@ -38,7 +38,7 @@ class Polygons(prims.Polygons, GLPrimitive):
 
        void main()
        {
-           vec2 currentImage = mix(outline_image, image, max(0.0, outline));
+           vec2 currentImage = mix(image, outline_image, max(0.0, outline));
            vec4 currentColor = color;
            if(outline < 0.0)
                currentColor = vec4(0.0, 0.0, 0.0, 0.0);
