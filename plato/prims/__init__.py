@@ -1,4 +1,5 @@
 from .Disks import Disks
+from .Polygons import Polygons
 from .Lines import Lines
 from .Spheres import Spheres
 from .Mesh import Mesh
