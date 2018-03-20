@@ -10,6 +10,6 @@ setup(name='plato',
       description='Geometry and visualization tools',
       author='Matthew Spellings',
       author_email='mspells@umich.edu',
-      packages=['plato'],
+      packages=['plato', 'plato.prims', 'plato.draw', 'plato.draw.vispy', 'plato.draw.matplotlib'],
       install_requires=['numpy', 'scipy']
       )
