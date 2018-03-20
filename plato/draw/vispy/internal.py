@@ -104,8 +104,9 @@ def GLShapeDecorator(cls):
         array_default = array_size_checkers[attr.dimension](attr.default)
         cls._UNIFORM_DIMENSIONS[attr.name] = array_default.shape[-1:]
 
-        attribute_doc_lines.append(ATTRIBUTE_DOCSTRING_TEMPLATE.format(
-            name=attr.name, description=attr.description))
+        if not attr.description.lower().startswith('internal'):
+            attribute_doc_lines.append(ATTRIBUTE_DOCSTRING_TEMPLATE.format(
+                name=attr.name, description=attr.description))
 
         getter = functools.partial(gl_uniform_getter, name=attr.name)
         setter = functools.partial(

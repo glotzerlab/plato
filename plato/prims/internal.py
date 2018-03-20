@@ -53,11 +53,13 @@ def attribute_getter(self, name):
 
 def ShapeDecorator(cls):
     cls._ATTRIBUTE_DIMENSIONS = {}
+    cls._ATTRIBUTES_BY_NAME = {}
     attribute_doc_lines = [ATTRIBUTE_DOCSTRING_HEADER]
 
     for attr in cls._ATTRIBUTES:
         array_default = np.array(attr.default)
         cls._ATTRIBUTE_DIMENSIONS[attr.name] = array_default.shape
+        cls._ATTRIBUTES_BY_NAME[attr.name] = attr
 
         attribute_doc_lines.append(ATTRIBUTE_DOCSTRING_TEMPLATE.format(
             name=attr.name, description=attr.description))
