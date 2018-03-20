@@ -23,7 +23,11 @@ class Scene:
         self.rotation = rotation
 
         for feature in features:
-            self.enable(feature, **features[feature])
+            config = features[feature]
+            try:
+                self.enable(feature, **config)
+            except TypeError: # config is not of a mapping type
+                self.enable(feature, value=config)
 
         for name in kwargs:
             setattr(self, name, kwargs[name])
@@ -70,7 +74,9 @@ class Scene:
             if strict:
                 raise
 
-    def enable(self, name, **parameters):
+    def enable(self, name, auto_value=None, **parameters):
+        if auto_value is not None:
+            parameters['value'] = auto_value
         self._enabled_features[name] = dict(parameters)
 
     def disable(self, name, strict=True):

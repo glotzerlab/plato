@@ -66,13 +66,13 @@ class Scene(Scene):
 
     def enable(self, name, **parameters):
         if name == 'directional_light':
-            lights = parameters.get('lights', (.25, .5, -1))
+            lights = parameters.get('value', (.25, .5, -1))
             lights = np.atleast_2d(lights).astype(np.float32)
             for prim in self._primitives:
                 prim.diffuseLight = lights[0]
 
         elif name == 'ambient_light':
-            light = parameters.get('light', .25)
+            light = parameters.get('value', .25)
             for prim in self._primitives:
                 prim.ambientLight = light
 
