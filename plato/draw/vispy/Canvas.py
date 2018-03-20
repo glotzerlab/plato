@@ -58,7 +58,7 @@ class Canvas(vispy.app.Canvas):
             self._mouse_origin[:] = event.pos
             if 'control' in event.modifiers or 'meta' in event.modifiers:
                 self.planeRotation(event, delta)
-            elif 'alt' in event.modifiers:
+            elif 'alt' in event.modifiers or 'pan' in self._scene._enabled_features:
                 # undo the mean size scaling we applied above
                 self._mouse_translate(delta*np.sqrt(np.product(self._scene.size_pixels)))
             else:
@@ -105,7 +105,7 @@ class Canvas(vispy.app.Canvas):
             updated = True
 
         if updated:
-            self._canvas.update()
+            self.update()
 
     def updateRotation(self, event, delta=(0,0), suppress=False):
         delta = np.asarray(delta, dtype=np.float32)[::-1]
