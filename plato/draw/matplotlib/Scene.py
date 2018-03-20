@@ -3,7 +3,7 @@ from ... import Scene
 import numpy as np
 
 class Scene(Scene):
-    def show(self, figure=None, axes=None):
+    def render(self, figure=None, axes=None):
         if figure is None:
             figure = pp.figure()
 
@@ -19,4 +19,12 @@ class Scene(Scene):
         axes.set_xlim(-width/2, width/2)
         axes.set_ylim(-height/2, height/2)
         axes.set_aspect(1)
-        return figure
+        return (figure, axes)
+
+    def show(self, figure=None, axes=None):
+        (figure, _) = self.render(figure, axes)
+        return figure.show()
+
+    def save(self, filename):
+        (figure, _) = self.render()
+        return figure.savefig(filename)
