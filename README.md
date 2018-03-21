@@ -18,8 +18,8 @@ This is an in-progress work for updating plato for a 1.0 release. This release h
 
 ## To-do list
 
-* Import all old `plato.gl` primitives
-* Implement remaining matplotlib primitives for 2D and select 3D (`SpherePoints`) primitives
+* Import rendering features from old `plato.gl.Canvas` into new `plato.draw.vispy.{Canvas,Scene}`
+* Implement remaining matplotlib primitives for 2D and select 3D (at least `SpherePoints`) primitives
 * Repair documentation on primitives, set up sphinx
 * Add tests for individual backend APIs
 * Strip graphics base, rename old plato project, and update it to use this library
