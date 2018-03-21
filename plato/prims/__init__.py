@@ -1,5 +1,6 @@
 from .Disks import Disks
 from .Polygons import Polygons
+from .Spheropolygons import Spheropolygons
 from .Lines import Lines
 from .Spheres import Spheres
 from .SpherePoints import SpherePoints
