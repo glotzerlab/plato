@@ -6,7 +6,7 @@ from matplotlib.collections import PatchCollection
 class Disks(draw.Disks):
     __doc__ = draw.Disks.__doc__
 
-    def render(self, axes):
+    def render(self, axes, aa_pixel_size=0):
         collections = []
         outline = self.outline
 
@@ -19,9 +19,13 @@ class Disks(draw.Disks):
             outline_colors[:, 3] = self.colors[:, 3]
             patches.set_facecolor(outline_colors)
             collections.append(patches)
+        else:
+            aa_pixel_size = 0
+
+        shifted_radii = self.radii - outline + aa_pixel_size
 
         patches = []
-        for (position, radius) in zip(self.positions, self.radii - outline):
+        for (position, radius) in zip(self.positions, shifted_radii):
             patches.append(Circle(position, radius))
         patches = PatchCollection(patches)
         patches.set_facecolor(self.colors)

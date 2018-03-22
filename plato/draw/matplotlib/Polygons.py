@@ -9,7 +9,7 @@ from matplotlib.collections import PatchCollection
 class Polygons(draw.Polygons):
     __doc__ = draw.Polygons.__doc__
 
-    def render(self, axes):
+    def render(self, axes, aa_pixel_size=0):
         collections = []
 
         positions_3d = np.pad(
@@ -52,6 +52,10 @@ class Polygons(draw.Polygons):
             outline_colors[:, 3] = self.colors[:, 3]
             patches.set_facecolor(outline_colors)
             collections.append(patches)
+
+            verts -= self.positions[:, np.newaxis, :]
+            verts += np.sign(verts)*aa_pixel_size
+            verts += self.positions[:, np.newaxis, :]
 
         patches = []
         for vertices in verts:

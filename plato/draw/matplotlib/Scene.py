@@ -10,8 +10,14 @@ class Scene(Scene):
         if axes is None:
             axes = figure.add_subplot(1, 1, 1)
 
+        if 'antialiasing' in self._enabled_features:
+            pixel_size = np.array(figure.get_size_inches(), dtype=np.float32)*figure.dpi
+            antialiasing_pixel_size = np.max(np.array(self.size, dtype=np.float32)/pixel_size)/self.zoom
+        else:
+            antialiasing_pixel_size = 0
+
         for prim in self._primitives:
-            prim.render(axes)
+            prim.render(axes, antialiasing_pixel_size)
 
         (width, height) = self.size.astype(np.float32)/self.zoom
         axes.set_xticks([])
