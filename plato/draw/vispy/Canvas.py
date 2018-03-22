@@ -467,12 +467,24 @@ class Canvas(vispy.app.Canvas):
 
         clear_color = (1, 1, 1, 1)
         if 'additive_rendering' in self._scene._enabled_features:
-            clear_color = (0, 0, 0, 0)
-            gloo.set_state(preset='additive',
-                                 depth_test=False,
-                                 blend=True,
-                                 depth_mask=False)
-            gloo.set_blend_func('one', 'one')
+            config = self._scene._enabled_features['additive_rendering']
+
+            if config.get('invert', False):
+                clear_color = (1, 1, 1, 1)
+                gloo.set_state(preset='additive',
+                               depth_test=False,
+                               blend=True,
+                               depth_mask=False)
+                gloo.set_blend_func('one', 'one', 'one', 'one')
+                gloo.set_blend_equation('func_reverse_subtract')
+            else:
+                clear_color = (0, 0, 0, 0)
+                gloo.set_state(preset='additive',
+                               depth_test=False,
+                               blend=True,
+                               depth_mask=False)
+                gloo.set_blend_func('one', 'one')
+                gloo.set_blend_equation('func_add')
         else:
             gloo.set_state(preset='opaque',
                                  depth_test=True,
