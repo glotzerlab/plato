@@ -2,9 +2,10 @@ import numpy as np
 from ... import math
 from ... import geometry
 from ... import draw
+from matplotlib.collections import PatchCollection
 from matplotlib.path import Path
 from matplotlib.patches import PathPatch, Polygon
-from matplotlib.collections import PatchCollection
+from matplotlib.transforms import Affine2D
 
 class Polygons(draw.Polygons):
     __doc__ = draw.Polygons.__doc__
@@ -12,54 +13,43 @@ class Polygons(draw.Polygons):
     def render(self, axes, aa_pixel_size=0):
         collections = []
 
-        positions_3d = np.pad(
-            self.positions, [(0, 0), (0, 1)], mode='constant', constant_values=0)
-        verts_3d = np.pad(
-            self.vertices, [(0, 0), (0, 1)], mode='constant', constant_values=0)
-
-        # Np, Nv, 3
-        verts = math.quatrot(self.orientations[:, np.newaxis, :], verts_3d[np.newaxis, :, :])
-        verts += positions_3d[:, np.newaxis, :]
-        verts = verts[..., :2]
+        vertices = self.vertices
 
         if self.outline > 0:
             tessellation = geometry.Polygon(self.vertices)
             outline = geometry.Outline(tessellation, self.outline)
 
-            outer_verts = verts
-            # Np, Nv, 3
-            verts_3d = np.pad(
-                outline.inner.vertices, [(0, 0), (0, 1)], mode='constant', constant_values=0)
-            verts = math.quatrot(self.orientations[:, np.newaxis, :], verts_3d[np.newaxis, :, :])
-            verts += positions_3d[:, np.newaxis, :]
-            verts = verts[..., :2]
+            outer_vertices = vertices
+            vertices = outline.inner.vertices
 
-            commands = [Path.MOVETO] + (verts.shape[1] - 1)*[Path.LINETO] + [Path.CLOSEPOLY]
+            commands = [Path.MOVETO] + (vertices.shape[0] - 1)*[Path.LINETO] + [Path.CLOSEPOLY]
             commands = 2*commands
 
             # reverse the inner vertices order to make an open
             # polygon. Duplicate the first vertex of each polygon to
             # close the shapes.
             outline_vertices = np.concatenate(
-                [outer_verts, outer_verts[:, :1], verts[:, ::-1], verts[:, :1]], axis=1)
+                [outer_vertices, outer_vertices[:1], vertices[::-1], vertices[:1]], axis=0)
+
+            outline_path = Path(outline_vertices, commands)
 
             patches = []
-            for positions in outline_vertices:
-                path = Path(positions, commands)
-                patches.append(PathPatch(path))
+            for (position, angle) in zip(self.positions, self.angles):
+                tf = Affine2D().rotate(angle).translate(*position)
+                patches.append(PathPatch(outline_path.transformed(tf)))
             patches = PatchCollection(patches)
+
             outline_colors = np.zeros_like(self.colors)
             outline_colors[:, 3] = self.colors[:, 3]
             patches.set_facecolor(outline_colors)
             collections.append(patches)
 
-            verts -= self.positions[:, np.newaxis, :]
-            verts += np.sign(verts)*aa_pixel_size
-            verts += self.positions[:, np.newaxis, :]
+            vertices += np.sign(vertices)*aa_pixel_size
 
         patches = []
-        for vertices in verts:
-            patches.append(Polygon(vertices, closed=True))
+        for (position, angle) in zip(self.positions, self.angles):
+            tf = Affine2D().rotate(angle).translate(*position)
+            patches.append(Polygon(vertices, closed=True, transform=tf))
         patches = PatchCollection(patches)
         patches.set_facecolor(self.colors)
         collections.append(patches)
