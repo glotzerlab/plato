@@ -30,18 +30,19 @@ class GLPrimitive:
             value = size_checker(np.asarray(attr.default, dtype=attr.dtype))
             self._gl_uniforms[attr.name] = value
 
-    def make_color_program(self, config={}):
+    def make_prelude(self, config={}):
         prelude_lines = []
         if self._webgl:
             prelude_lines.append('#define WEBGL')
         prelude = '\n'.join(prelude_lines) + '\n'
+        return prelude
+
+    def make_color_program(self, config={}):
+        prelude = self.make_prelude(config)
         return gloo.Program(prelude + self.shaders['vertex'], prelude + self.shaders['fragment'])
 
     def make_plane_program(self, config={}):
-        prelude_lines = []
-        if self._webgl:
-            prelude_lines.append('#define WEBGL')
-        prelude = '\n'.join(prelude_lines) + '\n'
+        prelude = self.make_prelude(config)
         return gloo.Program(prelude + self.shaders['vertex'], prelude + self.shaders['fragment_plane'])
 
     def render_generic(self, programs, make_program_function, config={}):
@@ -74,6 +75,13 @@ class GLPrimitive:
         self.render_generic(self._color_programs, self.make_color_program)
 
     def render_planes(self):
+        self._gl_uniforms['render_positions'] = 0
+        self._dirty_uniforms.add('render_positions')
+        self.render_generic(self._plane_programs, self.make_plane_program)
+
+    def render_positions(self):
+        self._gl_uniforms['render_positions'] = 1
+        self._dirty_uniforms.add('render_positions')
         self.render_generic(self._plane_programs, self.make_plane_program)
 
     def _finalize_array_updates(self, indices, vertex_arrays):

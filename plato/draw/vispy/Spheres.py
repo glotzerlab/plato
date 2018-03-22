@@ -119,7 +119,7 @@ class Spheres(prims.Spheres, GLPrimitive):
        // (x, y, z) direction*intensity
        uniform vec3 diffuseLight;
        uniform mat4 camera;
-       uniform float renderPositions = 0.0;
+       uniform float render_positions = 0.0;
 
        varying vec3 v_position;
        varying vec2 v_image;
@@ -144,7 +144,7 @@ class Spheres(prims.Spheres, GLPrimitive):
                camera[2][3]*depth + camera[3][3])/(camera[2][3]*depth + camera[3][3]);
            #endif
 
-           if(renderPositions > 0.5)
+           if(render_positions > 0.5)
                gl_FragColor = vec4(gl_FragCoord.xyz, 1.0);
            else // Store the plane equation as a color
                gl_FragColor = vec4(normal, dot(normal, v_position.xyz));

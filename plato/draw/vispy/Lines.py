@@ -135,3 +135,11 @@ class Lines(prims.Lines, GLPrimitive):
             self._finalize_array_updates(indices, vertex_arrays)
 
         self._dirty_attributes.clear()
+
+    def render_planes(self):
+        # Not currently supported, but we shouldn't error out in the middle of rendering
+        pass
+
+    def render_positions(self):
+        # Not currently supported, but we shouldn't error out in the middle of rendering
+        pass

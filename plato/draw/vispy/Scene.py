@@ -19,6 +19,7 @@ class Scene(Scene):
         self._pixel_scale = 1
         self._clip_scale = 1
         self._translation = [0, 0, 0]
+        self._canvas = None
         super(Scene, self).__init__(*args, **kwargs)
         self._canvas = Canvas(self)
 
@@ -76,7 +77,18 @@ class Scene(Scene):
             for prim in self._primitives:
                 prim.ambientLight = light
 
+        if self._canvas is not None:
+            if name in self._canvas._VALID_FEATURES:
+                self._canvas._enable_feature(**{name: parameters})
+
         super(Scene, self).enable(name, **parameters)
+
+    def disable(self, name, strict=True):
+        if self._canvas is not None:
+            if name in self._canvas._VALID_FEATURES:
+                self._canvas._disable_feature(name)
+
+        super(Scene, self).disable(name, strict=strict)
 
     def _update_camera(self):
         (width, height) = self.size.astype(np.float32)
@@ -92,6 +104,9 @@ class Scene(Scene):
             -width/2, width/2,
             -height/2, height/2,
             1, 1 + dz)
+
+        if self._canvas is not None:
+            self._canvas.clip_planes = (1, 1 + dz)
 
         self.camera[[0, 1], [0, 1]] *= self._zoom
 

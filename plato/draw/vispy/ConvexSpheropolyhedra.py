@@ -138,7 +138,7 @@ class ConvexSpheropolyhedra(prims.ConvexSpheropolyhedra, GLPrimitive):
        uniform float ambientLight;
        // (x, y, z) direction*intensity
        uniform vec3 diffuseLight;
-       uniform float renderPositions = 0.0;
+       uniform float render_positions = 0.0;
 
        void main()
        {
@@ -159,7 +159,7 @@ class ConvexSpheropolyhedra(prims.ConvexSpheropolyhedra, GLPrimitive):
            }
            else discard;
 
-           if(renderPositions > 0.5)
+           if(render_positions > 0.5)
                gl_FragColor = vec4(gl_FragCoord.xyz, 1.0);
            else // Store the plane equation as a color
                gl_FragColor = vec4(normal, dot(normal, v_position.xyz));
