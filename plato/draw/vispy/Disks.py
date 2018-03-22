@@ -2,13 +2,13 @@ import itertools
 import numpy as np
 from ... import mesh
 from .internal import GLPrimitive, GLShapeDecorator
-from ... import prims
-from ...prims.internal import ShapeAttribute
+from ... import draw
+from ..internal import ShapeAttribute
 from vispy import gloo
 
 @GLShapeDecorator
-class Disks(prims.Disks, GLPrimitive):
-    __doc__ = prims.Disks.__doc__
+class Disks(draw.Disks, GLPrimitive):
+    __doc__ = draw.Disks.__doc__
 
     shaders = {}
 
@@ -121,7 +121,7 @@ class Disks(prims.Disks, GLPrimitive):
 
     def __init__(self, *args, **kwargs):
         GLPrimitive.__init__(self)
-        prims.Disks.__init__(self, *args, **kwargs)
+        draw.Disks.__init__(self, *args, **kwargs)
 
     def update_arrays(self):
         try:

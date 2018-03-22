@@ -2,13 +2,13 @@ import itertools
 import numpy as np
 from ... import mesh
 from .internal import GLPrimitive, GLShapeDecorator
-from ... import prims
-from ...prims.internal import ShapeAttribute
+from ... import draw
+from ..internal import ShapeAttribute
 from vispy import gloo
 
 @GLShapeDecorator
-class ConvexPolyhedra(prims.ConvexPolyhedra, GLPrimitive):
-    __doc__ = prims.ConvexPolyhedra.__doc__
+class ConvexPolyhedra(draw.ConvexPolyhedra, GLPrimitive):
+    __doc__ = draw.ConvexPolyhedra.__doc__
 
     shaders = {}
 
@@ -154,7 +154,7 @@ class ConvexPolyhedra(prims.ConvexPolyhedra, GLPrimitive):
 
     def __init__(self, *args, **kwargs):
         GLPrimitive.__init__(self)
-        prims.ConvexPolyhedra.__init__(self, *args, **kwargs)
+        draw.ConvexPolyhedra.__init__(self, *args, **kwargs)
 
     def update_arrays(self):
         if 'vertices' in self._dirty_attributes:

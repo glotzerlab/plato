@@ -3,13 +3,13 @@ import numpy as np
 from ... import geometry
 from ... import mesh
 from .internal import GLPrimitive, GLShapeDecorator
-from ... import prims
-from ...prims.internal import ShapeAttribute
+from ... import draw
+from ..internal import ShapeAttribute
 from vispy import gloo
 
 @GLShapeDecorator
-class Spheropolygons(prims.Spheropolygons, GLPrimitive):
-    __doc__ = prims.Spheropolygons.__doc__
+class Spheropolygons(draw.Spheropolygons, GLPrimitive):
+    __doc__ = draw.Spheropolygons.__doc__
 
     shaders = {}
 
@@ -90,7 +90,7 @@ class Spheropolygons(prims.Spheropolygons, GLPrimitive):
 
     def __init__(self, *args, **kwargs):
         GLPrimitive.__init__(self)
-        prims.Spheropolygons.__init__(self, *args, **kwargs)
+        draw.Spheropolygons.__init__(self, *args, **kwargs)
 
     def update_arrays(self):
         if 'vertices' in self._dirty_attributes:

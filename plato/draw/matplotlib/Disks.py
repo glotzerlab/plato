@@ -1,10 +1,10 @@
 import numpy as np
-from ... import prims
+from ... import draw
 from matplotlib.patches import Circle, Wedge
 from matplotlib.collections import PatchCollection
 
-class Disks(prims.Disks):
-    __doc__ = prims.Disks.__doc__
+class Disks(draw.Disks):
+    __doc__ = draw.Disks.__doc__
 
     def render(self, figure, axes):
         collections = []

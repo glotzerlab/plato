@@ -1,5 +1,4 @@
 from . import cmap
-from . import prims
+from . import draw
 from . import geometry
 from . import mesh
-from .Scene import Scene

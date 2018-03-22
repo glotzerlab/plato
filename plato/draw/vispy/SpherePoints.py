@@ -2,13 +2,13 @@ import itertools
 import numpy as np
 from ... import mesh
 from .internal import GLPrimitive, GLShapeDecorator, gl_uniform_setter
-from ... import prims
-from ...prims.internal import ShapeAttribute
+from ... import draw
+from ..internal import ShapeAttribute
 from vispy import gloo
 
 @GLShapeDecorator
-class SpherePoints(prims.SpherePoints, GLPrimitive):
-    __doc__ = prims.SpherePoints.__doc__
+class SpherePoints(draw.SpherePoints, GLPrimitive):
+    __doc__ = draw.SpherePoints.__doc__
 
     shaders = {}
 
@@ -96,9 +96,9 @@ class SpherePoints(prims.SpherePoints, GLPrimitive):
          'Rotation to be applied to each scene as a quaternion'),
         ('translation', np.float32, (0, 0, 0), 1,
          'Translation to be applied to the scene'),
-        prims.SpherePoints._ATTRIBUTES_BY_NAME['blur'],
-        prims.SpherePoints._ATTRIBUTES_BY_NAME['intensity'],
-        prims.SpherePoints._ATTRIBUTES_BY_NAME['on_surface'],
+        draw.SpherePoints._ATTRIBUTES_BY_NAME['blur'],
+        draw.SpherePoints._ATTRIBUTES_BY_NAME['intensity'],
+        draw.SpherePoints._ATTRIBUTES_BY_NAME['on_surface'],
         ('radius', np.float32, 1, 0,
          'Radius of the sphere normalize to'),
         ('draw_front', np.uint32, 1, 0,
@@ -109,7 +109,7 @@ class SpherePoints(prims.SpherePoints, GLPrimitive):
 
     def __init__(self, *args, **kwargs):
         GLPrimitive.__init__(self)
-        prims.SpherePoints.__init__(self, *args, **kwargs)
+        draw.SpherePoints.__init__(self, *args, **kwargs)
 
     def update_arrays(self):
         try:
@@ -124,11 +124,11 @@ class SpherePoints(prims.SpherePoints, GLPrimitive):
 
     @property
     def points(self):
-        return prims.SpherePoints.points.fget(self)
+        return draw.SpherePoints.points.fget(self)
 
     @points.setter
     def points(self, value):
-        prims.SpherePoints.points.fset(self, value)
+        draw.SpherePoints.points.fset(self, value)
 
         inverse_size = 1.0/max(1.0, self.points.shape[0])
         self.inverse_size = inverse_size

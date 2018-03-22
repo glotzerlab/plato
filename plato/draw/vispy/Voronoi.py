@@ -2,13 +2,13 @@ import itertools
 import numpy as np
 from ... import mesh
 from .internal import GLPrimitive, GLShapeDecorator
-from ... import prims
-from ...prims.internal import ShapeAttribute
+from ... import draw
+from ..internal import ShapeAttribute
 from vispy import gloo
 
 @GLShapeDecorator
-class Voronoi(prims.Voronoi, GLPrimitive):
-    __doc__ = prims.Voronoi.__doc__
+class Voronoi(draw.Voronoi, GLPrimitive):
+    __doc__ = draw.Voronoi.__doc__
 
     shaders = {}
 
@@ -84,7 +84,7 @@ class Voronoi(prims.Voronoi, GLPrimitive):
     def __init__(self, *args, **kwargs):
         self.num_vertices = 32
         GLPrimitive.__init__(self)
-        prims.Voronoi.__init__(self, *args, **kwargs)
+        draw.Voronoi.__init__(self, *args, **kwargs)
 
     def update_arrays(self):
         try:

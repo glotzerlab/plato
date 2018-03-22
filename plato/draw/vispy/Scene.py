@@ -1,5 +1,5 @@
 from .Canvas import Canvas
-from ... import Scene
+from .. import Scene
 import numpy as np
 
 def set_orthographic_projection(camera, left, right, bottom, top, near, far):

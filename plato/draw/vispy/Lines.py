@@ -2,13 +2,13 @@ import itertools
 import numpy as np
 from ... import mesh
 from .internal import GLPrimitive, GLShapeDecorator
-from ... import prims
-from ...prims.internal import ShapeAttribute
+from ... import draw
+from ..internal import ShapeAttribute
 from vispy import gloo
 
 @GLShapeDecorator
-class Lines(prims.Lines, GLPrimitive):
-    __doc__ = prims.Lines.__doc__
+class Lines(draw.Lines, GLPrimitive):
+    __doc__ = draw.Lines.__doc__
 
     shaders = {}
 
@@ -108,7 +108,7 @@ class Lines(prims.Lines, GLPrimitive):
 
     def __init__(self, *args, **kwargs):
         GLPrimitive.__init__(self)
-        prims.Lines.__init__(self, *args, **kwargs)
+        draw.Lines.__init__(self, *args, **kwargs)
 
     def update_arrays(self):
         try:

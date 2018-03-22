@@ -4,7 +4,7 @@ import numpy as np
 import vispy, vispy.app
 from vispy import gloo
 from ... import mesh
-from ...prims.internal import array_size_checkers, ATTRIBUTE_DOCSTRING_TEMPLATE
+from ..internal import array_size_checkers, ATTRIBUTE_DOCSTRING_TEMPLATE
 
 ATTRIBUTE_DOCSTRING_HEADER = '\n\nThis primitive has the following opengl-specific attributes:'
 

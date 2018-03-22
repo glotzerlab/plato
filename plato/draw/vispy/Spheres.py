@@ -2,13 +2,13 @@ import itertools
 import numpy as np
 from ... import mesh
 from .internal import GLPrimitive, GLShapeDecorator
-from ... import prims
-from ...prims.internal import ShapeAttribute
+from ... import draw
+from ..internal import ShapeAttribute
 from vispy import gloo
 
 @GLShapeDecorator
-class Spheres(prims.Spheres, GLPrimitive):
-    __doc__ = prims.Spheres.__doc__
+class Spheres(draw.Spheres, GLPrimitive):
+    __doc__ = draw.Spheres.__doc__
 
     shaders = {}
 
@@ -170,7 +170,7 @@ class Spheres(prims.Spheres, GLPrimitive):
 
     def __init__(self, *args, **kwargs):
         GLPrimitive.__init__(self)
-        prims.Spheres.__init__(self, *args, **kwargs)
+        draw.Spheres.__init__(self, *args, **kwargs)
 
     def update_arrays(self):
         try:

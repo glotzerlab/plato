@@ -3,13 +3,13 @@ import numpy as np
 from ... import geometry
 from ... import mesh
 from .internal import GLPrimitive, GLShapeDecorator
-from ... import prims
-from ...prims.internal import ShapeAttribute
+from ... import draw
+from ..internal import ShapeAttribute
 from vispy import gloo
 
 @GLShapeDecorator
-class Polygons(prims.Polygons, GLPrimitive):
-    __doc__ = prims.Polygons.__doc__
+class Polygons(draw.Polygons, GLPrimitive):
+    __doc__ = draw.Polygons.__doc__
 
     shaders = {}
 
@@ -77,7 +77,7 @@ class Polygons(prims.Polygons, GLPrimitive):
 
     def __init__(self, *args, **kwargs):
         GLPrimitive.__init__(self)
-        prims.Polygons.__init__(self, *args, **kwargs)
+        draw.Polygons.__init__(self, *args, **kwargs)
 
     def update_arrays(self):
         if 'vertices' in self._dirty_attributes:

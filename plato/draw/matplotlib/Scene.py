@@ -1,5 +1,5 @@
 import matplotlib, matplotlib.pyplot as pp
-from ... import Scene
+from .. import Scene
 import numpy as np
 
 class Scene(Scene):
