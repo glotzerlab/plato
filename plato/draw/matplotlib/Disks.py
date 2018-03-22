@@ -6,7 +6,7 @@ from matplotlib.collections import PatchCollection
 class Disks(draw.Disks):
     __doc__ = draw.Disks.__doc__
 
-    def render(self, axes, aa_pixel_size=0):
+    def render(self, axes, aa_pixel_size=0, **kwargs):
         collections = []
         outline = self.outline
 

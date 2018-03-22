@@ -18,7 +18,6 @@ This is an in-progress work for updating plato for a 1.0 release. This release h
 
 ## To-do list
 
-* Implement remaining matplotlib primitives for 2D and select 3D (at least `SpherePoints`) primitives
 * Repair documentation on primitives, set up sphinx
 * Add tests for individual backend APIs
 * Strip graphics base, rename old plato project, and update it to use this library

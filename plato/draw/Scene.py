@@ -12,7 +12,7 @@ class Scene:
         except TypeError:
             self._primitives = [primitives]
 
-        self._size = np.ones((2,), dtype=np.uint32)
+        self._size = np.ones((2,), dtype=np.float32)
         self.pixel_scale = pixel_scale
         self.size = size
         self.zoom = zoom
@@ -63,6 +63,10 @@ class Scene:
     @property
     def size_pixels(self):
         return self.size*self.pixel_scale
+
+    @size_pixels.setter
+    def size_pixels(self, value):
+        self.size = value/self.pixel_scale
 
     def add_primitive(self, primitive):
         self._primitives.append(primitive)

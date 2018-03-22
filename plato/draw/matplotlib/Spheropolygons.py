@@ -10,7 +10,7 @@ from matplotlib.transforms import Affine2D
 class Spheropolygons(draw.Spheropolygons):
     __doc__ = draw.Spheropolygons.__doc__
 
-    def render(self, axes, aa_pixel_size=0):
+    def render(self, axes, aa_pixel_size=0, **kwargs):
         collections = []
 
         vertices = self.vertices

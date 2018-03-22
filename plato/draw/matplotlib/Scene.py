@@ -17,7 +17,9 @@ class Scene(Scene):
             antialiasing_pixel_size = 0
 
         for prim in self._primitives:
-            prim.render(axes, antialiasing_pixel_size)
+            prim.render(axes, translation=self.translation, rotation=self.rotation,
+                        size=self.size, pixel_scale=self.pixel_scale, zoom=self.zoom,
+                        aa_pixel_size=antialiasing_pixel_size)
 
         (width, height) = self.size.astype(np.float32)/self.zoom
         axes.set_xticks([])
