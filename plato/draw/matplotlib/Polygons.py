@@ -9,7 +9,7 @@ from matplotlib.collections import PatchCollection
 class Polygons(draw.Polygons):
     __doc__ = draw.Polygons.__doc__
 
-    def render(self, figure, axes):
+    def render(self, axes):
         collections = []
 
         positions_3d = np.pad(

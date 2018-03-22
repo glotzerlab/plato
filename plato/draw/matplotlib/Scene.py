@@ -11,7 +11,7 @@ class Scene(Scene):
             axes = figure.add_subplot(1, 1, 1)
 
         for prim in self._primitives:
-            prim.render(figure, axes)
+            prim.render(axes)
 
         (width, height) = self.size.astype(np.float32)/self.zoom
         axes.set_xticks([])
