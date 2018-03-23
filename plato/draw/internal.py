@@ -1,4 +1,5 @@
 import functools
+import inspect
 from collections import namedtuple
 import numpy as np
 
@@ -27,6 +28,13 @@ class Shape:
 
     @classmethod
     def link(cls, other, share_redraw_state=True):
+        """Causes this shape to share its data with another shape.
+
+        Common values that are set in `other` will be set in this shape.
+
+        :param other: Other shape to link this one to
+        :param share_redraw_state: If True, share the redrawing state (for dynamic visualization backends) with `other`
+        """
         # use copy() in case ctor needs some non-default arguments
         # (should be cheap since we are just shuffling pointers anyway
         # for large array data)
@@ -38,6 +46,7 @@ class Shape:
 
     @classmethod
     def copy(cls, other):
+        """Create a copy of another shape."""
         result = cls(**other._attributes)
         return result
 
@@ -75,7 +84,7 @@ def ShapeDecorator(cls):
     if cls.__doc__ is None:
         cls.__doc__ = ''
 
-    cls.__doc__ += '\n'.join(attribute_doc_lines)
+    cls.__doc__ = inspect.cleandoc(cls.__doc__) + '\n'.join(attribute_doc_lines)
     return cls
 
 ShapeAttribute = namedtuple('ShapeAttrib', ['name', 'dtype', 'default', 'dimension', 'description'])

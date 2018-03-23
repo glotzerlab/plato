@@ -4,8 +4,7 @@ from .internal import Shape, ShapeDecorator, ShapeAttribute
 
 @ShapeDecorator
 class SpherePoints(Shape):
-    """A collection of points, useful for illustrating 3D density maps.
-    """
+    """A collection of points, useful for illustrating 3D density maps."""
 
     _ATTRIBUTES = list(itertools.starmap(ShapeAttribute, [
         ('points', np.float32, (1, 0, 0), 2,

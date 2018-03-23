@@ -1,4 +1,9 @@
-from .Canvas import Canvas
+"""
+The vispy backend uses `vispy <http://vispy.org/>`_ to render shapes
+interactively using openGL. It supports both desktop use with a
+variety of GUI backends and use inline in jupyter notebooks.
+"""
+
 from .Scene import Scene
 
 from .Arrows2D import Arrows2D

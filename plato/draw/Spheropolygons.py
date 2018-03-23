@@ -4,8 +4,12 @@ from .internal import Shape, ShapeDecorator, ShapeAttribute
 
 @ShapeDecorator
 class Spheropolygons(Shape):
-    """A collection of 2D spheropolygons with a common shape and rounding
-    radius. Each spheropolygon can have a different color.
+    """A collection of rounded polygons.
+
+    A `Spheropolygons` object has a common shape and rounding radius
+    for the whole collection. Each shape can have a different
+    orientation and color. Vertices should be specified in
+    counterclockwise order.
     """
 
     _ATTRIBUTES = list(itertools.starmap(ShapeAttribute, [
@@ -16,7 +20,8 @@ class Spheropolygons(Shape):
         ('colors', np.float32, (.5, .5, .5, 1), 2,
          'Color, RGBA, [0, 1] for each particle'),
         ('vertices', np.float32, (0, 0), 2,
-         'Vertices in local coordinates for the shape, to be replicated for each particle'),
+         'Vertices in local coordinates for the interior (non-rounded) shape, '
+         'to be replicated for each particle (CCW order)'),
         ('outline', np.float32, 0, 0,
          'Outline width for all particles'),
         ('radius', np.float32, 0.1, 0,
@@ -25,6 +30,7 @@ class Spheropolygons(Shape):
 
     @property
     def angles(self):
+        """Orientation of each particle, in radians"""
         quats = self.orientations
         return 2*np.arctan2(quats[:, 3], quats[:, 0])
 

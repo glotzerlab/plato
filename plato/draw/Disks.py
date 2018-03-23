@@ -4,8 +4,10 @@ from .internal import Shape, ShapeDecorator, ShapeAttribute
 
 @ShapeDecorator
 class Disks(Shape):
-    """A collection of disks. Each disk can have a different color and
-    diameter."""
+    """A collection of disks in 2D.
+
+    Each disk can have a different color and diameter.
+    """
 
     _ATTRIBUTES = list(itertools.starmap(ShapeAttribute, [
         ('positions', np.float32, (0, 0), 2,
@@ -20,6 +22,7 @@ class Disks(Shape):
 
     @property
     def diameters(self):
+        """Diameter of each particle."""
         return 2*self._attributes.get('radii', .5)
 
     @diameters.setter

@@ -4,8 +4,11 @@ from .internal import Shape, ShapeDecorator, ShapeAttribute
 
 @ShapeDecorator
 class Mesh(Shape):
-    """A 3D triangle mesh, specified by an array of vertices and indices
-    within that vertex array.
+    """A 3D triangle mesh.
+
+    Meshes are specified by an array of vertices and indices
+    identifying triangles within that vertex array. Colors are
+    assigned per-vertex and interpolated between vertices.
     """
 
     _ATTRIBUTES = list(itertools.starmap(ShapeAttribute, [

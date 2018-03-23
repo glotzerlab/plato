@@ -4,7 +4,10 @@ from .internal import Shape, ShapeDecorator, ShapeAttribute
 
 @ShapeDecorator
 class ConvexPolyhedra(Shape):
-    """A collection of identical convex polyhedra."""
+    """A collection of identically-shaped convex polyhedra.
+
+    Each shape can have its own position, orientation, and color.
+    """
 
     _ATTRIBUTES = list(itertools.starmap(ShapeAttribute, [
         ('positions', np.float32, (0, 0, 0), 2,

@@ -4,8 +4,10 @@ from .internal import Shape, ShapeDecorator, ShapeAttribute
 
 @ShapeDecorator
 class Spheres(Shape):
-    """A collection of spheres. Each sphere can have a different color and
-    diameter."""
+    """A collection of spheres in 3D.
+
+    Each sphere can have a different color and diameter.
+    """
 
     _ATTRIBUTES = list(itertools.starmap(ShapeAttribute, [
         ('positions', np.float32, (0, 0, 0), 2,
@@ -18,6 +20,7 @@ class Spheres(Shape):
 
     @property
     def diameters(self):
+        """Diameter of each particle."""
         return 2*self._attributes.get('radii', .5)
 
     @diameters.setter

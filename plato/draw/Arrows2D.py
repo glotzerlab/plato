@@ -3,9 +3,21 @@ import numpy as np
 from .Polygons import Polygons
 from .internal import ShapeDecorator, ShapeAttribute
 
+@ShapeDecorator
 class Arrows2D(Polygons):
-    """A collection of 2D arrows. Each arrow has a position, orientation,
-    color, and magnitude."""
+    """A collection of 2D arrows.
+
+    Each arrow has an independent position, orientation, color, and
+    magnitude. The shape of arrows can be configured by changing its
+    `vertices` attribute. The default orientation and scale of the
+    vertices is an arrow centered at (0, 0), pointing in the (1, 0)
+    direction, with length 1.
+
+    The origin of the arrows can be shifted to have the base lie on
+    the given position by modifying `vertices`::
+
+        arrows.vertices = arrows.vertices + (0.5, 0)
+    """
 
     def __init__(self, *args, **kwargs):
         super(Polygons, self).__init__(*args, **kwargs)
@@ -25,6 +37,7 @@ class Arrows2D(Polygons):
 
     @property
     def magnitudes(self):
+        """Magnitude (size scale) of each particle"""
         return np.linalg.norm(self.orientations, axis=-1)
 
     @magnitudes.setter
@@ -36,6 +49,7 @@ class Arrows2D(Polygons):
 
     @property
     def angles(self):
+        """Orientation of each particle, in radians"""
         quats = self.orientations
         return 2*np.arctan2(quats[:, 3], quats[:, 0])
 

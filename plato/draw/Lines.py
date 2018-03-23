@@ -4,8 +4,11 @@ from .internal import Shape, ShapeDecorator, ShapeAttribute
 
 @ShapeDecorator
 class Lines(Shape):
-    """A collection of line segments. Each segment can have a different
-    color and width.
+    """A collection of line segments.
+
+    Each segment can have a different color and width. `Lines` can be
+    used in both 2D and 3D scenes, but they are currently not shaded
+    and may look out of place in 3D.
     """
 
     _ATTRIBUTES = list(itertools.starmap(ShapeAttribute, [
