@@ -26,14 +26,15 @@ class Arrows2D(Polygons):
         head_length = 0.35      # length from base of the head to the tip of the arrow
         head_width = 0.45       # wingspan from tip to tip of the arrow head
         head_edge_excess = 0.03 # how far back to pull the wingtips of the head past the base of the head
-        self.vertices = [(0.5, 0.),
-                         (0.5 - head_length, head_width/2.),
-                         (0.5 - head_length + head_edge_excess, thickness/2.),
-                         (-0.5, thickness/2.),
-                         (-0.5, -thickness/2.),
-                         (0.5 - head_length + head_edge_excess, -thickness/2.),
-                         (0.5 - head_length, -head_width/2.)]
-
+        vertices = [(0.5, 0.),
+                    (0.5 - head_length, head_width/2.),
+                    (0.5 - head_length + head_edge_excess, thickness/2.),
+                    (-0.5, thickness/2.),
+                    (-0.5, -thickness/2.),
+                    (0.5 - head_length + head_edge_excess, -thickness/2.),
+                    (0.5 - head_length, -head_width/2.)]
+        if 'vertices' not in kwargs:
+            self.vertices = vertices
 
     @property
     def magnitudes(self):
