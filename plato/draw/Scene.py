@@ -12,11 +12,16 @@ class Scene:
     as a whole, and a `zoom` level.
 
     Primitives can be added to a scene through the `primitives`
-    argument of the constructor or the `add_primitive` method.
+    argument of the constructor or the `add_primitive`
+    method. Primitives can be retrieved by iterating over the scene::
+
+      for prim in scene:
+          # (do something with prim)
 
     Optional rendering arguments are enabled as *features*, which are
     name-value pairs identifying a feature by name and any
     configuration of the feature in the value.
+
     """
     def __init__(self, primitives=[], features={}, size=(40, 30),
                  translation=(0, 0, -50), rotation=(1, 0, 0, 0), zoom=1,
@@ -58,6 +63,10 @@ class Scene:
 
         for name in kwargs:
             setattr(self, name, kwargs[name])
+
+    def __iter__(self):
+        for prim in self._primitives:
+            yield prim
 
     @property
     def translation(self):
