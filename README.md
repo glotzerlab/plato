@@ -18,5 +18,4 @@ This is an in-progress work for updating plato for a 1.0 release. This release h
 
 ## To-do list
 
-* Add tests for individual backend APIs
 * Strip graphics base, rename old plato project, and update it to use this library
