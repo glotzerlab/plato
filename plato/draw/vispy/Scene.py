@@ -1,5 +1,5 @@
 from .Canvas import Canvas
-from .. import Scene
+from ... import draw
 import numpy as np
 
 def set_orthographic_projection(camera, left, right, bottom, top, near, far):
@@ -12,7 +12,20 @@ def set_orthographic_projection(camera, left, right, bottom, top, near, far):
     camera[3, 2] = -(far + near)/(far - near)
     camera[3, 3] = 1
 
-class Scene(Scene):
+class Scene(draw.Scene):
+    __doc__ = draw.Scene.__doc__ + """
+    This Scene supports the following features:
+
+    * *pan*: If enabled, mouse movement will translate the scene instead of rotating it
+    * *directional_light*: Add directional lights. The given value indicates the magnitude*direction normal vector.
+    * *ambient_light*: Enable trivial ambient lighting. The given value indicates the magnitude of the light (in [0, 1]).
+    * *translucency*: Enable order-independent transparency rendering
+    * *fxaa*: Enable fast approximate anti-aliasing
+    * *ssao*: Enable screen space ambient occlusion
+    * *additive_rendering*: Enable additive rendering. This mode is good for visualizing densities projected through the viewing direction. Takes an optional 'invert' argument to invert the additive rendering (i.e., black-on-white instead of white-on-black).
+    * *outlines*: Enable cartoony outlines. The given value indicates the width of the outlines (start small, perhaps 1e-5 to 1e-3).
+    """
+
     def __init__(self, *args, **kwargs):
         self.camera = np.eye(4, dtype=np.float32)
         self._zoom = 1

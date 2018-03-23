@@ -30,10 +30,13 @@ be used, for example::
   scene = draw.Scene(disks, ...)
   scene.show()
 
-Base Graphics Primitives
-========================
+Base Drawing Module
+===================
 
 .. py:module:: plato.draw
+
+.. autoclass:: Scene
+   :members:
 
 2D Graphics Primitives
 ----------------------
@@ -79,6 +82,9 @@ Vispy Backend
 
 .. automodule:: plato.draw.vispy
 
+.. autoclass:: Scene
+   :members:
+
 2D Graphics Primitives
 ----------------------
 
@@ -123,6 +129,9 @@ Matplotlib Backend
 ==================
 
 .. automodule:: plato.draw.matplotlib
+
+.. autoclass:: Scene
+   :members:
 
 2D Graphics Primitives
 ----------------------

@@ -1,8 +1,14 @@
 import matplotlib, matplotlib.pyplot as pp
-from .. import Scene
+from ... import draw
 import numpy as np
 
-class Scene(Scene):
+class Scene(draw.Scene):
+    __doc__ = draw.Scene.__doc__ + """
+    This Scene supports the following features:
+
+    * *antialiasing*: Enable antialiasing. Primitives that support antialiasing will fudge some distances (typically for drawing outlines) to reduce visual artifacts.
+    """
+
     def render(self, figure=None, axes=None):
         if figure is None:
             figure = pp.figure()
