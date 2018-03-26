@@ -67,6 +67,27 @@ def voronoi_with_disks(seed=13, num_points=32):
     return scene
 
 @register_scene
+def convex_polyhedra(seed=15, num_particles=3):
+    np.random.seed(seed)
+    positions = np.random.uniform(0, 9, (num_particles, 3))
+    colors = np.random.rand(num_particles, 4)
+    orientations = np.random.rand(num_particles, 4)
+
+    vertices = np.array([(1, 1, 1), (-1, 1, 1), (1, -1, 1), (1, 1, -1)], dtype=np.float32)
+    prim = draw.ConvexPolyhedra(
+        positions=positions, colors=colors, orientations=orientations,
+        vertices=vertices, radius=.1)
+
+    prim2 = prim.copy(prim)
+    prim2.vertices = np.concatenate([prim2.vertices, -prim2.vertices], axis=0)
+    prim2.positions = -prim2.positions
+
+    prims = [prim, prim2]
+    features = dict(ambient_light=.25, directional_light=(-.1, -.15, -1))
+    scene = draw.Scene(prims, zoom=5, clip_scale=10, features=features)
+    return scene
+
+@register_scene
 def many_3d_primitives(seed=15, num_particles=3):
     np.random.seed(seed)
     positions = np.random.uniform(0, 3, (num_particles, 3))
