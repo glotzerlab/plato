@@ -462,6 +462,12 @@ class Canvas(vispy.app.Canvas):
             if feature in self._VALID_FEATURES:
                 self._enable_feature(**{feature: self._scene._enabled_features[feature]})
 
+    def on_resize(self, event):
+        size = event.size
+        self._scene.pixel_size = size
+        self.set_current()
+        vispy.gloo.set_viewport(0, 0, *size)
+
     def on_draw(self, *args, **kwargs):
         self.set_current()
 
