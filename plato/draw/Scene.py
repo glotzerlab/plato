@@ -115,6 +115,8 @@ class Scene:
     def add_primitive(self, primitive):
         """Adds a primitive to the scene."""
         self._primitives.append(primitive)
+        primitive.translation = self.translation
+        primitive.rotation = self.rotation
 
     def remove_primitive(self, primitive, strict=True):
         """Removes a primitive from the scene.
