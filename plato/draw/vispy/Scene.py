@@ -26,7 +26,7 @@ class Scene(draw.Scene):
     * *outlines*: Enable cartoony outlines. The given value indicates the width of the outlines (start small, perhaps 1e-5 to 1e-3).
     """
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, canvas_kwargs={}, **kwargs):
         self.camera = np.eye(4, dtype=np.float32)
         self._zoom = 1
         self._pixel_scale = 1
@@ -34,7 +34,7 @@ class Scene(draw.Scene):
         self._translation = [0, 0, 0]
         self._canvas = None
         super(Scene, self).__init__(*args, **kwargs)
-        self._canvas = Canvas(self)
+        self._canvas = Canvas(self, **canvas_kwargs)
 
     @property
     def zoom(self):

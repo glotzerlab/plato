@@ -443,7 +443,7 @@ void main(void)
 class Canvas(vispy.app.Canvas):
     _VALID_FEATURES = ['translucency', 'outlines', 'fxaa', 'ssao', 'additive_rendering']
 
-    def __init__(self, scene):
+    def __init__(self, scene, **kwargs):
         super(Canvas, self).__init__(size=scene.size_pixels.astype(np.uint32))
 
         gloo.set_viewport(0, 0, *scene.size_pixels.astype(np.uint32))
