@@ -464,7 +464,7 @@ class Canvas(vispy.app.Canvas):
 
     def on_resize(self, event):
         size = event.size
-        self._scene.pixel_size = size
+        self._scene.size_pixels = size
         self.set_current()
         vispy.gloo.set_viewport(0, 0, *size)
 

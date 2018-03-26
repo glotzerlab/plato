@@ -110,7 +110,7 @@ class Scene:
 
     @size_pixels.setter
     def size_pixels(self, value):
-        self.size = value/self.pixel_scale
+        self.size = np.asarray(value, dtype=np.float32)/self.pixel_scale
 
     def add_primitive(self, primitive):
         """Adds a primitive to the scene."""
