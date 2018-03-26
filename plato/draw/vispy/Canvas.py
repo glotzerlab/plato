@@ -641,6 +641,8 @@ class Canvas(vispy.app.Canvas):
                 self.updateRotation(event, delta=(-np.pi/6, 0), suppress=True)
         self.update()
 
+    def grab_selection_area(self, callback):
+        self._selection_callback = callback
 
     def planeRotation(self, event, delta=(0,0)):
         delta = np.asarray(delta, dtype=np.float32)
