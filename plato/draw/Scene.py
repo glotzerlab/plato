@@ -124,7 +124,7 @@ class Scene:
         """
         try:
             self._primitives.remove(primitive)
-        except IndexError:
+        except ValueError:
             if strict:
                 raise
 
