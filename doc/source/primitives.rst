@@ -136,6 +136,9 @@ Matplotlib Backend
 2D Graphics Primitives
 ----------------------
 
+.. autoclass:: Arrows2D
+   :members:
+
 .. autoclass:: Disks
    :members:
 
