@@ -94,6 +94,11 @@ class Scene:
         for prim in self._primitives:
             prim.rotation = self._rotation
 
+        if 'link_rotation' in self._enabled_features:
+            for target in self._enabled_features['link_rotation']['targets']:
+                for prim in target:
+                    prim.rotation = self._rotation
+
     @property
     def size(self):
         """Width and height, in scene units, of the viewport."""
@@ -139,6 +144,17 @@ class Scene:
         """
         if auto_value is not None:
             parameters['value'] = auto_value
+
+        if name == 'link_rotation':
+            targets = parameters.setdefault('targets', [])
+            if 'target' in parameters:
+                targets.append(parameters['target'])
+            if 'value' in parameters:
+                targets.append(parameters['value'])
+
+            for target in targets:
+                target._rotation = self._rotation
+
         self._enabled_features[name] = dict(parameters)
 
     def disable(self, name, strict=True):
@@ -149,5 +165,10 @@ class Scene:
         """
         if not strict and name not in self._enabled_features:
             return
+
+        if name == 'link_rotation':
+            targets = self._enabled_features['link_rotation']['targets']
+            for target in targets:
+                target._rotation = target._rotation.copy()
 
         del self._enabled_features[name]

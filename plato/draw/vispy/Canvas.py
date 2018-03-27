@@ -579,6 +579,15 @@ class Canvas(vispy.app.Canvas):
                                depth_mask=False)
             self._programs['fxaa_post'].draw('triangle_strip')
 
+        if 'link_rotation' in self._scene._enabled_features:
+            targets = self._scene._enabled_features['link_rotation']['targets']
+            for target in targets:
+                try:
+                    canvas = target._canvas
+                    canvas.update()
+                except AttributeError:
+                    pass
+
     def on_mouse_press(self, event):
         self._mouse_origin[:] = event.pos
 
@@ -820,14 +829,12 @@ class Canvas(vispy.app.Canvas):
                 if feature == 'ssao':
                     self._final_render_target = NoopContextManager()
                     if 'fxaa' in self._scene._enabled_features:
-                        self._disable_feature('fxaa')
                         self._enable_feature('fxaa')
 
                 if feature == 'fxaa':
                     self._final_render_target = NoopContextManager()
                     # redo SSAO setup so it will have the correct buffers
                     if 'ssao' in self._scene._enabled_features:
-                        self._disable_feature('ssao')
                         self._enable_feature('ssao')
 
     @property
