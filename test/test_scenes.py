@@ -1,3 +1,4 @@
+import itertools
 import numpy as np
 import plato
 import plato.draw as draw
@@ -65,6 +66,22 @@ def voronoi_with_disks(seed=13, num_points=32):
 
     scene = draw.Scene([prim, prim2], zoom=4, features=dict(pan=True))
     return scene
+
+@register_scene
+def colored_spheres(num_per_side=6):
+    xs = np.arange(num_per_side).astype(np.float32)
+    rs = np.array(list(itertools.product(*(3*[xs]))))
+    rs = np.concatenate([rs, rs + .5], axis=0)
+
+    colors = np.ones((rs.shape[0], 4))
+    colors[:, :3] = rs/(num_per_side - 1)
+    diameters = np.ones((rs.shape[0],))/np.sqrt(2)
+    rs -= np.mean(rs, axis=0, keepdims=True)
+
+    prim = draw.Spheres(positions=rs, colors=colors, diameters=diameters)
+    features = dict(ambient_light=.25, directional_light=(-.1, -.15, -1))
+    rotation = [0.43797198, -0.4437895 ,  0.08068451,  0.7776423]
+    return draw.Scene(prim, features=features, zoom=4, rotation=rotation)
 
 @register_scene
 def convex_polyhedra(seed=15, num_particles=3):
