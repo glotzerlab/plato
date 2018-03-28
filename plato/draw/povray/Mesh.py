@@ -42,5 +42,3 @@ class Mesh(draw.Mesh):
                      '{},{},{}>}}'.format(*args))
 
         return lines
-
-

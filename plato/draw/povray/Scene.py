@@ -142,5 +142,4 @@ class Scene(draw.Scene):
         try:
             return subprocess.check_call(command)
         finally:
-            pass
-            #os.remove(povfile)
+            os.remove(povfile)
