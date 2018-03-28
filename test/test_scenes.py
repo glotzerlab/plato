@@ -89,6 +89,7 @@ def convex_polyhedra(seed=15, num_particles=3):
     positions = np.random.uniform(0, 9, (num_particles, 3))
     colors = np.random.rand(num_particles, 4)
     orientations = np.random.rand(num_particles, 4)
+    orientations /= np.linalg.norm(orientations, axis=-1, keepdims=True)
 
     vertices = np.array([(1, 1, 1), (-1, 1, 1), (1, -1, 1), (1, 1, -1)], dtype=np.float32)
     prim = draw.ConvexPolyhedra(
@@ -110,6 +111,7 @@ def many_3d_primitives(seed=15, num_particles=3):
     positions = np.random.uniform(0, 3, (num_particles, 3))
     colors = np.random.rand(num_particles, 4)
     orientations = np.random.rand(num_particles, 4)
+    orientations /= np.linalg.norm(orientations, axis=-1, keepdims=True)
 
     vertices = np.random.rand(12, 3)
     vertices -= np.mean(vertices, axis=0, keepdims=True)
