@@ -15,5 +15,5 @@ class Spheres(draw.Spheres):
                                 1 - self.colors[:, 3]):
             args = p.tolist() + [r] + c.tolist() + [a]
             lines.append('sphere {{<{},{},{}> {} pigment {{color '
-                           '<{},{},{}> transmit {}}}}}'.format(*args))
+                         '<{},{},{}> transmit {}}}}}'.format(*args))
         return lines

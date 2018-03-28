@@ -26,9 +26,11 @@ class Scene(draw.Scene):
 
         lines.extend(self.render_lights())
 
-        for prim in self._primitives:
+        shapeIndex = 0
+        for i, prim in enumerate(self._primitives):
             lines.extend(prim.render(
-                translation=self.translation, rotation=self.rotation))
+                translation=self.translation, rotation=self.rotation,
+                name_suffix=i))
 
         return '\n'.join(lines)
 
