@@ -102,7 +102,7 @@ def convex_polyhedra(seed=15, num_particles=3):
 
     prims = [prim, prim2]
     features = dict(ambient_light=.25, directional_light=(-.1, -.15, -1))
-    scene = draw.Scene(prims, zoom=5, clip_scale=10, features=features)
+    scene = draw.Scene(prims, zoom=2, clip_scale=10, features=features)
     return scene
 
 @register_scene
