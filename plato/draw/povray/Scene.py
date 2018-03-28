@@ -60,14 +60,16 @@ class Scene(draw.Scene):
 
             dz = np.sqrt(np.sum((self.size/self.zoom)**2))
             for direction in lights:
-                position = -direction*dz*2
+                magnitude = np.linalg.norm(direction)
+                norm = direction/magnitude
+                position = -norm*dz*2
 
                 # we want to rotate the basis vectors, constructed to
                 # be at (0, 0, dz), to be perpendicular to the given
                 # direction
-                norm = direction/np.linalg.norm(direction)
                 halftheta = np.arccos(norm[2])/2
                 cross = np.cross([0, 0, 1], norm)
+                cross /= np.linalg.norm(cross)
                 quat = np.array([np.cos(halftheta)] + (np.sin(halftheta)*cross).tolist())
 
                 basis0 = np.array([dz, 0, 0])
@@ -75,11 +77,12 @@ class Scene(draw.Scene):
                 basis1 = np.array([0, dz, 0])
                 basis1 = math.quatrot(quat, basis1)
 
-                light = ('light_source {{ <{pos[0]}, {pos[1]}, {pos[2]}> color rgb<1, 1, 1> '
+                light = ('light_source {{ <{pos[0]}, {pos[1]}, {pos[2]}> color '
+                         'rgb<{mag}, {mag}, {mag}> '
                          'area_light <{basis0[0]}, {basis0[1]}, {basis0[2]}>, '
                          '<{basis1[0]}, {basis1[1]}, {basis1[2]}>, 5, 5 '
                          'adaptive 1 jitter }}').format(
-                             pos=position, basis0=basis0, basis1=basis1)
+                             pos=position, mag=magnitude, basis0=basis0, basis1=basis1)
                 result.append(light)
 
         return result
