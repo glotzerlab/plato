@@ -39,8 +39,8 @@ class Scene(draw.Scene):
         dz = np.sqrt(np.sum(width**2 + height**2))
 
         camera = ('camera {{ orthographic location <0, 0, {dz}> up <0, {height}, 0> '
-                  'right <-{width}, 0, 0> look_at <0, 0, 0> }}').format(
-                      dz=dz, height=height, width=width)
+                  'right <{width}, 0, 0> look_at <0, 0, 0> }}').format(
+                      dz=dz, height=height, width=-width)
         return [camera]
 
     def render_lights(self):
