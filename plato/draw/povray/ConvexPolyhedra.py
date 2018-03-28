@@ -12,7 +12,7 @@ class ConvexPolyhedra(draw.ConvexPolyhedra):
     _ATTRIBUTES = draw.ConvexPolyhedra._ATTRIBUTES
 
     _ATTRIBUTES.extend(list(itertools.starmap(ShapeAttribute, [
-        ('outline', np.float32, 1e-2, 1, 'Outline thickness')
+        ('outline', np.float32, 0, 1, 'Outline width for all particles')
     ])))
 
     def render(self, rotation=(1, 0, 0, 0), name_suffix='', **kwargs):
