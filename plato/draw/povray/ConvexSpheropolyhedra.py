@@ -41,7 +41,7 @@ class ConvexSpheropolyhedra(draw.ConvexSpheropolyhedra):
                            [2*(qs[:, 1]*qs[:, 3] - qs[:, 2]*qs[:, 0]),
                             2*(qs[:, 1]*qs[:, 0] + qs[:, 2]*qs[:, 3]),
                             1 - 2*qs[:, 1]**2 - 2*qs[:, 2]**2]])
-        rotmat = rotmat.transpose([2, 0, 1]).reshape((-1, 9))
+        rotmat = rotmat.transpose([2, 1, 0]).reshape((-1, 9))
 
         positions = pmath.quatrot(rotation[np.newaxis, :], self.positions)
 
