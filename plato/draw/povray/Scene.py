@@ -48,9 +48,21 @@ class Scene(draw.Scene):
 
         if 'ambient_light' in self._enabled_features:
             config = self._enabled_features['ambient_light']
-            light = ('global_settings {{ ambient_light '
-                     'rgb<{value}, {value}, {value}> }}').format(
-                         value=config.get('value', 0))
+
+            (width, height) = self.size/self.zoom
+            dz = np.sqrt(np.sum(width**2 + height**2))
+
+            pos = (0, 0, 2*dz)
+            basis0 = (4*dz, 0, 0)
+            basis1 = (0, 4*dz, 0)
+
+            light = ('light_source {{ <{pos[0]}, {pos[1]}, {pos[2]}> color '
+                     'rgb<{mag}, {mag}, {mag}> '
+                     'area_light <{basis0[0]}, {basis0[1]}, {basis0[2]}>, '
+                     '<{basis1[0]}, {basis1[1]}, {basis1[2]}>, 5, 5 '
+                     'adaptive 1 jitter shadowless }}').format(
+                         pos=pos, mag=config.get('value', 0.25),
+                         basis0=basis0, basis1=basis1)
             result.append(light)
 
         if 'directional_light' in self._enabled_features:
