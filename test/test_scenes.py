@@ -84,10 +84,10 @@ def colored_spheres(num_per_side=6):
     return draw.Scene(prim, features=features, zoom=4, rotation=rotation)
 
 @register_scene
-def convex_polyhedra(seed=15, num_particles=3):
+def convex_polyhedra(seed=16, num_particles=3):
     np.random.seed(seed)
     positions = np.random.uniform(0, 9, (num_particles, 3))
-    colors = np.random.rand(num_particles, 4)
+    colors = np.random.uniform(.75, .9, (num_particles, 4))**1.5
     orientations = np.random.rand(num_particles, 4)
     orientations /= np.linalg.norm(orientations, axis=-1, keepdims=True)
 
@@ -109,7 +109,7 @@ def convex_polyhedra(seed=15, num_particles=3):
 def many_3d_primitives(seed=15, num_particles=3):
     np.random.seed(seed)
     positions = np.random.uniform(0, 3, (num_particles, 3))
-    colors = np.random.rand(num_particles, 4)
+    colors = np.random.uniform(.75, .9, (num_particles, 4))**1.5
     orientations = np.random.rand(num_particles, 4)
     orientations /= np.linalg.norm(orientations, axis=-1, keepdims=True)
 
