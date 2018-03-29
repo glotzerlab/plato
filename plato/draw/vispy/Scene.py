@@ -52,6 +52,8 @@ class Scene(draw.Scene):
     @pixel_scale.setter
     def pixel_scale(self, value):
         self._pixel_scale = value
+        if self._canvas is not None:
+            self._canvas.size = self.size_pixels.astype(np.uint32)
         self._update_camera()
 
     @property
