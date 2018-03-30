@@ -130,3 +130,6 @@ class Scene(draw.Scene):
 
     def show(self):
         return self._canvas.show()
+
+    def render(self):
+        self._canvas.update()
