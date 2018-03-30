@@ -84,6 +84,44 @@ def colored_spheres(num_per_side=6):
     return draw.Scene(prim, features=features, zoom=4, rotation=rotation)
 
 @register_scene
+def spoly_cubes_tetrahedra(seed=13, num_per_side=7):
+    np.random.seed(seed)
+
+    xs = np.arange(num_per_side).astype(np.float32)
+    rs = np.array(list(itertools.product(*(3*[xs]))))
+    rs -= np.mean(rs, axis=0, keepdims=True)
+    indices = np.arange(rs.shape[0])
+    types = (indices%3).astype(np.int32)
+    colors = plato.cmap.cubehelix(np.linspace(.3, .7, rs.shape[0]), r=3)
+    orientations = np.tile([(1, 0, 0, 0)], (rs.shape[0], 1)).astype(np.float32)
+    for i in range(3):
+        half_angles = 0.5*np.random.randint(0, 3, rs.shape[0])*np.pi/2
+        new_rotation = np.zeros_like(orientations)
+        new_rotation[:, 0] = np.cos(half_angles)
+        new_rotation[:, 1 + i] = np.sin(half_angles)
+        orientations = plato.math.quatquat(orientations, new_rotation)
+
+    tet_verts = np.array([(1, 1, -1), (1, -1, 1), (-1, 1, 1), (-1, -1, -1)],
+                         dtype=np.float32)/3
+    cube_verts = np.concatenate([tet_verts, -tet_verts], axis=0)
+
+    filt = types == 0
+    prim1 = draw.ConvexSpheropolyhedra(
+        vertices=tet_verts, radius=1/6, positions=rs[filt],
+        orientations=orientations[filt], colors=colors[filt])
+
+    filt = types == 1
+    prim2 = draw.ConvexSpheropolyhedra(
+        vertices=cube_verts, radius=1/6, positions=rs[filt],
+        orientations=orientations[filt], colors=colors[filt])
+
+    rotation = [0.94578046, 0.0234278 , 0.32349595, 0.01735411]
+    features = dict(ambient_light=.25, directional_light=(-.1, -.15, -1))
+    scene = draw.Scene([prim1, prim2], zoom=4, features=features,
+                       rotation=rotation)
+    return scene
+
+@register_scene
 def convex_polyhedra(seed=16, num_particles=3):
     np.random.seed(seed)
     positions = np.random.uniform(0, 9, (num_particles, 3))
