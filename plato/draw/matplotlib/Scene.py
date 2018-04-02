@@ -16,7 +16,9 @@ class Scene(draw.Scene):
         :param axes: Axes object to render within (created from the figure if not given)
         """
         if figure is None:
-            figure = pp.figure()
+            dpi = pp.rcParams.get('figure.dpi', 72)
+            real_size = self.size_pixels/dpi
+            figure = pp.figure(figsize=real_size, dpi=dpi)
 
         if axes is None:
             axes = figure.add_subplot(1, 1, 1)
