@@ -41,6 +41,9 @@ Base Drawing Module
 2D Graphics Primitives
 ----------------------
 
+.. autoclass:: Arrows2D
+   :members:
+
 .. autoclass:: Disks
    :members:
 
@@ -50,16 +53,16 @@ Base Drawing Module
 .. autoclass:: Spheropolygons
    :members:
 
-.. autoclass:: Arrows2D
-   :members:
-
 .. autoclass:: Voronoi
    :members:
 
 3D Graphics Primitives
 ----------------------
 
-.. autoclass:: Spheres
+.. autoclass:: ConvexPolyhedra
+   :members:
+
+.. autoclass:: ConvexSpheropolyhedra
    :members:
 
 .. autoclass:: Lines
@@ -68,13 +71,10 @@ Base Drawing Module
 .. autoclass:: Mesh
    :members:
 
-.. autoclass:: ConvexPolyhedra
-   :members:
-
-.. autoclass:: ConvexSpheropolyhedra
-   :members:
-
 .. autoclass:: SpherePoints
+   :members:
+
+.. autoclass:: Spheres
    :members:
 
 Vispy Backend
@@ -88,6 +88,9 @@ Vispy Backend
 2D Graphics Primitives
 ----------------------
 
+.. autoclass:: Arrows2D
+   :members:
+
 .. autoclass:: Disks
    :members:
 
@@ -97,16 +100,16 @@ Vispy Backend
 .. autoclass:: Spheropolygons
    :members:
 
-.. autoclass:: Arrows2D
-   :members:
-
 .. autoclass:: Voronoi
    :members:
 
 3D Graphics Primitives
 ----------------------
 
-.. autoclass:: Spheres
+.. autoclass:: ConvexPolyhedra
+   :members:
+
+.. autoclass:: ConvexSpheropolyhedra
    :members:
 
 .. autoclass:: Lines
@@ -115,15 +118,11 @@ Vispy Backend
 .. autoclass:: Mesh
    :members:
 
-.. autoclass:: ConvexPolyhedra
-   :members:
-
-.. autoclass:: ConvexSpheropolyhedra
-   :members:
-
 .. autoclass:: SpherePoints
    :members:
 
+.. autoclass:: Spheres
+   :members:
 
 Matplotlib Backend
 ==================
@@ -151,5 +150,34 @@ Matplotlib Backend
 3D Graphics Primitives
 ----------------------
 
+.. autoclass:: ConvexPolyhedra
+   :members:
+
 .. autoclass:: SpherePoints
+   :members:
+
+Povray Backend
+==============
+
+.. automodule:: plato.draw.povray
+
+.. autoclass:: Scene
+   :members:
+
+3D Graphics Primitives
+----------------------
+
+.. autoclass:: ConvexPolyhedra
+   :members:
+
+.. autoclass:: ConvexSpheropolyhedra
+   :members:
+
+.. autoclass:: Lines
+   :members:
+
+.. autoclass:: Mesh
+   :members:
+
+.. autoclass:: Spheres
    :members:
