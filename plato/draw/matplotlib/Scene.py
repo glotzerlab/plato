@@ -10,6 +10,11 @@ class Scene(draw.Scene):
     """
 
     def render(self, figure=None, axes=None):
+        """Render all the shapes in this Scene.
+
+        :param figure: Figure object to render within (created using pyplot if not given)
+        :param axes: Axes object to render within (created from the figure if not given)
+        """
         if figure is None:
             figure = pp.figure()
 
@@ -36,9 +41,18 @@ class Scene(draw.Scene):
         return (figure, axes)
 
     def show(self, figure=None, axes=None):
+        """Render and show the shapes in this Scene.
+
+        :param figure: Figure object to render within (created using pyplot if not given)
+        :param axes: Axes object to render within (created from the figure if not given)
+        """
         (figure, _) = self.render(figure, axes)
         return figure.show()
 
     def save(self, filename):
+        """Render and save an image of this Scene.
+
+        :param filename: target filename to save the image into
+        """
         (figure, _) = self.render()
         return figure.savefig(filename)

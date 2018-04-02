@@ -18,6 +18,10 @@ class Scene(draw.Scene):
     """
 
     def render(self):
+        """Render all the shapes in this scene.
+
+        :returns: povray string representing the entire scene
+        """
         lines = []
 
         background = (1, 1, 1)
@@ -101,6 +105,7 @@ class Scene(draw.Scene):
         return result
 
     def show(self):
+        """Render the scene to an image and display using ipython."""
         import IPython.display
 
         with tempfile.NamedTemporaryFile(suffix='.png') as temp:
@@ -108,6 +113,10 @@ class Scene(draw.Scene):
             return IPython.display.Image(filename=temp.name)
 
     def save(self, filename):
+        """Save the scene, either as povray source or a rendered image.
+
+        :param filename: target filename to save the result into. If filename ends in .pov, save the povray source, otherwise call povray to render the image
+        """
         (width, height) = self.size_pixels
         povstring = self.render()
 

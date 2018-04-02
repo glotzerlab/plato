@@ -129,7 +129,9 @@ class Scene(draw.Scene):
             prim.camera = self.camera
 
     def show(self):
+        """Display this Scene object."""
         return self._canvas.show()
 
     def render(self):
+        """Have vispy redraw this Scene object."""
         self._canvas.update()
