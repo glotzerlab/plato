@@ -13,6 +13,7 @@ class Scene(draw.Scene):
 
     * *antialiasing*: Enable antialiasing using the given value (default 0.3).
     * *ambient_light*: Enable trivial ambient lighting. The given value indicates the magnitude of the light (in [0, 1]).
+    * *directional_light*: Add directional lights. The given value indicates the magnitude*direction normal vector.
     * *multithreading*: Enable multithreaded rendering. The given value indicates the number of threads to use.
     """
 
