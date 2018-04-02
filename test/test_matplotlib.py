@@ -1,5 +1,5 @@
 import unittest
-import matplotlib, matplotlib.pyplot as pp
+import matplotlib; matplotlib.use('AGG')
 import plato.draw.matplotlib as draw
 import test_scenes
 
