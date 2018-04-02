@@ -2,7 +2,7 @@
 because of how blender invocation typically works. The tests can be
 run as:
 
-  PYTHONPATH="$(pwd):${PYTHONPATH}" blender --background --python test_blender.py
+  PYTHONPATH="$(pwd):${PYTHONPATH}" blender --background --python blender_scenes.py
 
 """
 
