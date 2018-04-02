@@ -1,3 +1,4 @@
+import vispy.io
 from .Canvas import Canvas
 from ... import draw
 import numpy as np
@@ -127,6 +128,15 @@ class Scene(draw.Scene):
 
         for prim in self._primitives:
             prim.camera = self.camera
+
+    def save(self, filename):
+        """Render and save an image of this Scene.
+
+        :param filename: target filename to save the image into
+        """
+        if self._canvas is not None:
+            img = self._canvas.render()
+            vispy.io.write_png(filename, img)
 
     def show(self):
         """Display this Scene object."""
