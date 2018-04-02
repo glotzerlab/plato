@@ -66,11 +66,11 @@ class Polygons(draw.Polygons, GLPrimitive):
 
     _GL_UNIFORMS = list(itertools.starmap(ShapeAttribute, [
         ('camera', np.float32, np.eye(4), 2,
-         '4x4 Camera matrix for world projection'),
+         'Internal: 4x4 Camera matrix for world projection'),
         ('rotation', np.float32, (1, 0, 0, 0), 1,
-         'Rotation to be applied to each scene as a quaternion'),
+         'Internal: Rotation to be applied to each scene as a quaternion'),
         ('translation', np.float32, (0, 0, 0), 1,
-         'Translation to be applied to the scene'),
+         'Internal: Translation to be applied to the scene'),
         ('outline', np.float32, 0, 0,
          'Outline width for shapes')
         ]))

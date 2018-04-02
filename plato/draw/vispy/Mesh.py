@@ -129,15 +129,15 @@ class Mesh(draw.Mesh, GLPrimitive):
 
     _GL_UNIFORMS = list(itertools.starmap(ShapeAttribute, [
         ('camera', np.float32, np.eye(4), 2,
-         '4x4 Camera matrix for world projection'),
+         'Internal: 4x4 Camera matrix for world projection'),
         ('ambientLight', np.float32, .25, 0,
-         'Ambient (minimum) light level for all surfaces'),
+         'Internal: Ambient (minimum) light level for all surfaces'),
         ('diffuseLight', np.float32, (.5, .5, .5), 1,
-         'Diffuse light direction*magnitude'),
+         'Internal: Diffuse light direction*magnitude'),
         ('rotation', np.float32, (1, 0, 0, 0), 1,
-         'Rotation to be applied to each scene as a quaternion'),
+         'Internal: Rotation to be applied to each scene as a quaternion'),
         ('translation', np.float32, (0, 0, 0), 1,
-         'Translation to be applied to the scene'),
+         'Internal: Translation to be applied to the scene'),
         ('light_levels', np.float32, 0, 0,
          'Number of light levels to quantize to (0: disable)')
         ]))
