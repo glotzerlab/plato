@@ -26,6 +26,14 @@ class Shape:
         for name in kwargs:
             setattr(self, name, kwargs[name])
 
+    def __setattr__(self, name, value):
+        try:
+            if not name.startswith('_') and name not in self._ATTRIBUTES_BY_NAME:
+                self._attributes[name] = value
+        except AttributeError:
+            pass
+        super(Shape, self).__setattr__(name, value)
+
     @classmethod
     def link(cls, other, share_redraw_state=True):
         """Causes this shape to share its data with another shape.
