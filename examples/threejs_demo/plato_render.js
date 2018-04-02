@@ -14,26 +14,26 @@ function fetchJSON(filename) {
   };
   httpRequest.open('GET', filename, true);
   httpRequest.send();
-};
+}
 
 let scene, camera, renderer, controls;
 
 function makeColor(c) {
   return new THREE.Color(c[0], c[1], c[2]);
-};
+}
 
 function makeVec3(v) {
   return new THREE.Vector3(v[0], v[1], v[2]);
-};
+}
 
 function makeFace3(f) {
   return new THREE.Face3(f[0], f[1], f[2]);
-};
+}
 
 function makeQuat(q) {
   // Converts from (w, x, y, z) to (x, y, z, w) order.
   return new THREE.Quaternion(q[1], q[2], q[3], q[0]);
-};
+}
 
 function flattenArray(arr) {
   // Reduces 2D array into a 1D array
@@ -42,7 +42,11 @@ function flattenArray(arr) {
 
 function makeFloatArray(arr) {
   return new Float32Array(flattenArray(arr));
-};
+}
+
+function makeBufferAttribute(arr, width=3) {
+  return new THREE.Float32BufferAttribute(flattenArray(arr), width);
+}
 
 function drawScene(jsonscene) {
   scene = new THREE.Scene();
@@ -98,7 +102,7 @@ function drawScene(jsonscene) {
     } else if (prim.class == 'Mesh') {
       const geometry = new THREE.BufferGeometry();
       geometry.setIndex(flattenArray(pa.indices));
-      geometry.addAttribute('position', new THREE.BufferAttribute(makeFloatArray(pa.vertices), 3));
+      geometry.addAttribute('position', makeBufferAttribute(pa.vertices));
       for (const color of pa.colors) {
         const material = new THREE.MeshPhongMaterial({color: makeColor(color)});
         const shape = new THREE.Mesh(geometry, material);
@@ -140,7 +144,7 @@ function drawScene(jsonscene) {
 
   window.addEventListener( 'resize', onWindowResize, false );
   render();
-};
+}
 
 function onWindowResize() {
   camera.aspect = window.innerWidth / window.innerHeight;
@@ -148,15 +152,15 @@ function onWindowResize() {
   renderer.setSize( window.innerWidth, window.innerHeight );
   controls.handleResize();
   render();
-};
+}
 
 function animate() {
   requestAnimationFrame( animate );
   controls.update();
-};
+}
 
 function render() {
   renderer.render( scene, camera );
-};
+}
 
 fetchJSON('3.json');
