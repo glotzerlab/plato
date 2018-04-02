@@ -185,10 +185,18 @@ def many_3d_primitives(seed=15, num_particles=3):
 @register_scene
 def sphere_points(seed=14, num_points=128):
     np.random.seed(seed)
-    positions = np.random.uniform(-3, 3, (num_points, 3))
+    phi = .5*(1 + np.sqrt(5))
+    # vertices of a regular dodecahedron
+    vertices = np.array(list(itertools.product(*(3*[[-1, 1]])))).tolist()
+    for (i, x, y) in itertools.product(range(3), [-phi, phi], [-1/phi, 1/phi]):
+        vertices.append(np.roll([0, x, y], i))
+
+    positions = np.concatenate([v + np.random.normal(scale=1e-1, size=(num_points, 3))
+                                for v in vertices], axis=0)
 
     prim = draw.SpherePoints(points=positions, blur=10, intensity=1e3)
     features = dict(ambient_light=.25, directional_light=dict(lights=(-.1, -.15, -1)),
                     additive_rendering=dict(invert=True))
-    scene = draw.Scene(prim, zoom=10, features=features)
+    rotation = [ 0.7696833 ,  0.27754638,  0.4948657 , -0.29268363]
+    scene = draw.Scene(prim, zoom=10, features=features, rotation=rotation)
     return scene
