@@ -127,5 +127,6 @@ def GLShapeDecorator(cls):
     if cls.__doc__ is None:
         cls.__doc__ = ''
 
-    cls.__doc__ += '\n'.join(attribute_doc_lines)
+    if len(attribute_doc_lines) > 1:
+        cls.__doc__ += '\n'.join(attribute_doc_lines)
     return cls
