@@ -1,8 +1,3 @@
-.. plato documentation master file, created by
-   sphinx-quickstart on Wed Aug 19 14:29:53 2015.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
-
 =================================
 Welcome to plato's documentation!
 =================================
@@ -13,11 +8,11 @@ of it sort of like matplotlib, but being less focused on 2D plotting.
 Installation
 ============
 
-You can install plato like this::
+You can install plato from source like this::
 
    $ git clone https://bitbucket.org/glotzer/plato.git
    $ # now install
-   $ cd plato && pip install --user
+   $ cd plato && python setup.py install --user
 
 .. note::
 
