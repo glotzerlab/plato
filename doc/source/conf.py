@@ -15,6 +15,7 @@
 
 import importlib
 import sys
+from unittest.mock import MagicMock
 import os
 import shlex
 
@@ -23,6 +24,11 @@ import shlex
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 sys.path.insert(0, os.path.abspath('../..'))
 import plato
+
+class Mock(MagicMock):
+    @classmethod
+    def __getattr__(cls, name):
+        return MagicMock()
 
 # -- General configuration ------------------------------------------------
 
@@ -40,6 +46,8 @@ extensions = [
 ]
 
 autodoc_mock_imports = ['matplotlib', 'numpy', 'scipy', 'vispy']
+
+sys.modules.update((mod_name, Mock()) for mod_name in autodoc_mock_imports)
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
