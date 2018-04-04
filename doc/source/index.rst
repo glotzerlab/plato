@@ -35,9 +35,8 @@ The documentation is available as standard sphinx documentation::
   $ cd doc
   $ make html
 
-Manually-built versions are also uploaded periodically to
-https://bitbucket.org/glotzer/plato/downloads/plato.pdf as well as
-http://glotzerlab.engin.umich.edu/plato/ .
+Automatically-built documentation is available at
+https://plato-draw.readthedocs.io .
 
 Contents:
 =========
