@@ -45,6 +45,9 @@ Contents:
    :maxdepth: 2
 
    primitives
+   matplotlib
+   povray
+   vispy
 
 Indices and tables
 ==================
