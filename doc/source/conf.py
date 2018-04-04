@@ -22,8 +22,9 @@ import shlex
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
+with open('../../plato/version.py') as version_file:
+    exec(version_file.read())
 sys.path.insert(0, os.path.abspath('../..'))
-import plato
 
 class Mock(MagicMock):
     @classmethod
@@ -45,7 +46,7 @@ extensions = [
     'sphinx.ext.viewcode',
 ]
 
-autodoc_mock_imports = ['matplotlib', 'numpy', 'scipy', 'vispy']
+autodoc_mock_imports = ['matplotlib', 'scipy', 'vispy']
 
 sys.modules.update((mod_name, Mock()) for mod_name in autodoc_mock_imports)
 
@@ -73,7 +74,7 @@ author = 'Matthew Spellings'
 # built documents.
 #
 # The short X.Y version.
-version = plato.__version__
+version = __version__
 # The full version, including alpha/beta/rc tags.
 release = version
 
