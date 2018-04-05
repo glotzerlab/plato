@@ -216,3 +216,22 @@ def lines_cube():
     features = dict(ambient_light=.25, directional_light=dict(lights=(-.1, -.15, -1)))
     rotation = [ 9.9774611e-01,  2.3801494e-02, -6.2734932e-02,  5.5756618e-04]
     return draw.Scene(prim, features=features, rotation=rotation, zoom=11)
+
+@register_scene
+def disks_and_lines():
+    thetas = np.linspace(0, 2*np.pi, 6, endpoint=False)
+    extra_positions = np.array([np.cos(thetas), np.sin(thetas)]).T*1.1
+    positions = np.array([[0, 0]] + extra_positions.tolist())
+    colors = np.tile([[.25, .25, .8, 1]], (len(positions), 1))
+    diameters = np.ones((len(positions),))
+
+    prim1 = draw.Disks(positions=positions, colors=colors, diameters=diameters)
+
+    positions_3d = np.pad(positions, ((0, 0), (0, 1)), 'constant')
+
+    colors = np.tile([[.1, .1, .1, 1]], (6, 1))
+    prim2 = draw.Lines(start_points=np.tile(positions_3d[:1], (6, 1)),
+                       end_points=positions_3d[1:],
+                       widths=np.ones((6,))*.25, colors=colors)
+
+    return draw.Scene([prim1, prim2], zoom=10)
