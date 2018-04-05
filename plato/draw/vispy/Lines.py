@@ -87,7 +87,7 @@ class Lines(draw.Lines, GLPrimitive):
        {
            vec4 color = v_color;
            vec3 normal = v_normal;
-           normal.z = 1.0 - dot(normal, normal);
+           normal.z = sqrt(1.0 - dot(normal, normal));
            float light = max(0.0, -dot(normal, diffuseLight));
            light += ambientLight;
            color.xyz *= light;
