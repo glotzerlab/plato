@@ -14,13 +14,13 @@ class Lines(draw.Lines):
         end_points = pmath.quatrot(rotation[np.newaxis, :], self.end_points)
 
         for (start, end, width, color, a) in zip(start_points,
-                                                     end_points,
-                                                     self.widths/2,
-                                                     self.colors[:, :3],
-                                                     1 - self.colors[:, 3]):
+                                                 end_points,
+                                                 self.widths/2,
+                                                 self.colors[:, :3],
+                                                 1 - self.colors[:, 3]):
             args = start.tolist() + end.tolist() + [width] + \
                    color.tolist() + [a]
             lines.append('cylinder {{<{},{},{}> <{},{},{}> {} pigment {{color '
-                         '<{},{},{}> transmit {}}} no_shadow}}'.format(*args))
+                         '<{},{},{}> transmit {}}} }}'.format(*args))
 
         return lines

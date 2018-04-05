@@ -200,3 +200,19 @@ def sphere_points(seed=14, num_points=128):
     rotation = [ 0.7696833 ,  0.27754638,  0.4948657 , -0.29268363]
     scene = draw.Scene(prim, zoom=10, features=features, rotation=rotation)
     return scene
+
+@register_scene
+def lines_cube():
+    vertices = np.array(list(itertools.product(*(3*[[-1, 1]]))), dtype=np.float32)
+    edge_indices = np.array([0, 1, 1, 3, 3, 2, 2, 0, 0, 4, 1, 5, 3, 7, 2, 6, 4,
+                             5, 5, 7, 7, 6, 6, 4], dtype=np.uint32).reshape((12, 2))
+    widths = np.ones((12,))*.1
+    colors = plato.cmap.cubehelix(edge_indices[:, 0].astype(np.float32)/8)
+
+    prim = draw.Lines(start_points=vertices[edge_indices[:, 0]],
+                      end_points=vertices[edge_indices[:, 1]],
+                      widths=widths, colors=colors)
+
+    features = dict(ambient_light=.25, directional_light=dict(lights=(-.1, -.15, -1)))
+    rotation = [ 9.9774611e-01,  2.3801494e-02, -6.2734932e-02,  5.5756618e-04]
+    return draw.Scene(prim, features=features, rotation=rotation, zoom=11)
