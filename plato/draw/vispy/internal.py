@@ -63,10 +63,12 @@ class GLPrimitive:
                     reshaped = self._gl_vertex_arrays[name]
                     reshaped = reshaped.reshape((-1, reshaped.shape[-1]))
                     program[name] = reshaped[scat]
+        self._dirty_vertex_attribs.clear()
 
         for name in self._dirty_uniforms:
             for program in itertools.chain(*self._all_program_sets):
                 program[name] = self._gl_uniforms[name]
+        self._dirty_uniforms.clear()
 
         for (program, (_, buf)) in zip(programs, self._gl_vertex_arrays['indices']):
             program.draw('triangles', indices=buf)

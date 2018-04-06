@@ -146,10 +146,12 @@ class SpherePoints(draw.SpherePoints, GLPrimitive):
                 reshaped = self._gl_vertex_arrays[name]
                 reshaped = reshaped.reshape((-1, reshaped.shape[-1]))
                 program[name] = reshaped
+        self._dirty_vertex_attribs.clear()
 
         for name in self._dirty_uniforms:
             for program in itertools.chain(*self._all_program_sets):
                 program[name] = self._gl_uniforms[name]
+        self._dirty_uniforms.clear()
 
         for program in programs:
             program.draw('points')
