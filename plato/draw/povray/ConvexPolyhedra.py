@@ -17,6 +17,7 @@ class ConvexPolyhedra(draw.ConvexPolyhedra):
 
     def render(self, rotation=(1, 0, 0, 0), name_suffix='', **kwargs):
         rotation = np.asarray(rotation)
+        quat_magnitude = np.linalg.norm(self.orientations, axis=-1, keepdims=True)
 
         lines = []
 
@@ -37,7 +38,7 @@ class ConvexPolyhedra(draw.ConvexPolyhedra):
             lines.append(shapedef)
 
             qs = pmath.quatquat(rotation[np.newaxis, :],
-                                self.orientations.copy())
+                                self.orientations/quat_magnitude)
             rotmat = np.array([[1 - 2*qs[:, 2]**2 - 2*qs[:, 3]**2,
                                 2*(qs[:, 1]*qs[:, 2] - qs[:, 3]*qs[:, 0]),
                                 2*(qs[:, 1]*qs[:, 3] + qs[:, 2]*qs[:, 0])],
@@ -48,14 +49,15 @@ class ConvexPolyhedra(draw.ConvexPolyhedra):
                                 2*(qs[:, 1]*qs[:, 0] + qs[:, 2]*qs[:, 3]),
                                 1 - 2*qs[:, 1]**2 - 2*qs[:, 2]**2]])
             rotmat = rotmat.transpose([2, 1, 0]).reshape((-1, 9))
+            rotmat[:] *= quat_magnitude[:, 0, np.newaxis]**2
 
             positions = pmath.quatrot(rotation[np.newaxis, :], self.positions)
 
-            for (p, m) in zip(positions, rotmat):
-                args = [shapeName] + m.tolist() + p.tolist()
+            for (p, m, a) in zip(positions, rotmat, 1 - self.colors[:, 3]):
+                args = [shapeName] + m.tolist() + p.tolist() + [0, 0, 0, a]
                 lines.append('object {{{} matrix <{},{},{},{},{},{},{},{},{},'
-                             '{},{},{}> pigment {{color <{},{},{}>}}}}'.format(
-                                 *tuple(args) + (0,0,0)))
+                             '{},{},{}> pigment {{color <{},{},{}> transmit {} }}}}'.format(
+                                 *args))
 
         mesh = pmesh.convexPolyhedronMesh(self.vertices)
         meshStr = 'mesh2 {{vertex_vectors {{{} {}}} ' \
@@ -68,7 +70,7 @@ class ConvexPolyhedra(draw.ConvexPolyhedra):
         shapedef = '#declare {} = {}'.format(shapeName, meshStr)
         lines.append(shapedef)
 
-        qs = pmath.quatquat(rotation[np.newaxis, :], self.orientations.copy())
+        qs = pmath.quatquat(rotation[np.newaxis, :], self.orientations/quat_magnitude)
         rotmat = np.array([[1 - 2*qs[:, 2]**2 - 2*qs[:, 3]**2,
                             2*(qs[:, 1]*qs[:, 2] - qs[:, 3]*qs[:, 0]),
                             2*(qs[:, 1]*qs[:, 3] + qs[:, 2]*qs[:, 0])],
@@ -79,6 +81,7 @@ class ConvexPolyhedra(draw.ConvexPolyhedra):
                             2*(qs[:, 1]*qs[:, 0] + qs[:, 2]*qs[:, 3]),
                             1 - 2*qs[:, 1]**2 - 2*qs[:, 2]**2]])
         rotmat = rotmat.transpose([2, 1, 0]).reshape((-1, 9))
+        rotmat *= quat_magnitude[:, 0, np.newaxis]**2
 
         positions = pmath.quatrot(rotation[np.newaxis, :], self.positions)
 
