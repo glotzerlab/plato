@@ -464,8 +464,18 @@ class Canvas(vispy.app.Canvas):
 
     def on_resize(self, event):
         size = event.size
+        reversed_size = tuple(size[::-1])
+
         self._scene.size_pixels = size
         self.set_current()
+        for name in self._fbos:
+            self._fbos[name].resize(reversed_size)
+
+        if 'fxaa' in self._scene._enabled_features:
+            self._programs['fxaa_post']['resolution'] = size
+        if 'ssao' in self._scene._enabled_features:
+            self._programs['ssao_post']['resolution'] = size
+
         vispy.gloo.set_viewport(0, 0, *size)
 
     def on_draw(self, *args, **kwargs):
