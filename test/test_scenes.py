@@ -49,7 +49,7 @@ def simple_2d(seed=13, num_particles=2):
     prim4.radius = .1
     prim4.positions = prim3.positions + (3, 2)
 
-    scene = draw.Scene([prim1, prim2, prim3, prim4], zoom=4, features=dict(pan=True))
+    scene = draw.Scene([prim2, prim3, prim4, prim1], zoom=4, features=dict(pan=True))
     return scene
 
 @register_scene
