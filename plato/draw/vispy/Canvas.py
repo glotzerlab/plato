@@ -85,7 +85,7 @@ _FRAGMENT_SHADERS['post_translucency'] = """
        vec4 opaque = texture2D(tex_opaque, v_texcoord);
        vec4 accum = texture2D(tex_accumulation, v_texcoord);
        float r = texture2D(tex_revealage, v_texcoord).r;
-       vec4 translucent = vec4(accum.rgb / clamp(accum.a, 1e-5f, 5e4f), r);
+       vec4 translucent = vec4(accum.rgb / clamp(accum.a, 1e-5, 5e4), r);
        gl_FragColor = mix(opaque, translucent, 1.0 - translucent.a);
    }
    """
@@ -502,7 +502,7 @@ class Canvas(vispy.app.Canvas):
             with self._fbos['translucency_opaque']:
                 gloo.clear(color=clear_color)
                 for prim in self._scene._primitives:
-                    prim.render_color()
+                    prim.render_translucency(pass_=-1)
 
             with self._fbos['translucency_accum']:
                 gloo.clear(color=(0, 0, 0, 0), depth=False)
@@ -514,7 +514,7 @@ class Canvas(vispy.app.Canvas):
 
                 # Pass 1
                 for prim in self._scene._primitives:
-                    prim.render_translucency(pass_=0)
+                    prim.render_translucency(pass_=1)
 
             with self._fbos['translucency_reveal']:
                 gloo.clear(color=(1, 1, 1, 1), depth=False)
@@ -522,7 +522,7 @@ class Canvas(vispy.app.Canvas):
 
                 # Pass 2
                 for prim in self._scene._primitives:
-                    prim.render_translucency(pass_=1)
+                    prim.render_translucency(pass_=2)
 
             # Final compositing
             gloo.set_state(preset='opaque',
@@ -698,7 +698,7 @@ class Canvas(vispy.app.Canvas):
         corresponding to the argument as the options for the feature.
 
         Available features:
-        - translucency: Performs order independent transparency for all translucent primitives (each translucent primitive should have its `transparent` property set to True)
+        - translucency: Performs order independent transparency
         - outlines: Compute two-pass, cartoony-effect outlines based on rendered plane equations of the scene. Not recommended for use. Takes a parameter 'outline' that scales the size of the produced outlines.
         - fxaa: Performs fast approximate antialiasing. Particularly useful when other multipass features are enabled, which causes the default openGL multisampling antialiasing to be unavailable.
         - ssao: Computes simple ambient occlusion effects, which typically improve the sense of depth in scene lighting.
@@ -712,10 +712,6 @@ class Canvas(vispy.app.Canvas):
         for feature in features:
             params = param_features[feature] if feature in param_features else {}
             if feature == 'translucency':
-                if self._webgl:
-                    raise RuntimeWarning('Can\'t use transparency with webgl')
-                    continue
-
                 tex = self._textures['translucency_opaque'] = vispy.gloo.Texture2D(
                     shape=(size[1], size[0], 4) , format='rgba')
                 depth = self._textures['translucency_opaque_depth'] = vispy.gloo.RenderBuffer((size[1], size[0]))

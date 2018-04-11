@@ -16,6 +16,7 @@ class Lines(draw.Lines, GLPrimitive):
        uniform mat4 camera;
        uniform vec4 rotation;
        uniform vec3 translation;
+       uniform int transparency_mode;
 
        attribute vec4 color;
        attribute vec3 start_point;
@@ -64,7 +65,15 @@ class Lines(draw.Lines, GLPrimitive):
            delta.x *= camera[0][0];
            delta.y *= camera[1][1];
 
-           gl_Position = vec4(screenPos.xy + delta, screenPos.z, screenPos.w);
+           vec4 screenPosition = vec4(screenPos.xy + delta, screenPos.z, screenPos.w);
+
+           int should_discard = 0;
+           should_discard += int(transparency_mode < 0 && color.a < 1.0);
+           should_discard += int(transparency_mode > 0 && color.a >= 1.0);
+           if(should_discard > 0)
+               screenPosition = vec4(2.0, 2.0, 2.0, 2.0);
+
+           gl_Position = screenPosition;
            v_color = color;
            v_normal = normal;
            v_depth = vertexPos.z;
@@ -81,7 +90,7 @@ class Lines(draw.Lines, GLPrimitive):
        uniform float ambientLight;
        // (x, y, z) direction*intensity
        uniform vec3 diffuseLight;
-       uniform float u_pass;
+       uniform int transparency_mode;
 
        void main()
        {
@@ -92,22 +101,17 @@ class Lines(draw.Lines, GLPrimitive):
            light += ambientLight;
            color.xyz *= light;
 
-           #ifdef IS_TRANSPARENT
            float z = abs(v_depth);
            float alpha = color.a;
-           float weight = alpha * max(3.0*pow(10.0, 3.0)*pow((1-(gl_FragCoord.z)), 3.0f), 1e-2);
+           float weight = alpha*max(3e3*pow(
+               (1.0 - gl_FragCoord.z), 3.0), 1e-2);
 
-           if( u_pass < 0.5 )
-           {
-              gl_FragColor = vec4(color.rgb *alpha, alpha) * weight;
-           }
+           if(transparency_mode < 1)
+               gl_FragColor = vec4(color.xyz, color.w);
+           else if(transparency_mode == 1)
+               gl_FragColor = vec4(color.rgb*alpha, alpha)*weight;
            else
-           {
-              gl_FragColor = vec4(alpha);
-           }
-           #else
-           gl_FragColor = vec4(color.xyz, color.w);
-           #endif
+               gl_FragColor = vec4(alpha);
        }
        """
 
@@ -123,7 +127,10 @@ class Lines(draw.Lines, GLPrimitive):
         ('rotation', np.float32, (1, 0, 0, 0), 1,
          'Internal: Rotation to be applied to each scene as a quaternion'),
         ('translation', np.float32, (0, 0, 0), 1,
-         'Internal: Translation to be applied to the scene')
+         'Internal: Translation to be applied to the scene'),
+        ('transparency_mode', np.int32, 0, 0,
+         'Internal: Transparency stage (<0: opaque, 0: all, 1: '
+         'translucency stage 1, 2: translucency stage 2)')
         ]))
 
     def __init__(self, *args, **kwargs):

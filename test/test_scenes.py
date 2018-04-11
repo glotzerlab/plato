@@ -139,7 +139,8 @@ def convex_polyhedra(seed=16, num_particles=3):
     prim2.positions = -prim2.positions
 
     prims = [prim, prim2]
-    features = dict(ambient_light=.25, directional_light=(-.1, -.15, -1))
+    features = dict(ambient_light=.25, directional_light=(-.1, -.15, -1),
+                    translucency=True)
     scene = draw.Scene(prims, zoom=2, clip_scale=10, features=features)
     return scene
 
@@ -178,7 +179,8 @@ def many_3d_primitives(seed=15, num_particles=3):
     prim5 = draw.Mesh(vertices=vertices, indices=indices, colors=colors)
 
     prims = [prim, prim2, prim3, prim4, prim5]
-    features = dict(ambient_light=.25, directional_light=(-.1, -.15, -1))
+    features = dict(ambient_light=.25, directional_light=(-.1, -.15, -1),
+                    translucency=True)
     scene = draw.Scene(prims, zoom=5, clip_scale=10, features=features)
     return scene
 
