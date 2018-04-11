@@ -544,6 +544,10 @@ class Canvas(vispy.app.Canvas):
             with self._final_render_target:
                 self._programs['translucency_post'].draw('triangle_strip')
         elif 'outlines' in self._scene._enabled_features:
+            gloo.set_state(preset='opaque',
+                           depth_test=True,
+                           blend=False,
+                           depth_mask=True)
             with self._fbos['outlines_color']:
                 gloo.clear(color=True, depth=True)
                 for prim in self._scene._primitives:
