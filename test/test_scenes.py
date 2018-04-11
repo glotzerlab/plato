@@ -58,6 +58,7 @@ def voronoi_with_disks(seed=13, num_points=32):
 
     positions = np.random.uniform(-3, 3, (num_points, 2))
     colors = np.random.rand(num_points, 4)
+    colors[:, 3] = 1
     invbox = np.linalg.inv([[6, 0], [0, 6]])*2
 
     prim = draw.Voronoi(positions=positions, colors=colors, clip_extent=invbox)

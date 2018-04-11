@@ -493,9 +493,10 @@ class Canvas(vispy.app.Canvas):
                 gloo.set_blend_equation('func_add')
         else:
             gloo.set_state(preset='opaque',
-                                 depth_test=True,
-                                 blend=False,
-                                 depth_mask=True)
+                           depth_test=True,
+                           blend=True,
+                           depth_mask=True)
+            gloo.set_blend_func('src_alpha', 'one_minus_src_alpha')
         gloo.clear(color=clear_color, depth=True)
 
         if 'translucency' in self._scene._enabled_features:
