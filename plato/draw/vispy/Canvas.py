@@ -472,6 +472,7 @@ class Canvas(vispy.app.Canvas):
         self.set_current()
 
         clear_color = (1, 1, 1, 1)
+        gloo.set_depth_func('lequal')
         if 'additive_rendering' in self._scene._enabled_features:
             config = self._scene._enabled_features['additive_rendering']
 

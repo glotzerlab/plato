@@ -237,4 +237,4 @@ def disks_and_lines():
                        end_points=positions_3d[1:],
                        widths=np.ones((6,))*.25, colors=colors)
 
-    return draw.Scene([prim1, prim2], zoom=10)
+    return draw.Scene([prim2, prim1], zoom=10)
