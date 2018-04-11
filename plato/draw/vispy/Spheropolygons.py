@@ -60,16 +60,45 @@ class Spheropolygons(draw.Spheropolygons, GLPrimitive):
 
        void main()
        {
-           float lambda = 1.0;
+           float lambda1 = 1.0;
            float rsq = dot(v_imageDelta, v_imageDelta);
+           float r = sqrt(rsq);
 
-           if(rsq > radius*radius)
-               discard;
+           if(outline > 1e-6)
+           {
+               lambda1 = (radius - r)/outline;
+               lambda1 *= lambda1;
+               lambda1 *= lambda1;
+               lambda1 *= lambda1;
+               lambda1 *= lambda1;
+               lambda1 = min(lambda1, 1.0);
+           }
 
-           if(rsq > outline*outline)
-               lambda = 0.0;
+           float lambda2 = 1.0;
+           if(r > radius) discard;
+           else if(outline <= 1e-6)
+           {
+               lambda2 = r/radius;
+               lambda2 *= lambda2;
+               lambda2 *= lambda2;
+               lambda2 *= lambda2;
+               lambda2 *= lambda2;
+               lambda2 *= lambda2;
+               lambda2 *= lambda2;
+               lambda2 *= lambda2;
+               lambda2 = 1.0 - min(lambda2, 1.0);
+           }
+           else if(r > radius - outline)
+           {
+               lambda2 = (r - radius + outline)/outline;
+               lambda2 *= lambda2;
+               lambda2 *= lambda2;
+               lambda2 *= lambda2;
+               lambda2 *= lambda2;
+               lambda2 = 1.0 - min(lambda2, 1.0);
+           }
 
-           gl_FragColor = vec4(lambda*v_color.xyz, v_color.w);
+           gl_FragColor = vec4(lambda1*v_color.xyz, lambda2*v_color.w);
        }
        """
 
