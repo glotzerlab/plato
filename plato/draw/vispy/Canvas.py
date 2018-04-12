@@ -100,10 +100,11 @@ _FRAGMENT_SHADERS['post_outlines'] = """
 
    // pseudo random number from -1 to 1, with NSA-endorsed constants
    float rand(vec2 co, float delt){
-       return 2*(fract(sin(delt*1.0e3 + dot(co.xy, vec2(12.9898, 78.233))) * 43758.5453) - 0.5);
+       return 2.0*(fract(sin(delt*1.0e3 + dot(co.xy, vec2(12.9898, 78.233))) * 43758.5453) - 0.5);
    }
 
 #define PI 3.14159
+#define SAMPLES 8
 
    void main()
    {
@@ -113,15 +114,14 @@ _FRAGMENT_SHADERS['post_outlines'] = """
        vec4 planesHere = texture2D(planeTex, v_texcoord);
        vec4 delta = planesHere;
        vec2 texcoord_scale = vec2(outline)*vec2(camera[0][0], camera[1][1]);
-       int samples = 8;
        float dl = PI*(3.0-sqrt(5.0));
-       float dz = 1.0/float(samples);
+       float dz = 1.0/float(SAMPLES);
        float l = 0.0;
        float z = 1.0 - dz/2.0;
        float pw;
        float ph;
 
-       for (int i = 0; i <= samples; i ++)
+       for (int i = 0; i <= SAMPLES; i ++)
        {
            float r = sqrt(1.0-z);
 
@@ -133,7 +133,7 @@ _FRAGMENT_SHADERS['post_outlines'] = """
            l = l + dl;
        }
 
-       gamma /= samples;
+       gamma /= float(SAMPLES);
        gamma *= gamma;
 
        float light = 1.0/max(1.0, gamma);
@@ -751,10 +751,6 @@ class Canvas(vispy.app.Canvas):
                 self._programs['translucency_post']['tex_revealage'] = self._textures['translucency_reveal']
                 self._programs['translucency_post']['a_position'] = [(-1, -1), (-1, 1), (1, -1), (1, 1)]
             elif feature == 'outlines':
-                if self._webgl:
-                    raise RuntimeWarning('Can\'t use outlines with webgl')
-                    continue
-
                 self._programs['outlines_post'] = vispy.gloo.Program(
                     _VERTEX_SHADERS['post_outlines'],
                     _FRAGMENT_SHADERS['post_outlines'])
@@ -775,10 +771,6 @@ class Canvas(vispy.app.Canvas):
                 self._programs['outlines_post']['outline'] = params.get('value', .1)
                 self._programs['outlines_post']['a_position'] = [(-1, -1), (-1, 1), (1, -1), (1, 1)]
             elif feature == 'fxaa':
-                if self._webgl:
-                    raise RuntimeWarning('Can\'t use FXAA with webgl')
-                    continue
-
                 self._programs['fxaa_post'] = vispy.gloo.Program(
                     _VERTEX_SHADERS['post_fxaa'],
                     _FRAGMENT_SHADERS['post_fxaa'])
@@ -793,10 +785,6 @@ class Canvas(vispy.app.Canvas):
 
                 self._final_render_target = self._fbos['fxaa_target']
             elif feature == 'ssao':
-                if self._webgl:
-                    raise RuntimeWarning('Can\'t use SSAO with webgl')
-                    continue
-
                 self._programs['ssao_post'] = vispy.gloo.Program(
                     _VERTEX_SHADERS['post_ssao'],
                     _FRAGMENT_SHADERS['post_ssao'])
