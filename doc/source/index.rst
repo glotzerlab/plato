@@ -38,6 +38,15 @@ The documentation is available as standard sphinx documentation::
 Automatically-built documentation is available at
 https://plato-draw.readthedocs.io .
 
+Examples
+========
+
+Several usage examples are available. Many simple, but less
+interesting, scenes can be found in `the test demo scene script
+<https://bitbucket.org/glotzer/plato/src/master/test/test_scenes.py>`_. Somewhat
+less transparent examples can be found in `the plato-gallery
+repository <https://bitbucket.org/glotzer/plato-gallery>`_.
+
 Contents:
 =========
 
