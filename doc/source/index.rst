@@ -8,7 +8,11 @@ of it sort of like matplotlib, but being less focused on 2D plotting.
 Installation
 ============
 
-You can install plato from source like this::
+Plato is available on PyPI for installation via pip::
+
+  $ pip install plato-draw --user
+
+You can also install plato from source, like this::
 
    $ git clone https://bitbucket.org/glotzer/plato.git
    $ # now install
@@ -16,8 +20,8 @@ You can install plato from source like this::
 
 .. note::
 
-   If using conda or a virtualenv, the `--user` argument in the pip
-   command above is unnecessary.
+   If using conda or a virtualenv, the `--user` argument in the
+   commands above is unnecessary.
 
 Plato contains a number of backends, each with its own set of
 dependencies. Getting the vispy backend working for both the desktop
