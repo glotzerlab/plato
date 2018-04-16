@@ -595,6 +595,7 @@ class Canvas(vispy.app.Canvas):
                                depth_mask=False)
             self._programs['fxaa_post'].draw('triangle_strip')
 
+    def _update_linked_rotation_targets(self):
         if 'link_rotation' in self._scene._enabled_features:
             targets = self._scene._enabled_features['link_rotation']['targets']
             for target in targets:
@@ -688,6 +689,7 @@ class Canvas(vispy.app.Canvas):
             updated = True
 
         if updated:
+            self._update_linked_rotation_targets()
             self.update()
 
     def updateRotation(self, event, delta=(0,0), suppress=False):
@@ -705,6 +707,7 @@ class Canvas(vispy.app.Canvas):
             real = (self._scene.rotation[0]*quat[0] - np.dot(self._scene.rotation[1:], quat[1:]))
             imag = (self._scene.rotation[0]*quat[1:] + quat[0]*self._scene.rotation[1:] + np.cross(quat[1:], self._scene.rotation[1:]))
             self._scene.rotation = [real] + imag.tolist()
+            self._update_linked_rotation_targets()
             self.update()
 
     def _enable_feature(self, *features, **param_features):
