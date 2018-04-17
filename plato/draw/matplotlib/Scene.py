@@ -23,7 +23,7 @@ class Scene(draw.Scene):
         if axes is None:
             axes = figure.add_subplot(1, 1, 1)
 
-        kwargs = dict(translation=self.translation, rotation=self.rotation,
+        kwargs = dict(rotation=self.rotation,
                       size=self.size, pixel_scale=self.pixel_scale, zoom=self.zoom)
 
         if 'antialiasing' in self._enabled_features:
@@ -45,10 +45,11 @@ class Scene(draw.Scene):
             prim.render(axes, **kwargs)
 
         (width, height) = self.size.astype(np.float32)/self.zoom
+        (shift_x, shift_y, _) = -self.translation
         axes.set_xticks([])
         axes.set_yticks([])
-        axes.set_xlim(-width/2, width/2)
-        axes.set_ylim(-height/2, height/2)
+        axes.set_xlim(-width/2 + shift_x, width/2 + shift_x)
+        axes.set_ylim(-height/2 + shift_y, height/2 + shift_y)
         axes.set_aspect(1)
         return (figure, axes)
 
