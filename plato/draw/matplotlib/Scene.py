@@ -68,4 +68,4 @@ class Scene(draw.Scene):
         :param filename: target filename to save the image into
         """
         (figure, _) = self.render()
-        return figure.savefig(filename)
+        return figure.savefig(filename, dpi=figure.dpi)
