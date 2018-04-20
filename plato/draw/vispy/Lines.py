@@ -16,6 +16,7 @@ class Lines(draw.Lines, GLPrimitive):
        uniform mat4 camera;
        uniform vec4 rotation;
        uniform vec3 translation;
+       uniform int transparency_mode;
 
        attribute vec4 color;
        attribute vec3 start_point;
@@ -24,6 +25,7 @@ class Lines(draw.Lines, GLPrimitive):
        attribute float width;
 
        varying vec4 v_color;
+       varying vec3 v_normal;
        varying float v_depth;
 
        vec3 rotate(vec3 point, vec4 quat)
@@ -46,23 +48,34 @@ class Lines(draw.Lines, GLPrimitive):
            vec3 startPos = rotate(start_point, rotation) + translation;
            vec3 endPos = rotate(end_point, rotation) + translation;
 
+           vec3 deltaPos = endPos - startPos;
+
            vec3 vertexPos = (startPos + endPos)/2.0;
            vertexPos = rotate(vertexPos, rotation) + translation;
 
-           vec4 startScreenPosition = camera * vec4(startPos, 1.0);
-           vec4 endScreenPosition = camera * vec4(endPos, 1.0);
+           vec4 startScreenPos = camera * vec4(startPos, 1.0);
+           vec4 endScreenPos = camera * vec4(endPos, 1.0);
 
-           vec4 screenPosition = (1.0 - image.y)*startScreenPosition + image.y*endScreenPosition;
+           vec4 screenPos = (1.0 - image.y)*startScreenPos + image.y*endScreenPos;
 
-           vec2 realDisplacement = vec2(endScreenPosition.x - startScreenPosition.x, endScreenPosition.y - startScreenPosition.y);
-           vec2 normDisplacement = normalize(realDisplacement);
+           vec2 normDisplacement = normalize(deltaPos.xy);
            vec2 delta = vec2(normDisplacement.y, -normDisplacement.x)*width*image.x;
+           vec3 normal = normalize(cross(deltaPos, vec3(delta, 0.0)));
 
            delta.x *= camera[0][0];
            delta.y *= camera[1][1];
 
-           gl_Position = vec4(screenPosition.xy + delta, screenPosition.z, screenPosition.w);
+           vec4 screenPosition = vec4(screenPos.xy + delta, screenPos.z, screenPos.w);
+
+           int should_discard = 0;
+           should_discard += int(transparency_mode < 0 && color.a < 1.0);
+           should_discard += int(transparency_mode > 0 && color.a >= 1.0);
+           if(should_discard > 0)
+               screenPosition = vec4(2.0, 2.0, 2.0, 2.0);
+
+           gl_Position = screenPosition;
            v_color = color;
+           v_normal = normal;
            v_depth = vertexPos.z;
        }
 
@@ -71,27 +84,34 @@ class Lines(draw.Lines, GLPrimitive):
     shaders['fragment'] = """
 
        varying vec4 v_color;
+       varying vec3 v_normal;
        varying float v_depth;
-       uniform float u_pass;
+       // base light level
+       uniform float ambientLight;
+       // (x, y, z) direction*intensity
+       uniform vec3 diffuseLight;
+       uniform int transparency_mode;
 
        void main()
        {
-           #ifdef IS_TRANSPARENT
-           float z = abs(v_depth);
-           float alpha = v_color.a;
-           float weight = alpha * max(3.0*pow(10.0, 3.0)*pow((1-(gl_FragCoord.z)), 3.0f), 1e-2);
+           vec4 color = v_color;
+           vec3 normal = v_normal;
+           normal.z = sqrt(1.0 - dot(normal, normal));
+           float light = max(0.0, -dot(normal, diffuseLight));
+           light += ambientLight;
+           color.xyz *= light;
 
-           if( u_pass < 0.5 )
-           {
-              gl_FragColor = vec4(v_color.rgb *alpha, alpha) * weight;
-           }
+           float z = abs(v_depth);
+           float alpha = color.a;
+           float weight = alpha*max(3e3*pow(
+               (1.0 - gl_FragCoord.z), 3.0), 1e-2);
+
+           if(transparency_mode < 1)
+               gl_FragColor = vec4(color.xyz, color.w);
+           else if(transparency_mode == 1)
+               gl_FragColor = vec4(color.rgb*alpha, alpha)*weight;
            else
-           {
-              gl_FragColor = vec4(alpha);
-           }
-           #else
-           gl_FragColor = vec4(v_color.xyz, v_color.w);
-           #endif
+               gl_FragColor = vec4(alpha);
        }
        """
 
@@ -99,11 +119,18 @@ class Lines(draw.Lines, GLPrimitive):
 
     _GL_UNIFORMS = list(itertools.starmap(ShapeAttribute, [
         ('camera', np.float32, np.eye(4), 2,
-         '4x4 Camera matrix for world projection'),
+         'Internal: 4x4 Camera matrix for world projection'),
+        ('ambientLight', np.float32, .25, 0,
+         'Internal: Ambient (minimum) light level for all surfaces'),
+        ('diffuseLight', np.float32, (.5, .5, .5), 1,
+         'Internal: Diffuse light direction*magnitude'),
         ('rotation', np.float32, (1, 0, 0, 0), 1,
-         'Rotation to be applied to each scene as a quaternion'),
+         'Internal: Rotation to be applied to each scene as a quaternion'),
         ('translation', np.float32, (0, 0, 0), 1,
-         'Translation to be applied to the scene')
+         'Internal: Translation to be applied to the scene'),
+        ('transparency_mode', np.int32, 0, 0,
+         'Internal: Transparency stage (<0: opaque, 0: all, 1: '
+         'translucency stage 1, 2: translucency stage 2)')
         ]))
 
     def __init__(self, *args, **kwargs):

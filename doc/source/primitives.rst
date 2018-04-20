@@ -41,6 +41,9 @@ Base Drawing Module
 2D Graphics Primitives
 ----------------------
 
+.. autoclass:: Arrows2D
+   :members:
+
 .. autoclass:: Disks
    :members:
 
@@ -48,9 +51,6 @@ Base Drawing Module
    :members:
 
 .. autoclass:: Spheropolygons
-   :members:
-
-.. autoclass:: Arrows2D
    :members:
 
 .. autoclass:: Voronoi
@@ -59,7 +59,10 @@ Base Drawing Module
 3D Graphics Primitives
 ----------------------
 
-.. autoclass:: Spheres
+.. autoclass:: ConvexPolyhedra
+   :members:
+
+.. autoclass:: ConvexSpheropolyhedra
    :members:
 
 .. autoclass:: Lines
@@ -68,88 +71,8 @@ Base Drawing Module
 .. autoclass:: Mesh
    :members:
 
-.. autoclass:: ConvexPolyhedra
-   :members:
-
-.. autoclass:: ConvexSpheropolyhedra
-   :members:
-
 .. autoclass:: SpherePoints
    :members:
-
-Vispy Backend
-=============
-
-.. automodule:: plato.draw.vispy
-
-.. autoclass:: Scene
-   :members:
-
-2D Graphics Primitives
-----------------------
-
-.. autoclass:: Disks
-   :members:
-
-.. autoclass:: Polygons
-   :members:
-
-.. autoclass:: Spheropolygons
-   :members:
-
-.. autoclass:: Arrows2D
-   :members:
-
-.. autoclass:: Voronoi
-   :members:
-
-3D Graphics Primitives
-----------------------
 
 .. autoclass:: Spheres
-   :members:
-
-.. autoclass:: Lines
-   :members:
-
-.. autoclass:: Mesh
-   :members:
-
-.. autoclass:: ConvexPolyhedra
-   :members:
-
-.. autoclass:: ConvexSpheropolyhedra
-   :members:
-
-.. autoclass:: SpherePoints
-   :members:
-
-
-Matplotlib Backend
-==================
-
-.. automodule:: plato.draw.matplotlib
-
-.. autoclass:: Scene
-   :members:
-
-2D Graphics Primitives
-----------------------
-
-.. autoclass:: Arrows2D
-   :members:
-
-.. autoclass:: Disks
-   :members:
-
-.. autoclass:: Polygons
-   :members:
-
-.. autoclass:: Spheropolygons
-   :members:
-
-3D Graphics Primitives
-----------------------
-
-.. autoclass:: SpherePoints
    :members:

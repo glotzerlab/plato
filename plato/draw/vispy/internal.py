@@ -63,10 +63,13 @@ class GLPrimitive:
                     reshaped = self._gl_vertex_arrays[name]
                     reshaped = reshaped.reshape((-1, reshaped.shape[-1]))
                     program[name] = reshaped[scat]
+        self._dirty_vertex_attribs.clear()
 
         for name in self._dirty_uniforms:
             for program in itertools.chain(*self._all_program_sets):
-                program[name] = self._gl_uniforms[name]
+                if name in program:
+                    program[name] = self._gl_uniforms[name]
+        self._dirty_uniforms.clear()
 
         for (program, (_, buf)) in zip(programs, self._gl_vertex_arrays['indices']):
             program.draw('triangles', indices=buf)
@@ -83,6 +86,15 @@ class GLPrimitive:
         self._gl_uniforms['render_positions'] = 1
         self._dirty_uniforms.add('render_positions')
         self.render_generic(self._plane_programs, self.make_plane_program)
+
+    def render_translucency(self, pass_=0):
+        try:
+            self._gl_uniforms['transparency_mode'] = pass_
+            self._dirty_uniforms.add('transparency_mode')
+            self.render_generic(self._color_programs, self.make_color_program)
+        finally:
+            self._gl_uniforms['transparency_mode'] = 0
+            self._dirty_uniforms.add('transparency_mode')
 
     def _finalize_array_updates(self, indices, vertex_arrays):
         indexDtype = np.uint16 if self._webgl else np.uint32
@@ -127,5 +139,6 @@ def GLShapeDecorator(cls):
     if cls.__doc__ is None:
         cls.__doc__ = ''
 
-    cls.__doc__ += '\n'.join(attribute_doc_lines)
+    if len(attribute_doc_lines) > 1:
+        cls.__doc__ += '\n'.join(attribute_doc_lines)
     return cls

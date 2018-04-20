@@ -13,10 +13,15 @@ class Scene(draw.Scene):
 
     * *antialiasing*: Enable antialiasing using the given value (default 0.3).
     * *ambient_light*: Enable trivial ambient lighting. The given value indicates the magnitude of the light (in [0, 1]).
+    * *directional_light*: Add directional lights. The given value indicates the magnitude*direction normal vector.
     * *multithreading*: Enable multithreaded rendering. The given value indicates the number of threads to use.
     """
 
     def render(self):
+        """Render all the shapes in this scene.
+
+        :returns: povray string representing the entire scene
+        """
         lines = []
 
         background = (1, 1, 1)
@@ -100,6 +105,7 @@ class Scene(draw.Scene):
         return result
 
     def show(self):
+        """Render the scene to an image and display using ipython."""
         import IPython.display
 
         with tempfile.NamedTemporaryFile(suffix='.png') as temp:
@@ -107,6 +113,10 @@ class Scene(draw.Scene):
             return IPython.display.Image(filename=temp.name)
 
     def save(self, filename):
+        """Save the scene, either as povray source or a rendered image.
+
+        :param filename: target filename to save the result into. If filename ends in .pov, save the povray source, otherwise call povray to render the image
+        """
         (width, height) = self.size_pixels
         povstring = self.render()
 

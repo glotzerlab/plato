@@ -60,16 +60,45 @@ class Spheropolygons(draw.Spheropolygons, GLPrimitive):
 
        void main()
        {
-           float lambda = 1.0;
+           float lambda1 = 1.0;
            float rsq = dot(v_imageDelta, v_imageDelta);
+           float r = sqrt(rsq);
 
-           if(rsq > radius*radius)
-               discard;
+           if(outline > 1e-6)
+           {
+               lambda1 = (radius - r)/outline;
+               lambda1 *= lambda1;
+               lambda1 *= lambda1;
+               lambda1 *= lambda1;
+               lambda1 *= lambda1;
+               lambda1 = min(lambda1, 1.0);
+           }
 
-           if(rsq > outline*outline)
-               lambda = 0.0;
+           float lambda2 = 1.0;
+           if(r > radius) discard;
+           else if(outline <= 1e-6)
+           {
+               lambda2 = r/radius;
+               lambda2 *= lambda2;
+               lambda2 *= lambda2;
+               lambda2 *= lambda2;
+               lambda2 *= lambda2;
+               lambda2 *= lambda2;
+               lambda2 *= lambda2;
+               lambda2 *= lambda2;
+               lambda2 = 1.0 - min(lambda2, 1.0);
+           }
+           else if(r > radius - outline)
+           {
+               lambda2 = (r - radius + outline)/outline;
+               lambda2 *= lambda2;
+               lambda2 *= lambda2;
+               lambda2 *= lambda2;
+               lambda2 *= lambda2;
+               lambda2 = 1.0 - min(lambda2, 1.0);
+           }
 
-           gl_FragColor = vec4(lambda*v_color.xyz, v_color.w);
+           gl_FragColor = vec4(lambda1*v_color.xyz, lambda2*v_color.w);
        }
        """
 
@@ -77,11 +106,11 @@ class Spheropolygons(draw.Spheropolygons, GLPrimitive):
 
     _GL_UNIFORMS = list(itertools.starmap(ShapeAttribute, [
         ('camera', np.float32, np.eye(4), 2,
-         '4x4 Camera matrix for world projection'),
+         'Internal: 4x4 Camera matrix for world projection'),
         ('rotation', np.float32, (1, 0, 0, 0), 1,
-         'Rotation to be applied to each scene as a quaternion'),
+         'Internal: Rotation to be applied to each scene as a quaternion'),
         ('translation', np.float32, (0, 0, 0), 1,
-         'Translation to be applied to the scene'),
+         'Internal: Translation to be applied to the scene'),
         ('outline', np.float32, 0, 0,
          'Outline width for shapes'),
         ('radius', np.float32, 0, 0,

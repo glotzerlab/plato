@@ -16,6 +16,7 @@ class Spheres(draw.Spheres, GLPrimitive):
        uniform mat4 camera;
        uniform vec4 rotation;
        uniform vec3 translation;
+       uniform int transparency_mode;
 
        attribute vec4 color;
        attribute vec3 position;
@@ -43,6 +44,12 @@ class Spheres(draw.Spheres, GLPrimitive):
            vertexPos = rotate(vertexPos, rotation) + vec3(localPos, 0.0) + translation;
            vec4 screenPosition = camera * vec4(vertexPos, 1.0);
 
+           int should_discard = 0;
+           should_discard += int(transparency_mode < 0 && color.a < 1.0);
+           should_discard += int(transparency_mode > 0 && color.a >= 1.0);
+           if(should_discard > 0)
+               screenPosition = vec4(2.0, 2.0, 2.0, 2.0);
+
            // transform to screen coordinates
            gl_Position = screenPosition;
            v_color = color;
@@ -58,7 +65,7 @@ class Spheres(draw.Spheres, GLPrimitive):
        uniform float ambientLight;
        // (x, y, z) direction*intensity
        uniform vec3 diffuseLight;
-       uniform float u_pass;
+       uniform int transparency_mode;
        uniform mat4 camera;
        uniform float light_levels;
 
@@ -93,23 +100,17 @@ class Spheres(draw.Spheres, GLPrimitive):
                camera[2][3]*depth + camera[3][3])/(camera[2][3]*depth + camera[3][3]);
            #endif
 
-           #ifdef IS_TRANSPARENT
            float z = abs(v_depth);
            float alpha = v_color.a;
-           float weight = alpha * max(3.0*pow(10.0, 3.0)*pow((1-(gl_FragCoord.z)), 3.0f), 1e-2);
+           float weight = alpha*max(3e3*pow(
+               (1.0 - gl_FragCoord.z), 3.0), 1e-2);
 
-           if( u_pass < 0.5 )
-           {
-              gl_FragColor = vec4(v_color.rgb *alpha * light, alpha) * weight;
-           }
+           if(transparency_mode < 1)
+               gl_FragColor = vec4(v_color.xyz*light, v_color.w);
+           else if(transparency_mode == 1)
+               gl_FragColor = vec4(v_color.rgb*alpha*light, alpha)*weight;
            else
-           {
-              gl_FragColor = vec4(alpha);
-           }
-           #else
-           gl_FragColor = vec4(v_color.xyz*light, v_color.w);
-           #endif
-
+               gl_FragColor = vec4(alpha);
        }
        """
 
@@ -155,15 +156,18 @@ class Spheres(draw.Spheres, GLPrimitive):
 
     _GL_UNIFORMS = list(itertools.starmap(ShapeAttribute, [
         ('camera', np.float32, np.eye(4), 2,
-         '4x4 Camera matrix for world projection'),
+         'Internal: 4x4 Camera matrix for world projection'),
         ('ambientLight', np.float32, .25, 0,
-         'Ambient (minimum) light level for all surfaces'),
+         'Internal: Ambient (minimum) light level for all surfaces'),
         ('diffuseLight', np.float32, (.5, .5, .5), 1,
-         'Diffuse light direction*magnitude'),
+         'Internal: Diffuse light direction*magnitude'),
         ('rotation', np.float32, (1, 0, 0, 0), 1,
-         'Rotation to be applied to each scene as a quaternion'),
+         'Internal: Rotation to be applied to each scene as a quaternion'),
         ('translation', np.float32, (0, 0, 0), 1,
-         'Translation to be applied to the scene'),
+         'Internal: Translation to be applied to the scene'),
+        ('transparency_mode', np.int32, 0, 0,
+         'Internal: Transparency stage (<0: opaque, 0: all, 1: '
+         'translucency stage 1, 2: translucency stage 2)'),
         ('light_levels', np.float32, 0, 0,
          'Number of light levels to quantize to (0: disable)')
         ]))

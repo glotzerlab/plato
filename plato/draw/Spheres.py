@@ -25,4 +25,4 @@ class Spheres(Shape):
 
     @diameters.setter
     def diameters(self, value):
-        self.radii = 0.5*value
+        self.radii = 0.5*np.atleast_1d(value)

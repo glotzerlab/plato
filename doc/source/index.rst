@@ -1,8 +1,3 @@
-.. plato documentation master file, created by
-   sphinx-quickstart on Wed Aug 19 14:29:53 2015.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
-
 =================================
 Welcome to plato's documentation!
 =================================
@@ -13,16 +8,20 @@ of it sort of like matplotlib, but being less focused on 2D plotting.
 Installation
 ============
 
-You can install plato like this::
+Plato is available on PyPI for installation via pip::
+
+  $ pip install plato-draw --user
+
+You can also install plato from source, like this::
 
    $ git clone https://bitbucket.org/glotzer/plato.git
    $ # now install
-   $ cd plato && pip install --user
+   $ cd plato && python setup.py install --user
 
 .. note::
 
-   If using conda or a virtualenv, the `--user` argument in the pip
-   command above is unnecessary.
+   If using conda or a virtualenv, the `--user` argument in the
+   commands above is unnecessary.
 
 Plato contains a number of backends, each with its own set of
 dependencies. Getting the vispy backend working for both the desktop
@@ -40,9 +39,17 @@ The documentation is available as standard sphinx documentation::
   $ cd doc
   $ make html
 
-Manually-built versions are also uploaded periodically to
-https://bitbucket.org/glotzer/plato/downloads/plato.pdf as well as
-http://glotzerlab.engin.umich.edu/plato/ .
+Automatically-built documentation is available at
+https://plato-draw.readthedocs.io .
+
+Examples
+========
+
+Several usage examples are available. Many simple, but less
+interesting, scenes can be found in `the test demo scene script
+<https://bitbucket.org/glotzer/plato/src/master/test/test_scenes.py>`_. Somewhat
+less transparent examples can be found in `the plato-gallery
+repository <https://bitbucket.org/glotzer/plato-gallery>`_.
 
 Contents:
 =========
@@ -51,6 +58,9 @@ Contents:
    :maxdepth: 2
 
    primitives
+   matplotlib
+   povray
+   vispy
 
 Indices and tables
 ==================

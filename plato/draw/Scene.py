@@ -57,6 +57,9 @@ class Scene:
         for feature in features:
             config = features[feature]
             try:
+                if 'name' in config:
+                    raise ValueError('Feature parameters can\'t be named "name"')
+
                 self.enable(feature, **config)
             except TypeError: # config is not of a mapping type
                 self.enable(feature, value=config)
@@ -135,6 +138,20 @@ class Scene:
             if strict:
                 raise
 
+    @property
+    def enabled_features(self):
+        return set(self._enabled_features)
+
+    def get_feature_config(self, name):
+        """Return the configuration dictionary for a given feature.
+
+        If the feature has not been enabled, return None.
+        """
+        if name in self._enabled_features:
+            return self._enabled_features[name]
+        else:
+            return None
+
     def enable(self, name, auto_value=None, **parameters):
         """Enable an optional rendering feature.
 
@@ -167,7 +184,7 @@ class Scene:
             return
 
         if name == 'link_rotation':
-            targets = self._enabled_features['link_rotation']['targets']
+            targets = self.get_feature_config('link_rotation')['targets']
             for target in targets:
                 target._rotation = target._rotation.copy()
 

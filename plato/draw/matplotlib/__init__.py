@@ -12,4 +12,6 @@ from .Arrows2D import Arrows2D
 from .Polygons import Polygons
 from .Spheropolygons import Spheropolygons
 
+from .ConvexPolyhedra import ConvexPolyhedra
 from .SpherePoints import SpherePoints
+from .Spheres import Spheres

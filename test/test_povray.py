@@ -2,11 +2,10 @@ import unittest
 import plato.draw.povray as draw
 import test_scenes
 
-
 class PovrayTests(unittest.TestCase):
 
     def render(self, scene, num_run=0):
-        fname = '/tmp/{}.png'.format(num_run)
+        fname = '/tmp/povray_{}.png'.format(num_run)
         scene.save(fname)
 
 for i, (name, scene) in enumerate(test_scenes.translate_usable_scenes(draw)):
