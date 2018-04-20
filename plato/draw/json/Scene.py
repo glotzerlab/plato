@@ -8,7 +8,7 @@ class Scene(draw.Scene):
 
     def render(self):
         json_scene = defaultdict(dict)
-        #json_scene['features'] = self.features
+        json_scene['features'] = self._enabled_features
         json_scene['size'] = self.size.tolist()
         json_scene['translation'] = self.translation.tolist()
         json_scene['rotation'] = self.rotation.tolist()

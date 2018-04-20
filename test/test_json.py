@@ -1,13 +1,17 @@
 import unittest
 import plato.draw.json as draw
 import test_scenes
+from tempfile import NamedTemporaryFile
 
 
 class JSONTests(unittest.TestCase):
 
     def render(self, scene, num_run=0):
-        fname = '/tmp/{}.json'.format(num_run)
-        with open(fname, 'w') as outfile:
+        with NamedTemporaryFile(
+                mode='w', prefix='test{}-'.format(num_run),
+                suffix='.json', delete=False
+            ) as outfile:
+            print(outfile.name)
             outfile.write(scene.render())
 
 for i, (name, scene) in enumerate(test_scenes.translate_usable_scenes(draw)):
