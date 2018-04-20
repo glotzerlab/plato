@@ -16,7 +16,7 @@ function fetchJSON(filename) {
   httpRequest.send();
 }
 
-let scene, camera, renderer, controls;
+let scene, sceneSize, camera, renderer, controls;
 
 function makeColor(c) {
   return new THREE.Color(c[0], c[1], c[2]);
@@ -55,8 +55,17 @@ function drawScene(jsonscene) {
   scene.add(new THREE.HemisphereLight( 0xa0a0a0, 0x080808, 0.3 ));
   scene.add(new THREE.DirectionalLight( 0xffffff, 0.6 ));
 
-  camera = new THREE.PerspectiveCamera( 60, window.innerWidth/window.innerHeight, 0.1, 1000 );
-  camera.position.z = 10;
+  sceneSize = jsonscene.size;
+  let sceneAspect = sceneSize[0] / sceneSize[1];
+  let windowAspect = window.innerWidth / window.innerHeight;
+  let cameraBounds = [0.5 * sceneSize[0] * Math.max(windowAspect / sceneAspect, 1),
+                      0.5 * sceneSize[1] * Math.max(sceneAspect / windowAspect, 1)];
+
+  camera = new THREE.OrthographicCamera(-cameraBounds[0], cameraBounds[0],
+                                        cameraBounds[1], -cameraBounds[1],
+                                        0, 1000);
+  camera.position.z = -jsonscene.translation[2];
+  camera.updateProjectionMatrix();
 
   controls = new THREE.TrackballControls( camera );
   controls.rotateSpeed = 2.0;
@@ -147,7 +156,14 @@ function drawScene(jsonscene) {
 }
 
 function onWindowResize() {
-  camera.aspect = window.innerWidth / window.innerHeight;
+  let sceneAspect = sceneSize[0] / sceneSize[1];
+  let windowAspect = window.innerWidth / window.innerHeight;
+  let cameraBounds = [0.5 * sceneSize[0] * Math.max(windowAspect / sceneAspect, 1),
+                      0.5 * sceneSize[1] * Math.max(sceneAspect / windowAspect, 1)];
+  camera.left = -cameraBounds[0];
+  camera.right = cameraBounds[0];
+  camera.top = cameraBounds[1];
+  camera.bottom = -cameraBounds[1];
   camera.updateProjectionMatrix();
   renderer.setSize( window.innerWidth, window.innerHeight );
   controls.handleResize();
@@ -163,4 +179,4 @@ function render() {
   renderer.render( scene, camera );
 }
 
-fetchJSON('3.json');
+fetchJSON('4.json');
