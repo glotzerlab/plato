@@ -57,7 +57,7 @@ function drawScene(jsonscene) {
   scene.background = makeColor([1, 1, 1]);
 
   // Lights...
-  let ambientLightValue = 0.25;
+  let ambientLightValue = 1;
   if (jsonscene.features && jsonscene.features.ambient_light &&
       jsonscene.features.ambient_light.value) {
     ambientLightValue = jsonscene.features.ambient_light.value;
@@ -96,7 +96,13 @@ function drawScene(jsonscene) {
   camera.updateProjectionMatrix();
 
   // Controls...
-  controls = new THREE.OrthographicTrackballControls( camera );
+  let pan_mode = false;
+  if (jsonscene.features && jsonscene.features.pan &&
+      jsonscene.features.pan.value) {
+    pan_mode = jsonscene.features.pan.value;
+  }
+
+  controls = new THREE.OrthographicTrackballControls( camera, pan_mode );
   controls.rotateSpeed = 2.0;
   controls.zoomSpeed = 1.2;
   controls.panSpeed = 1.5;
@@ -154,7 +160,7 @@ function drawScene(jsonscene) {
         const material = new THREE.MeshPhongMaterial({color: makeColor(color)});
         const shape = new THREE.Mesh(geometry, material);
         shape.position.set(position[0], position[1], position[2]);
-        shape.applyQuaternion(makeQuat(orientation));
+        shape.applyQuaternion(makeQuat(orientation).normalize());
         scene.add(shape);
       }
     } else if (prim.class == 'ConvexSpheropolyhedra') {
@@ -167,7 +173,7 @@ function drawScene(jsonscene) {
         const material = new THREE.MeshPhongMaterial({color: makeColor(color)});
         const shape = new THREE.Mesh(geometry, material);
         shape.position.set(position[0], position[1], position[2]);
-        shape.applyQuaternion(makeQuat(orientation));
+        shape.applyQuaternion(makeQuat(orientation).normalize());
         scene.add(shape);
       }
     } else if (prim.class == 'Disks') {
@@ -179,6 +185,23 @@ function drawScene(jsonscene) {
         const shape = new THREE.Mesh(geometry, material);
         shape.position.set(position[0], position[1], 0);
         shape.scale.x = shape.scale.y = radius;
+        scene.add(shape);
+      }
+    } else if (prim.class == 'Arrows2D') {
+      console.log(pa)
+      let polyshape = new THREE.Shape();
+      polyshape.moveTo(pa.vertices[0][0], pa.vertices[0][1]);
+      pa.vertices.map(v => polyshape.lineTo(v[0], v[1]));
+      polyshape.lineTo(pa.vertices[0][0], pa.vertices[0][1]);
+      const geometry = new THREE.ShapeBufferGeometry(polyshape);
+      for (const [position, orientation, color, magnitude] of pa.positions.map(
+            (e, i) => [e, pa.orientations[i], pa.colors[i], pa.magnitudes[i]] )) {
+        const material = new THREE.MeshPhongMaterial({
+          color: makeColor(color), side: THREE.DoubleSide});
+        const shape = new THREE.Mesh(geometry, material);
+        shape.position.set(position[0], position[1], 0);
+        shape.applyQuaternion(makeQuat(orientation).normalize());
+        shape.scale.x = shape.scale.y = magnitude;
         scene.add(shape);
       }
     } else if (prim.class == 'Polygons') {
@@ -193,7 +216,7 @@ function drawScene(jsonscene) {
           color: makeColor(color), side: THREE.DoubleSide});
         const shape = new THREE.Mesh(geometry, material);
         shape.position.set(position[0], position[1], 0);
-        shape.applyQuaternion(makeQuat(orientation));
+        shape.applyQuaternion(makeQuat(orientation).normalize());
         scene.add(shape);
       }
     } else if (prim.class == 'Spheropolygons') {
@@ -229,7 +252,7 @@ function drawScene(jsonscene) {
           color: makeColor(color), side: THREE.DoubleSide});
         const shape = new THREE.Mesh(geometry, material);
         shape.position.set(position[0], position[1], 0);
-        shape.applyQuaternion(makeQuat(orientation));
+        shape.applyQuaternion(makeQuat(orientation).normalize());
         scene.add(shape);
       }
     } else {
