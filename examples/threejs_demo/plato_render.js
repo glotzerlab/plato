@@ -84,8 +84,9 @@ function drawScene(jsonscene) {
                                         cameraBounds[1], -cameraBounds[1],
                                         0, 1000);
   let cameraPosition = makeVec3(jsonscene.translation || [0, 0, -1]).negate();
-  cameraPosition.applyQuaternion(makeQuat(
-        jsonscene.rotation || [1, 0, 0, 0]).inverse());
+  let cameraQuat = jsonscene.rotation || [1, 0, 0, 0];
+  cameraQuat = makeQuat(cameraQuat).inverse().normalize();
+  cameraPosition.applyQuaternion(cameraQuat);
   camera.position.set(cameraPosition.x, cameraPosition.y, cameraPosition.z);
   camera.zoom = jsonscene.zoom;
   camera.updateProjectionMatrix();
@@ -118,9 +119,7 @@ function drawScene(jsonscene) {
             (e, i) => [e, pa.colors[i], pa.radii[i]] )) {
         const material = new THREE.MeshPhongMaterial({color: makeColor(color)});
         const shape = new THREE.Mesh(geometry, material);
-        shape.position.set(position[0],
-                           position[1],
-                           position[2]);
+        shape.position.set(position[0], position[1], position[2]);
         shape.scale.x = shape.scale.y = shape.scale.z = radius;
         scene.add(shape);
       }
@@ -167,7 +166,34 @@ function drawScene(jsonscene) {
         shape.applyQuaternion(makeQuat(orientation));
         scene.add(shape);
       }
-   } else {
+    } else if (prim.class == 'Disks') {
+      const geometry = new THREE.CircleBufferGeometry(1, 48);
+      for (const [position, color, radius] of pa.positions.map(
+            (e, i) => [e, pa.colors[i], pa.radii[i]] )) {
+        const material = new THREE.MeshPhongMaterial({
+          color: makeColor(color), side: THREE.DoubleSide});
+        const shape = new THREE.Mesh(geometry, material);
+        shape.position.set(position[0], position[1], 0);
+        shape.scale.x = shape.scale.y = radius;
+        scene.add(shape);
+      }
+    } else if (prim.class == 'Polygons') {
+      console.log(prim);
+      let polyshape = new THREE.Shape();
+      polyshape.moveTo(pa.vertices[0][0], pa.vertices[0][1]);
+      pa.vertices.map(v => polyshape.lineTo(v[0], v[1]));
+      polyshape.lineTo(pa.vertices[0][0], pa.vertices[0][1]);
+      const geometry = new THREE.ShapeBufferGeometry(polyshape);
+      for (const [position, orientation, color] of pa.positions.map(
+            (e, i) => [e, pa.orientations[i], pa.colors[i]] )) {
+        const material = new THREE.MeshPhongMaterial({
+          color: makeColor(color), side: THREE.DoubleSide});
+        const shape = new THREE.Mesh(geometry, material);
+        shape.position.set(position[0], position[1], 0);
+        shape.applyQuaternion(makeQuat(orientation));
+        scene.add(shape);
+      }
+    } else {
       console.error("Primitive " + prim.class + " is not supported.");
       console.log(prim);
     }
