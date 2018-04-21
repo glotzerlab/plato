@@ -62,8 +62,8 @@ function drawScene(jsonscene) {
       jsonscene.features.ambient_light.value) {
     ambientLightValue = jsonscene.features.ambient_light.value;
   }
-  let ambientLight = new THREE.AmbientLight(0xffffff, ambientLightValue);
-  scene.add(ambientLight);
+  scene.add(new THREE.AmbientLight(0xffffff, ambientLightValue));
+
   let directionalLightVector = [0, 1, 0];
   if (jsonscene.features && jsonscene.features.directional_light &&
       jsonscene.features.directional_light.value) {
