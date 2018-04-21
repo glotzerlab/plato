@@ -51,10 +51,29 @@ function makeBufferAttribute(arr, width=3) {
 function drawScene(jsonscene) {
   scene = new THREE.Scene();
   scene.background = makeColor([1, 1, 1]);
-  scene.add(new THREE.AmbientLight( 0x505050 )); // soft white light
-  scene.add(new THREE.HemisphereLight( 0xa0a0a0, 0x080808, 0.3 ));
-  scene.add(new THREE.DirectionalLight( 0xffffff, 0.6 ));
 
+  // Lights...
+  let ambientLightValue = 0.25;
+  if (jsonscene.features && jsonscene.features.ambient_light &&
+      jsonscene.features.ambient_light.value) {
+    ambientLightValue = jsonscene.features.ambient_light.value;
+  }
+  let ambientLight = new THREE.AmbientLight(0xffffff, ambientLightValue);
+  scene.add(ambientLight);
+  let directionalLightVector = [0, 1, 0];
+  if (jsonscene.features && jsonscene.features.directional_light &&
+      jsonscene.features.directional_light.value) {
+    directionalLightVector = jsonscene.features.directional_light.value;
+  }
+  directionalLightVector = makeVec3(directionalLightVector);
+  let directionalLight = new THREE.DirectionalLight(
+      0xffffff, directionalLightVector.length());
+  directionalLight.position.set(directionalLightVector.x,
+                                directionalLightVector.y,
+                                directionalLightVector.z).negate().normalize();
+  scene.add(directionalLight);
+
+  // Camera...
   sceneSize = jsonscene.size;
   let sceneAspect = sceneSize[0] / sceneSize[1];
   let windowAspect = window.innerWidth / window.innerHeight;
@@ -64,10 +83,15 @@ function drawScene(jsonscene) {
   camera = new THREE.OrthographicCamera(-cameraBounds[0], cameraBounds[0],
                                         cameraBounds[1], -cameraBounds[1],
                                         0, 1000);
-  camera.position.z = -jsonscene.translation[2];
+  let cameraPosition = makeVec3(jsonscene.translation || [0, 0, -1]).negate();
+  cameraPosition.applyQuaternion(makeQuat(
+        jsonscene.rotation || [1, 0, 0, 0]).inverse());
+  camera.position.set(cameraPosition.x, cameraPosition.y, cameraPosition.z);
+  camera.zoom = jsonscene.zoom;
   camera.updateProjectionMatrix();
 
-  controls = new THREE.TrackballControls( camera );
+  // Controls...
+  controls = new THREE.OrthographicTrackballControls( camera );
   controls.rotateSpeed = 2.0;
   controls.zoomSpeed = 1.2;
   controls.panSpeed = 1.5;
@@ -78,10 +102,12 @@ function drawScene(jsonscene) {
   controls.keys = [ 65, 83, 68 ];
   controls.addEventListener( 'change', render );
 
+  // Renderer...
   renderer = new THREE.WebGLRenderer();
   renderer.setSize( window.innerWidth, window.innerHeight );
   document.body.appendChild( renderer.domElement );
 
+  // Primitives...
   for (const prim of jsonscene.primitives) {
     const pa = prim.attributes;
     console.debug("Creating " + prim.class + "...");
@@ -92,9 +118,9 @@ function drawScene(jsonscene) {
             (e, i) => [e, pa.colors[i], pa.radii[i]] )) {
         const material = new THREE.MeshPhongMaterial({color: makeColor(color)});
         const shape = new THREE.Mesh(geometry, material);
-        shape.position.x = position[0];
-        shape.position.y = position[1];
-        shape.position.z = position[2];
+        shape.position.set(position[0],
+                           position[1],
+                           position[2]);
         shape.scale.x = shape.scale.y = shape.scale.z = radius;
         scene.add(shape);
       }
@@ -124,9 +150,7 @@ function drawScene(jsonscene) {
             (e, i) => [e, pa.orientations[i], pa.colors[i]] )) {
         const material = new THREE.MeshPhongMaterial({color: makeColor(color)});
         const shape = new THREE.Mesh(geometry, material);
-        shape.position.x = position[0];
-        shape.position.y = position[1];
-        shape.position.z = position[2];
+        shape.position.set(position[0], position[1], position[2]);
         shape.applyQuaternion(makeQuat(orientation));
         scene.add(shape);
       }
@@ -139,9 +163,7 @@ function drawScene(jsonscene) {
             (e, i) => [e, pa.orientations[i], pa.colors[i]] )) {
         const material = new THREE.MeshPhongMaterial({color: makeColor(color)});
         const shape = new THREE.Mesh(geometry, material);
-        shape.position.x = position[0];
-        shape.position.y = position[1];
-        shape.position.z = position[2];
+        shape.position.set(position[0], position[1], position[2]);
         shape.applyQuaternion(makeQuat(orientation));
         scene.add(shape);
       }
@@ -151,6 +173,7 @@ function drawScene(jsonscene) {
     }
   }
 
+  // Action!
   window.addEventListener( 'resize', onWindowResize, false );
   render();
 }
