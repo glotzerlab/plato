@@ -119,147 +119,15 @@ function drawScene(jsonscene) {
   document.body.appendChild( renderer.domElement );
 
   // Primitives...
-  for (const prim of jsonscene.primitives) {
-    const pa = prim.attributes;
-    console.debug("Creating " + prim.class + "...");
-
-    if (prim.class == 'Spheres') {
-      const geometry = new THREE.SphereBufferGeometry(1, 48, 24);
-      for (const [position, color, radius] of pa.positions.map(
-            (e, i) => [e, pa.colors[i], pa.radii[i]] )) {
-        const material = new THREE.MeshPhongMaterial({color: makeColor(color)});
-        const shape = new THREE.Mesh(geometry, material);
-        shape.position.set(position[0], position[1], position[2]);
-        shape.scale.x = shape.scale.y = shape.scale.z = radius;
-        scene.add(shape);
-      }
-    } else if (prim.class == 'Lines') {
-      for (const [start, end, color, width] of pa.start_points.map(
-            (e, i) => [e, pa.end_points[i], pa.colors[i], pa.widths[i]] )) {
-        const geometry = new THREE.Geometry();
-        geometry.vertices.push(makeVec3(start));
-        geometry.vertices.push(makeVec3(end));
-        const material = new THREE.LineBasicMaterial({color: makeColor(color)});
-        const shape = new THREE.Line(geometry, material);
-        scene.add(shape);
-      }
-    } else if (prim.class == 'Mesh') {
-      const geometry = new THREE.BufferGeometry();
-      geometry.setIndex(flattenArray(pa.indices));
-      geometry.addAttribute('position', makeBufferAttribute(pa.vertices));
-      for (const color of pa.colors) {
-        const material = new THREE.MeshPhongMaterial({color: makeColor(color)});
-        const shape = new THREE.Mesh(geometry, material);
-        scene.add(shape);
-      }
-    } else if (prim.class == 'ConvexPolyhedra') {
-      vertices = pa.vertices.map((e) => makeVec3(e));
-      const geometry = new THREE.ConvexBufferGeometry(vertices);
-      for (const [position, orientation, color] of pa.positions.map(
-            (e, i) => [e, pa.orientations[i], pa.colors[i]] )) {
-        const material = new THREE.MeshPhongMaterial({color: makeColor(color)});
-        const shape = new THREE.Mesh(geometry, material);
-        shape.position.set(position[0], position[1], position[2]);
-        shape.applyQuaternion(makeQuat(orientation).normalize());
-        scene.add(shape);
-      }
-    } else if (prim.class == 'ConvexSpheropolyhedra') {
-      // TODO: This doesn't render spheroshapes yet, just ConvexPolyhedra
-      radius = pa.radius;
-      vertices = pa.vertices.map((e) => makeVec3(e));
-      const geometry = new THREE.ConvexBufferGeometry(vertices);
-      for (const [position, orientation, color] of pa.positions.map(
-            (e, i) => [e, pa.orientations[i], pa.colors[i]] )) {
-        const material = new THREE.MeshPhongMaterial({color: makeColor(color)});
-        const shape = new THREE.Mesh(geometry, material);
-        shape.position.set(position[0], position[1], position[2]);
-        shape.applyQuaternion(makeQuat(orientation).normalize());
-        scene.add(shape);
-      }
-    } else if (prim.class == 'Disks') {
-      const geometry = new THREE.CircleBufferGeometry(1, 48);
-      for (const [position, color, radius] of pa.positions.map(
-            (e, i) => [e, pa.colors[i], pa.radii[i]] )) {
-        const material = new THREE.MeshPhongMaterial({
-          color: makeColor(color), side: THREE.DoubleSide});
-        const shape = new THREE.Mesh(geometry, material);
-        shape.position.set(position[0], position[1], 0);
-        shape.scale.x = shape.scale.y = radius;
-        scene.add(shape);
-      }
-    } else if (prim.class == 'Arrows2D') {
-      console.log(pa)
-      let polyshape = new THREE.Shape();
-      polyshape.moveTo(pa.vertices[0][0], pa.vertices[0][1]);
-      pa.vertices.map(v => polyshape.lineTo(v[0], v[1]));
-      polyshape.lineTo(pa.vertices[0][0], pa.vertices[0][1]);
-      const geometry = new THREE.ShapeBufferGeometry(polyshape);
-      for (const [position, orientation, color, magnitude] of pa.positions.map(
-            (e, i) => [e, pa.orientations[i], pa.colors[i], pa.magnitudes[i]] )) {
-        const material = new THREE.MeshPhongMaterial({
-          color: makeColor(color), side: THREE.DoubleSide});
-        const shape = new THREE.Mesh(geometry, material);
-        shape.position.set(position[0], position[1], 0);
-        shape.applyQuaternion(makeQuat(orientation).normalize());
-        shape.scale.x = shape.scale.y = magnitude;
-        scene.add(shape);
-      }
-    } else if (prim.class == 'Polygons') {
-      let polyshape = new THREE.Shape();
-      polyshape.moveTo(pa.vertices[0][0], pa.vertices[0][1]);
-      pa.vertices.map(v => polyshape.lineTo(v[0], v[1]));
-      polyshape.lineTo(pa.vertices[0][0], pa.vertices[0][1]);
-      const geometry = new THREE.ShapeBufferGeometry(polyshape);
-      for (const [position, orientation, color] of pa.positions.map(
-            (e, i) => [e, pa.orientations[i], pa.colors[i]] )) {
-        const material = new THREE.MeshPhongMaterial({
-          color: makeColor(color), side: THREE.DoubleSide});
-        const shape = new THREE.Mesh(geometry, material);
-        shape.position.set(position[0], position[1], 0);
-        shape.applyQuaternion(makeQuat(orientation).normalize());
-        scene.add(shape);
-      }
-    } else if (prim.class == 'Spheropolygons') {
-      function edgeExpand(r, v0, v1) {
-        return new THREE.Vector2().subVectors(v1, v0)
-          .normalize().rotateAround(new THREE.Vector2(0, 0), -Math.PI/2)
-          .multiplyScalar(r);
-      }
-
-      function pathLineArc(s, r, v0, v1, v2) {
-        v0 = makeVec2(v0);
-        v1 = makeVec2(v1);
-        v2 = makeVec2(v2);
-        let expand01 = edgeExpand(r, v0, v1);
-        let expand12 = edgeExpand(r, v1, v2);
-        let vexp0 = new THREE.Vector2().addVectors(v0, expand01);
-        let vexp1a = new THREE.Vector2().addVectors(v1, expand01);
-        let vexp1b = new THREE.Vector2().addVectors(v1, expand12);
-        s.moveTo(vexp0.x, vexp0.y);
-        s.lineTo(vexp1a.x, vexp1a.y);
-        s.absarc(v1.x, v1.y, r, expand01.angle(), expand12.angle());
-      }
-
-      let spheropolyshape = new THREE.Shape();
-      let nverts = pa.vertices.length;
-      pa.vertices.map((v, i) => pathLineArc(
-            spheropolyshape, pa.radius, pa.vertices[i % nverts],
-            pa.vertices[(i+1) % nverts], pa.vertices[(i+2) % nverts]));
-      const geometry = new THREE.ShapeBufferGeometry(spheropolyshape);
-      for (const [position, orientation, color] of pa.positions.map(
-            (e, i) => [e, pa.orientations[i], pa.colors[i]] )) {
-        const material = new THREE.MeshPhongMaterial({
-          color: makeColor(color), side: THREE.DoubleSide});
-        const shape = new THREE.Mesh(geometry, material);
-        shape.position.set(position[0], position[1], 0);
-        shape.applyQuaternion(makeQuat(orientation).normalize());
-        scene.add(shape);
-      }
+  prim_render = new PrimitiveRenderer(scene);
+  jsonscene.primitives.map((prim) => {
+    if (prim.class && prim_render[prim.class]) {
+      prim_render[prim.class](prim.attributes);
     } else {
       console.error("Primitive " + prim.class + " is not supported.");
       console.log(prim);
     }
-  }
+  });
 
   // Action!
   window.addEventListener( 'resize', onWindowResize, false );
