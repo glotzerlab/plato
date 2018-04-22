@@ -4,7 +4,6 @@ function fetchJSON(filename) {
     if (httpRequest.readyState === XMLHttpRequest.DONE) {
       if (httpRequest.status === 200) {
         jsondata = JSON.parse(httpRequest.responseText);
-        console.log(jsondata);
         drawScene(jsondata);
         animate();
       } else {
@@ -70,7 +69,7 @@ function drawScene(jsonscene) {
     directionalLightVector = jsonscene.features.directional_light.value;
   }
   directionalLightVector = makeVec3(directionalLightVector);
-  let directionalLight = new THREE.DirectionalLight(
+  const directionalLight = new THREE.DirectionalLight(
       0xffffff, directionalLightVector.length());
   directionalLight.position.set(directionalLightVector.x,
                                 directionalLightVector.y,
@@ -79,19 +78,21 @@ function drawScene(jsonscene) {
 
   // Camera...
   sceneSize = jsonscene.size;
-  let sceneAspect = sceneSize[0] / sceneSize[1];
-  let windowAspect = window.innerWidth / window.innerHeight;
-  let cameraBounds = [0.5 * sceneSize[0] * Math.max(windowAspect / sceneAspect, 1),
+  const sceneAspect = sceneSize[0] / sceneSize[1];
+  const windowAspect = window.innerWidth / window.innerHeight;
+  const cameraBounds = [0.5 * sceneSize[0] * Math.max(windowAspect / sceneAspect, 1),
                       0.5 * sceneSize[1] * Math.max(sceneAspect / windowAspect, 1)];
 
   camera = new THREE.OrthographicCamera(-cameraBounds[0], cameraBounds[0],
                                         cameraBounds[1], -cameraBounds[1],
                                         0, 1000);
-  let cameraPosition = makeVec3(jsonscene.translation || [0, 0, -1]).negate();
+  const cameraPosition = makeVec3(jsonscene.translation || [0, 0, -1]).negate();
   let cameraQuat = jsonscene.rotation || [1, 0, 0, 0];
   cameraQuat = makeQuat(cameraQuat).inverse().normalize();
   cameraPosition.applyQuaternion(cameraQuat);
   camera.position.set(cameraPosition.x, cameraPosition.y, cameraPosition.z);
+  const cameraUp = camera.up.applyQuaternion(cameraQuat);
+  camera.up.set(cameraUp.x, cameraUp.y, cameraUp.z);
   camera.zoom = jsonscene.zoom;
   camera.updateProjectionMatrix();
 
@@ -135,9 +136,9 @@ function drawScene(jsonscene) {
 }
 
 function onWindowResize() {
-  let sceneAspect = sceneSize[0] / sceneSize[1];
-  let windowAspect = window.innerWidth / window.innerHeight;
-  let cameraBounds = [0.5 * sceneSize[0] * Math.max(windowAspect / sceneAspect, 1),
+  const sceneAspect = sceneSize[0] / sceneSize[1];
+  const windowAspect = window.innerWidth / window.innerHeight;
+  const cameraBounds = [0.5 * sceneSize[0] * Math.max(windowAspect / sceneAspect, 1),
                       0.5 * sceneSize[1] * Math.max(sceneAspect / windowAspect, 1)];
   camera.left = -cameraBounds[0];
   camera.right = cameraBounds[0];

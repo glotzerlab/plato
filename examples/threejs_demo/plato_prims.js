@@ -11,7 +11,7 @@ function PrimitiveRenderer(scene) {
       shape.scale.x = shape.scale.y = shape.scale.z = radius;
       this.scene.add(shape);
     }
-  }
+  };
 
   this.Lines = function(attributes) {
     for (const [start, end, color, width] of attributes.start_points.map(
@@ -23,7 +23,7 @@ function PrimitiveRenderer(scene) {
       const shape = new THREE.Line(geometry, material);
       this.scene.add(shape);
     }
-  }
+  };
 
   this.Mesh = function(attributes) {
     const geometry = new THREE.BufferGeometry();
@@ -34,7 +34,7 @@ function PrimitiveRenderer(scene) {
       const shape = new THREE.Mesh(geometry, material);
       this.scene.add(shape);
     }
-  }
+  };
 
   this.ConvexPolyhedra = function(attributes) {
     vertices = attributes.vertices.map((e) => makeVec3(e));
@@ -47,7 +47,7 @@ function PrimitiveRenderer(scene) {
       shape.applyQuaternion(makeQuat(orientation).normalize());
       this.scene.add(shape);
     }
-  }
+  };
 
   this.ConvexSpheropolyhedra = function(attributes) {
     // TODO: This doesn't render spheroshapes yet, just ConvexPolyhedra
@@ -62,7 +62,7 @@ function PrimitiveRenderer(scene) {
       shape.applyQuaternion(makeQuat(orientation).normalize());
       this.scene.add(shape);
     }
-  }
+  };
 
   this.Disks = function(attributes) {
     const geometry = new THREE.CircleBufferGeometry(1, 48);
@@ -75,7 +75,7 @@ function PrimitiveRenderer(scene) {
       shape.scale.x = shape.scale.y = radius;
       this.scene.add(shape);
     }
-  }
+  };
 
   this.Arrows2D = function(attributes) {
     const polyshape = new THREE.Shape();
@@ -93,7 +93,7 @@ function PrimitiveRenderer(scene) {
       shape.scale.x = shape.scale.y = magnitude;
       this.scene.add(shape);
     }
-  }
+  };
 
   this.Polygons = function(attributes) {
     const polyshape = new THREE.Shape();
@@ -110,7 +110,7 @@ function PrimitiveRenderer(scene) {
       shape.applyQuaternion(makeQuat(orientation).normalize());
       this.scene.add(shape);
     }
-  }
+  };
 
   this.Spheropolygons = function(attributes) {
     function edgeExpand(r, v0, v1) {
@@ -132,11 +132,13 @@ function PrimitiveRenderer(scene) {
       s.absarc(v1.x, v1.y, r, expand01.angle(), expand12.angle());
     }
 
-    let spheropolyshape = new THREE.Shape();
-    let nverts = attributes.vertices.length;
+    const spheropolyshape = new THREE.Shape();
+    const nverts = attributes.vertices.length;
     attributes.vertices.map((v, i) => pathLineArc(
-          spheropolyshape, attributes.radius, attributes.vertices[i % nverts],
-          attributes.vertices[(i+1) % nverts], attributes.vertices[(i+2) % nverts]));
+          spheropolyshape, attributes.radius,
+          attributes.vertices[i % nverts],
+          attributes.vertices[(i+1) % nverts],
+          attributes.vertices[(i+2) % nverts]));
     const geometry = new THREE.ShapeBufferGeometry(spheropolyshape);
     for (const [position, orientation, color] of attributes.positions.map(
           (e, i) => [e, attributes.orientations[i], attributes.colors[i]] )) {
@@ -147,5 +149,5 @@ function PrimitiveRenderer(scene) {
       shape.applyQuaternion(makeQuat(orientation).normalize());
       this.scene.add(shape);
     }
-  }
+  };
 }
