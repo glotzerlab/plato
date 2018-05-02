@@ -1,3 +1,4 @@
+import collections
 import itertools
 import numpy as np
 import plato
@@ -5,15 +6,28 @@ import plato.draw as draw
 
 ALL_TEST_SCENES = []
 
+EXCLUDED_SCENES = collections.defaultdict(set)
+
 def register_scene(f):
     ALL_TEST_SCENES.append(f)
+
     return f
+
+def selectively_register_scene(*excluded_names):
+    def result(f):
+        for name in excluded_names:
+            EXCLUDED_SCENES[name].add(f)
+        return register_scene(f)
+
+    return result
 
 def translate_usable_scenes(draw):
     result = []
     for scene_fun in ALL_TEST_SCENES:
+        draw_name = draw.__name__.split('.')[-1]
         scene = scene_fun()
         usable = all(hasattr(draw, type(prim).__name__) for prim in scene)
+        usable = usable and scene_fun not in EXCLUDED_SCENES[draw_name]
         if usable:
             primitives = [getattr(draw, type(prim).__name__).copy(prim) for prim in scene]
             new_scene = draw.Scene(primitives, features=scene._enabled_features,
@@ -68,7 +82,7 @@ def voronoi_with_disks(seed=13, num_points=32):
     scene = draw.Scene([prim, prim2], zoom=4, features=dict(pan=True))
     return scene
 
-@register_scene
+@selectively_register_scene('matplotlib')
 def colored_spheres(num_per_side=6):
     xs = np.arange(num_per_side).astype(np.float32)
     rs = np.array(list(itertools.product(*(3*[xs]))))
@@ -79,7 +93,7 @@ def colored_spheres(num_per_side=6):
     diameters = np.ones((rs.shape[0],))/np.sqrt(2)
     rs -= np.mean(rs, axis=0, keepdims=True)
 
-    prim = draw.Spheres(positions=rs, colors=colors, diameters=diameters)
+    prim = draw.Spheres(positions=rs, colors=colors, diameters=diameters, outline=.01)
     features = dict(ambient_light=.25, directional_light=(-.1, -.15, -1))
     rotation = [0.43797198, -0.4437895 ,  0.08068451,  0.7776423]
     return draw.Scene(prim, features=features, zoom=4, rotation=rotation)
