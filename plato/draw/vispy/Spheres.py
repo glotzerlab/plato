@@ -61,6 +61,10 @@ class Spheres(draw.Spheres, GLPrimitive):
        """
 
     shaders['fragment'] = """
+#ifdef GL_ES
+       precision highp float;
+#endif
+
        // base light level
        uniform float ambientLight;
        // (x, y, z) direction*intensity
@@ -68,6 +72,7 @@ class Spheres(draw.Spheres, GLPrimitive):
        uniform int transparency_mode;
        uniform mat4 camera;
        uniform float light_levels;
+       uniform float outline;
 
        varying vec4 v_color;
        varying vec2 v_image;
@@ -79,8 +84,20 @@ class Spheres(draw.Spheres, GLPrimitive):
            float rsq = dot(v_image, v_image);
            float Rsq = v_radius*v_radius;
 
-           if(rsq > Rsq)
-               discard;
+           float r = sqrt(rsq);
+
+           float lambda1 = 1.0;
+           if(outline > 1e-6)
+           {
+               lambda1 = (v_radius - r)/outline;
+               lambda1 *= lambda1;
+               lambda1 *= lambda1;
+               lambda1 *= lambda1;
+               lambda1 *= lambda1;
+               lambda1 = min(lambda1, 1.0);
+           }
+
+           if(r > v_radius) discard;
 
            vec3 r_local = vec3(v_image.xy, sqrt(Rsq - rsq));
            vec3 normal = normalize(r_local);
@@ -94,6 +111,8 @@ class Spheres(draw.Spheres, GLPrimitive):
                light /= light_levels;
            }
 
+           vec4 color = vec4(v_color.xyz*lambda1*light, v_color.w);
+
            #ifndef WEBGL
            float depth = v_depth + r_local.z;
            gl_FragDepth = 0.5*(camera[2][2]*depth + camera[3][2] +
@@ -101,14 +120,14 @@ class Spheres(draw.Spheres, GLPrimitive):
            #endif
 
            float z = abs(v_depth);
-           float alpha = v_color.a;
+           float alpha = color.a;
            float weight = alpha*max(3e3*pow(
                (1.0 - gl_FragCoord.z), 3.0), 1e-2);
 
            if(transparency_mode < 1)
-               gl_FragColor = vec4(v_color.xyz*light, v_color.w);
+               gl_FragColor = color;
            else if(transparency_mode == 1)
-               gl_FragColor = vec4(v_color.rgb*alpha*light, alpha)*weight;
+               gl_FragColor = vec4(color.rgb*alpha, alpha)*weight;
            else
                gl_FragColor = vec4(alpha);
        }
@@ -169,7 +188,9 @@ class Spheres(draw.Spheres, GLPrimitive):
          'Internal: Transparency stage (<0: opaque, 0: all, 1: '
          'translucency stage 1, 2: translucency stage 2)'),
         ('light_levels', np.float32, 0, 0,
-         'Number of light levels to quantize to (0: disable)')
+         'Number of light levels to quantize to (0: disable)'),
+        ('outline', np.float32, 0, 0,
+         'Outline for all particles')
         ]))
 
     def __init__(self, *args, **kwargs):
