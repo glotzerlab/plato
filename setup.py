@@ -16,7 +16,7 @@ setup(name='plato-draw',
           'Topic :: Scientific/Engineering :: Visualization'
       ],
       description='Geometry and visualization tools for collections of particles',
-      install_requires=['numpy', 'scipy'],
+      install_requires=['numpy', 'scipy', 'rowan'],
       license='BSD',
       packages=[
           'plato', 'plato.draw',

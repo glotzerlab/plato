@@ -1,30 +1,18 @@
 import numpy as np
+import rowan
 
 def quatconj(q):
     """Returns the conjugate of a quaternion array q*"""
-    result = np.array(q)
-    result[..., 0] *= -1
-    return result
+    return -rowan.conjugate(q)
 
 def quatrot(q, v):
     """Rotates the given vector array v by the quaternions in the array
     q"""
-    (q, v) = np.asarray(q), np.asarray(v)
-    return (
-        (q[..., 0]**2 - np.sum(q[..., 1:]**2, axis=-1))[..., np.newaxis]*v +
-        2*q[..., 0, np.newaxis]*np.cross(q[..., 1:], v) +
-        2*np.sum(q[..., 1:]*v, axis=-1)[..., np.newaxis]*q[..., 1:])
+    return rowan.rotate(q, v)
 
 def quatquat(qi, qj):
     """Multiplies the quaternions in the array qi by those in qj"""
-    (qi, qj) = np.asarray(qi), np.asarray(qj)
-    result = np.empty(np.max([qi.shape, qj.shape], axis=0), dtype=np.float32)
-
-    result[..., 0] = qi[..., 0]*qj[..., 0] - np.sum(qi[..., 1:]*qj[..., 1:], axis=-1)
-    result[..., 1:] = (qi[..., 0, np.newaxis]*qj[..., 1:] +
-                       qj[..., 0, np.newaxis]*qi[..., 1:] +
-                       np.cross(qi[..., 1:], qj[..., 1:]))
-    return result
+    return rowan.multiply(qi, qj)
 
 def box_to_matrix(box):
     """Converts a box tuple (in [lx, ly, lz, xy, xz, yz] order with HOOMD
