@@ -131,8 +131,13 @@ class Scene(draw.Scene):
         else:
             threads = None
 
-        return self.call_povray(
-            povstring, filename, width, height, antialiasing, threads)
+        if filename.endswith('.pov'):
+            with open(filename, 'w') as f:
+                f.write(povstring)
+            return 0
+        else:
+            return self.call_povray(
+                povstring, filename, width, height, antialiasing, threads)
 
     @staticmethod
     def call_povray(contents, filename, width, height, antialiasing=None, threads=None):
