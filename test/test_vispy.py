@@ -9,9 +9,7 @@ class VispyTests(unittest.TestCase):
     def render(self, scene, num_run=0):
         fname = '/tmp/vispy_{}.png'.format(num_run)
         scene.show()
-        scene.render()
         scene.save(fname)
-        vispy.app.run()
 
 for i, (name, scene) in enumerate(test_scenes.translate_usable_scenes(draw)):
     new_name = 'test_{}'.format(name)
@@ -23,3 +21,4 @@ for i, (name, scene) in enumerate(test_scenes.translate_usable_scenes(draw)):
 
 if __name__ == '__main__':
     unittest.main()
+    vispy.app.run()
