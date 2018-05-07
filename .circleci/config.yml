@@ -1,0 +1,12 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: mspells/plato-tests
+    steps:
+      - run:
+          command: supervisord
+          environment:
+              PLATO_TEST_ARTIFACT_DIR: /tmp/plato_output
+      - store_artifacts:
+          path: /tmp/plato_output
