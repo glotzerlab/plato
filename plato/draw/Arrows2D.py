@@ -1,7 +1,7 @@
 import itertools
 import numpy as np
 from .Polygons import Polygons
-from .internal import ShapeDecorator, ShapeAttribute
+from .internal import attribute_setter, ShapeDecorator, ShapeAttribute
 
 @ShapeDecorator
 class Arrows2D(Polygons):
@@ -43,10 +43,25 @@ class Arrows2D(Polygons):
 
     @magnitudes.setter
     def magnitudes(self, value):
-        value = np.atleast_1d(value)
+        magnitudes = np.atleast_1d(value)
+        attribute_setter(self, value, 'magnitudes', np.float32, 1, np.array(1))
         quats = self.orientations
-        quats *= (np.sqrt(value)/np.linalg.norm(quats, axis=-1))[:, np.newaxis]
-        self.orientations = quats
+        N = min(quats.shape[0], magnitudes.shape[0])
+        quats[:N] *= (np.sqrt(magnitudes[:N])/np.linalg.norm(quats[:N], axis=-1))[:, np.newaxis]
+        Polygons.orientations.fset(self, quats)
+
+    @property
+    def orientations(self):
+        """Magnitude (size scale) of each particle"""
+        return Polygons.orientations.fget(self)
+
+    @orientations.setter
+    def orientations(self, value):
+        quats = np.atleast_2d(value)
+        magnitudes = self.magnitudes
+        N = min(quats.shape[0], magnitudes.shape[0])
+        quats[:N] *= (np.sqrt(magnitudes[:N])/np.linalg.norm(quats[:N], axis=-1))[:, np.newaxis]
+        Polygons.orientations.fset(self, quats)
 
     @property
     def angles(self):
