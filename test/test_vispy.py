@@ -3,11 +3,12 @@ import unittest
 import vispy, vispy.app
 import plato.draw.vispy as draw
 import test_scenes
+from test_internals import get_fname
 
 class VispyTests(unittest.TestCase):
 
     def render(self, scene, num_run=0):
-        fname = '/tmp/vispy_{}.png'.format(num_run)
+        fname = get_fname('vispy_{}.png'.format(num_run))
         scene.show()
         scene.save(fname)
 
