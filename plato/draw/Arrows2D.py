@@ -39,41 +39,23 @@ class Arrows2D(Polygons):
     @property
     def magnitudes(self):
         """Magnitude (size scale) of each particle"""
-        return np.linalg.norm(self.orientations, axis=-1)
+        return np.linalg.norm(self.orientations, axis=-1)**2
 
     @magnitudes.setter
     def magnitudes(self, value):
         magnitudes = np.atleast_1d(value)
-        attribute_setter(self, value, 'magnitudes', np.float32, 1, np.array(1))
         quats = self.orientations
-        N = min(quats.shape[0], magnitudes.shape[0])
-        quats[:N] *= (np.sqrt(magnitudes[:N])/np.linalg.norm(quats[:N], axis=-1))[:, np.newaxis]
-        Polygons.orientations.fset(self, quats)
 
-    @property
-    def orientations(self):
-        """Magnitude (size scale) of each particle"""
-        return Polygons.orientations.fget(self)
-
-    @orientations.setter
-    def orientations(self, value):
-        quats = np.atleast_2d(value)
-        magnitudes = self.magnitudes
-        N = min(quats.shape[0], magnitudes.shape[0])
-        quats[:N] *= (np.sqrt(magnitudes[:N])/np.linalg.norm(quats[:N], axis=-1))[:, np.newaxis]
-        Polygons.orientations.fset(self, quats)
-
-    @property
-    def angles(self):
-        """Orientation of each particle, in radians"""
-        quats = self.orientations
-        return 2*np.arctan2(quats[:, 3], quats[:, 0])
-
-    @angles.setter
-    def angles(self, value):
-        halfthetas = 0.5*np.atleast_2d(value).reshape((-1, 1))
-        real = np.cos(halfthetas)
-        imag = np.sin(halfthetas)
-        zeros = np.zeros_like(real)
-        quats = np.hstack([real, zeros, zeros, imag]).astype(np.float32)
-        self.orientations = quats
+        N = max(quats.shape[0], magnitudes.shape[0])
+        if magnitudes.shape[0] < N:
+            magnitudes = np.concatenate(
+                [magnitudes, np.ones(N - magnitudes.shape[0])])
+        if quats.shape[0] < N:
+            quats = np.concatenate(
+                [quats, np.tile([[1, 0, 0, 0]], (N - quats.shape[0], 1))],
+                axis=0)
+        print('boop')
+        print(magnitudes)
+        magnitudes /= np.linalg.norm(quats, axis=-1)**2
+        self.orientations = quats*np.sqrt(magnitudes)[:, np.newaxis]
+        print(self.magnitudes)
