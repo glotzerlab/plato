@@ -14,6 +14,7 @@ class Polygons(draw.Polygons):
         collections = []
 
         vertices = self.vertices
+        scale_factors = np.linalg.norm(self.orientations, axis=-1)**2
 
         if self.outline > 0:
             tessellation = geometry.Polygon(self.vertices)
@@ -34,8 +35,8 @@ class Polygons(draw.Polygons):
             outline_path = Path(outline_vertices, commands)
 
             patches = []
-            for (position, angle) in zip(self.positions, self.angles):
-                tf = Affine2D().rotate(angle).translate(*position)
+            for (position, angle, scale) in zip(self.positions, self.angles, scale_factors):
+                tf = Affine2D().scale(scale).rotate(angle).translate(*position)
                 patches.append(PathPatch(outline_path.transformed(tf)))
             patches = PatchCollection(patches)
 
@@ -47,8 +48,8 @@ class Polygons(draw.Polygons):
             vertices += np.sign(vertices)*aa_pixel_size
 
         patches = []
-        for (position, angle) in zip(self.positions, self.angles):
-            tf = Affine2D().rotate(angle).translate(*position)
+        for (position, angle, scale) in zip(self.positions, self.angles, scale_factors):
+            tf = Affine2D().scale(scale).rotate(angle).translate(*position)
             patches.append(Polygon(vertices, closed=True, transform=tf))
         patches = PatchCollection(patches)
         patches.set_facecolor(self.colors)
