@@ -10,3 +10,5 @@ jobs:
               PLATO_TEST_ARTIFACT_DIR: /tmp/plato_output
       - store_artifacts:
           path: /tmp/plato_output
+      - store_test_results:
+          path: /tmp/test_results
