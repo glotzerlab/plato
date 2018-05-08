@@ -46,8 +46,7 @@ class Scene(draw.Scene):
 
         (width, height) = self.size.astype(np.float32)/self.zoom
         (shift_x, shift_y, _) = -self.translation
-        axes.set_xticks([])
-        axes.set_yticks([])
+        axes.axis('off')
         axes.set_xlim(-width/2 + shift_x, width/2 + shift_x)
         axes.set_ylim(-height/2 + shift_y, height/2 + shift_y)
         axes.set_aspect(1)
