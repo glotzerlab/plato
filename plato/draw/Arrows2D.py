@@ -54,8 +54,5 @@ class Arrows2D(Polygons):
             quats = np.concatenate(
                 [quats, np.tile([[1, 0, 0, 0]], (N - quats.shape[0], 1))],
                 axis=0)
-        print('boop')
-        print(magnitudes)
         magnitudes /= np.linalg.norm(quats, axis=-1)**2
         self.orientations = quats*np.sqrt(magnitudes)[:, np.newaxis]
-        print(self.magnitudes)
