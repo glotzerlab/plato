@@ -10,9 +10,9 @@ import plato.draw.blender as draw
 import test_scenes
 from test_internals import get_fname
 
-def render(scene, num_run=0):
-    fname = get_fname('blender_{}.png'.format(num_run))
+def render(scene, name=''):
+    fname = get_fname('blender_{}.png'.format(name))
     scene.save(fname)
 
 for i, (name, scene) in enumerate(test_scenes.translate_usable_scenes(draw)):
-    render(scene, i)
+    render(scene, name)

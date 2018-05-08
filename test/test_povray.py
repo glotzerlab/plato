@@ -16,16 +16,16 @@ except FileNotFoundError:
 
 class PovrayTests(unittest.TestCase):
 
-    def render(self, scene, num_run=0):
-        fname = get_fname('povray_{}.{}'.format(num_run, suffix))
+    def render(self, scene, name=''):
+        fname = get_fname('povray_{}.{}'.format(name, suffix))
         scene.save(fname)
 
 for i, (name, scene) in enumerate(test_scenes.translate_usable_scenes(draw)):
     new_name = 'test_{}'.format(name)
     setattr(
-        PovrayTests, new_name, (lambda *args, scene=scene, num_run=i, **kwargs:
+        PovrayTests, new_name, (lambda *args, scene=scene, name=name, **kwargs:
                                 PovrayTests.render(*args, scene=scene,
-                                                   num_run=num_run)))
+                                                   name=name)))
     getattr(PovrayTests, new_name).__name__ = new_name
 
 if __name__ == '__main__':
