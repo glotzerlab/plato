@@ -5,6 +5,14 @@ from setuptools import setup
 with open('plato/version.py') as version_file:
     exec(version_file.read())
 
+long_description_lines = []
+with open('README.rst', 'r') as readme:
+    for line in readme:
+        if line.startswith('Contents'):
+            break
+        long_description_lines.append(line)
+long_description = ''.join(long_description_lines)
+
 setup(name='plato-draw',
       author='Matthew Spellings',
       author_email='mspells@umich.edu',
@@ -18,6 +26,7 @@ setup(name='plato-draw',
       description='Geometry and visualization tools for collections of particles',
       install_requires=['numpy', 'scipy', 'rowan'],
       license='BSD',
+      long_description=long_description,
       packages=[
           'plato', 'plato.draw',
           'plato.draw.blender',
