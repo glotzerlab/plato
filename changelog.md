@@ -1,3 +1,8 @@
+## v1.1
+
+- Add outlines to vispy Spheres (mspells)
+- Made povray backend able to save raw .pov files (mspells)
+
 ## v1.0
 
 - Reorganized entire project from being vispy focused (plato.gl) to having multiple backends (plato.draw.*) (mspells)
