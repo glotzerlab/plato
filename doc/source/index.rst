@@ -65,6 +65,7 @@ Contents:
    fresnel
    matplotlib
    povray
+   pythreejs
    vispy
    troubleshooting
 

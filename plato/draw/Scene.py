@@ -42,20 +42,24 @@ class Scene:
         # map each enabled feature's name to a configuration object
         self._enabled_features = dict()
 
-        try:
-            self._primitives = list(primitives)
-        except TypeError:
-            self._primitives = [primitives]
-
+        self._primitives = []
         self._size = np.ones((2,), dtype=np.float32)
+        self._translation = np.zeros((3,), dtype=np.float32)
+        self._rotation = np.array([1, 0, 0, 0], dtype=np.float32)
+
         self.pixel_scale = pixel_scale
         self.size = size
         self.zoom = zoom
-
-        self._translation = np.zeros((3,), dtype=np.float32)
         self.translation = translation
-        self._rotation = np.array([1, 0, 0, 0], dtype=np.float32)
         self.rotation = rotation
+
+        try:
+            primitives = list(primitives)
+        except TypeError:
+            primitives = [primitives]
+
+        for prim in primitives:
+            self.add_primitive(prim)
 
         for feature in features:
             config = features[feature]
