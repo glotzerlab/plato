@@ -10,18 +10,22 @@ Installation
 
 Plato is available on PyPI for installation via pip::
 
-  $ pip install plato-draw --user
+  $ pip install plato-draw
 
 You can also install plato from source, like this::
 
    $ git clone https://bitbucket.org/glotzer/plato.git
    $ # now install
-   $ cd plato && python setup.py install --user
+   $ cd plato && python setup.py install
 
 .. note::
 
-   If using conda or a virtualenv, the `--user` argument in the
-   commands above is unnecessary.
+   Depending on which backends you want to use, there may be
+   additional steps required; see the section on interactive backends
+   below.
+
+Using Interactive Backends
+--------------------------
 
 Plato contains a number of backends, each with its own set of
 dependencies. Getting the vispy backend working for both the desktop
