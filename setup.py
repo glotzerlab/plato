@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+from setuptools import setup
+
 long_description="""
 Plato is designed for efficient visualization of particle data. Think
 of it sort of like matplotlib, but being less focused on 2D plotting.
@@ -15,8 +17,6 @@ Full documentation is available in standard sphinx form::
 Automatically-built documentation is available at
 https://plato-draw.readthedocs.io .
 """
-
-from setuptools import setup
 
 with open('plato/version.py') as version_file:
     exec(version_file.read())
