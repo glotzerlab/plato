@@ -1,17 +1,25 @@
 #!/usr/bin/env python
 
+long_description="""
+Plato is designed for efficient visualization of particle data. Think
+of it sort of like matplotlib, but being less focused on 2D plotting.
+
+Documentation
+=============
+
+Full documentation is available in standard sphinx form::
+
+  $ cd doc
+  $ make html
+
+Automatically-built documentation is available at
+https://plato-draw.readthedocs.io .
+"""
+
 from setuptools import setup
 
 with open('plato/version.py') as version_file:
     exec(version_file.read())
-
-long_description_lines = []
-with open('README.rst', 'r') as readme:
-    for line in readme:
-        if line.startswith('Contents'):
-            break
-        long_description_lines.append(line)
-long_description = ''.join(long_description_lines)
 
 setup(name='plato-draw',
       author='Matthew Spellings',
