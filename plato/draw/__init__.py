@@ -2,6 +2,7 @@ from .Scene import Scene
 
 from .Arrows2D import Arrows2D
 from .Disks import Disks
+from .DiskUnion import DiskUnion
 from .Polygons import Polygons
 from .Spheropolygons import Spheropolygons
 from .Voronoi import Voronoi

@@ -104,6 +104,22 @@ def voronoi_with_disks(seed=13, num_points=32):
     scene = draw.Scene([prim, prim2], zoom=4, features=dict(pan=True))
     return scene
 
+@register_scene
+def disk_union(seed=13, num_unions=4):
+    np.random.seed(seed)
+
+    points = np.array([[1.0, 0.0], [-0.5, 0.866], [-0.5, -0.866]])
+    positions = np.random.uniform(-3, 3, (num_unions, 2))*2
+    angles = np.random.uniform(0, 2*np.pi, 4)
+    colors = np.random.rand(len(points), 4)
+    radii = np.random.uniform(0.5, 1.0, (len(points), 1))
+
+    prim1 = draw.DiskUnion(positions=positions, angles=angles, colors=colors,
+                           points=points, radii=radii, outline=.125)
+
+    scene = draw.Scene([prim1], zoom=2, features=dict(pan=True))
+    return scene
+
 @selectively_register_scene('matplotlib')
 def colored_spheres(num_per_side=6):
     xs = np.arange(num_per_side).astype(np.float32)
