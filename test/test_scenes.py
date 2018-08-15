@@ -120,6 +120,25 @@ def disk_union(seed=13, num_unions=4):
     scene = draw.Scene([prim1], zoom=2, features=dict(pan=True))
     return scene
 
+@register_scene
+def sphere_union(seed=15, num_unions=5):
+    np.random.seed(seed)
+
+    points = np.array([[0.5, 0.5, 0.5],[0.5, -0.5, -0.5],[-0.5, 0.5, -0.5], [-0.5, -0.5, 0.5]])
+    positions = np.random.uniform(-3, 3, (num_unions, 3))*2
+    orientations = np.random.rand(num_unions, 4)
+    orientations /= np.linalg.norm(orientations, axis=-1, keepdims=True)
+    colors = np.random.rand(len(points), 4)
+    radii = np.random.uniform(0.5, 1.0, (len(points), 1))
+
+    prim1 = draw.SphereUnion(positions=positions, orientations=orientations,colors=colors,
+                           points=points, radii=radii, outline=.10)
+    features = dict(ambient_light=.25)
+    features['directional_light'] = .5*np.array([(.5, .25, -.5), (0, -.25, -.25)])
+    rotation = [ 0.7696833 ,  0.27754638,  0.4948657 , -0.29268363]
+    scene = draw.Scene([prim1], zoom=2, features=features, rotation=rotation)
+    return scene
+
 @selectively_register_scene('matplotlib')
 def colored_spheres(num_per_side=6):
     xs = np.arange(num_per_side).astype(np.float32)

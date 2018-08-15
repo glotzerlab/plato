@@ -9,7 +9,7 @@ from vispy import gloo
 
 @GLShapeDecorator
 class DiskUnion(draw.DiskUnion, GLPrimitive):
-    __doc__ = draw.Disks.__doc__
+    __doc__ = draw.DiskUnion.__doc__
 
     shaders = {}
 

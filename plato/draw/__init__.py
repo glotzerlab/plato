@@ -9,6 +9,7 @@ from .Voronoi import Voronoi
 from .Lines import Lines
 from .Spheres import Spheres
 from .SpherePoints import SpherePoints
+from .SphereUnion import SphereUnion
 from .Mesh import Mesh
 from .ConvexPolyhedra import ConvexPolyhedra
 from .ConvexSpheropolyhedra import ConvexSpheropolyhedra
