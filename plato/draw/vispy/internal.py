@@ -18,6 +18,7 @@ class GLPrimitive:
         self._dirty_vertex_attribs = set()
         self._gl_uniforms = {}
         self._dirty_uniforms = set()
+        self._shader_substitutions = {}
 
         self._color_programs = []
         self._plane_programs = []
@@ -37,13 +38,22 @@ class GLPrimitive:
         prelude = '\n'.join(prelude_lines) + '\n'
         return prelude
 
+    def make_shader_substitutions(self, shader):
+        for name in self._shader_substitutions:
+            shader = shader.replace(name, self._shader_substitutions[name])
+        return shader
+
     def make_color_program(self, config={}):
         prelude = self.make_prelude(config)
-        return gloo.Program(prelude + self.shaders['vertex'], prelude + self.shaders['fragment'])
+        vertex = self.make_shader_substitutions(prelude + self.shaders['vertex'])
+        fragment = self.make_shader_substitutions(prelude + self.shaders['fragment'])
+        return gloo.Program(vertex, fragment)
 
     def make_plane_program(self, config={}):
         prelude = self.make_prelude(config)
-        return gloo.Program(prelude + self.shaders['vertex'], prelude + self.shaders['fragment_plane'])
+        vertex = self.make_shader_substitutions(prelude + self.shaders['vertex'])
+        fragment = self.make_shader_substitutions(prelude + self.shaders['fragment_plane'])
+        return gloo.Program(vertex, fragment)
 
     def render_generic(self, programs, make_program_function, config={}):
         self.update_arrays()
@@ -67,8 +77,12 @@ class GLPrimitive:
 
         for name in self._dirty_uniforms:
             for program in itertools.chain(*self._all_program_sets):
-                if name in program:
+                if name.endswith('[]'):
+                    if name[:-2] in program:
+                        program[name[:-2]] = self._gl_uniforms[name]
+                elif name in program:
                     program[name] = self._gl_uniforms[name]
+
         self._dirty_uniforms.clear()
 
         for (program, (_, buf)) in zip(programs, self._gl_vertex_arrays['indices']):
@@ -112,6 +126,13 @@ def gl_uniform_setter(self, value, name, dtype, dimension, default):
     assert result.shape[-1:] == self._UNIFORM_DIMENSIONS[name], 'Invalid shape for uniform {}: {}'.format(name, result.shape)
     self._dirty_uniforms.add(name)
     self._gl_uniforms[name] = result
+    if name.endswith('[]'):
+        key = 'NUM_{}'.format(name[:-2].upper())
+        value = str(result.shape[0])
+        if self._shader_substitutions.get(key, None) != value:
+            for pset in self._all_program_sets:
+                pset.clear()
+            self._shader_substitutions[key] = value
 
 def gl_uniform_getter(self, name):
     return self._gl_uniforms[name]
@@ -134,7 +155,7 @@ def GLShapeDecorator(cls):
             dimension=attr.dimension, default=attr.default)
         prop = property(getter, setter, doc=attr.description)
 
-        setattr(cls, attr.name, prop)
+        setattr(cls, attr.name.replace('[]', ''), prop)
 
     if cls.__doc__ is None:
         cls.__doc__ = ''

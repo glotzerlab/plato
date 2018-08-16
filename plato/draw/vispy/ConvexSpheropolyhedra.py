@@ -79,7 +79,7 @@ class ConvexSpheropolyhedra(draw.ConvexSpheropolyhedra, GLPrimitive):
        // base light level
        uniform float ambientLight;
        // (x, y, z) direction*intensity
-       uniform vec3 diffuseLight;
+       uniform vec3 diffuseLight[NUM_DIFFUSELIGHT];
        uniform int transparency_mode;
        uniform float light_levels;
 
@@ -102,8 +102,9 @@ class ConvexSpheropolyhedra(draw.ConvexSpheropolyhedra, GLPrimitive):
            }
            else discard;
 
-           float light = max(0.0, -dot(normal, diffuseLight));
-           light += ambientLight;
+           float light = ambientLight;
+           for(int i = 0; i < NUM_DIFFUSELIGHT; ++i)
+               light += max(0.0, -dot(normal, diffuseLight[i]));
 
            if(light_levels > 0.0)
            {
@@ -135,10 +136,6 @@ class ConvexSpheropolyhedra(draw.ConvexSpheropolyhedra, GLPrimitive):
 
        uniform mat4 camera;
        uniform float radius;
-       // base light level
-       uniform float ambientLight;
-       // (x, y, z) direction*intensity
-       uniform vec3 diffuseLight;
        uniform float render_positions = 0.0;
 
        void main()
@@ -176,7 +173,7 @@ class ConvexSpheropolyhedra(draw.ConvexSpheropolyhedra, GLPrimitive):
          'Rounding radius to be applied to all shapes'),
         ('ambientLight', np.float32, .25, 0,
          'Internal: Ambient (minimum) light level for all surfaces'),
-        ('diffuseLight', np.float32, (.5, .5, .5), 1,
+        ('diffuseLight[]', np.float32, (.5, .5, .5), 2,
          'Internal: Diffuse light direction*magnitude'),
         ('rotation', np.float32, (1, 0, 0, 0), 1,
          'Internal: Rotation to be applied to each scene as a quaternion'),

@@ -82,14 +82,13 @@ class Lines(draw.Lines, GLPrimitive):
     """
 
     shaders['fragment'] = """
-
        varying vec4 v_color;
        varying vec3 v_normal;
        varying float v_depth;
        // base light level
        uniform float ambientLight;
        // (x, y, z) direction*intensity
-       uniform vec3 diffuseLight;
+       uniform vec3 diffuseLight[NUM_DIFFUSELIGHT];
        uniform int transparency_mode;
 
        void main()
@@ -97,8 +96,9 @@ class Lines(draw.Lines, GLPrimitive):
            vec4 color = v_color;
            vec3 normal = v_normal;
            normal.z = sqrt(1.0 - dot(normal, normal));
-           float light = max(0.0, -dot(normal, diffuseLight));
-           light += ambientLight;
+           float light = ambientLight;
+           for(int i = 0; i < NUM_DIFFUSELIGHT; ++i)
+               light += max(0.0, -dot(normal, diffuseLight[i]));
            color.xyz *= light;
 
            float z = abs(v_depth);
@@ -122,7 +122,7 @@ class Lines(draw.Lines, GLPrimitive):
          'Internal: 4x4 Camera matrix for world projection'),
         ('ambientLight', np.float32, .25, 0,
          'Internal: Ambient (minimum) light level for all surfaces'),
-        ('diffuseLight', np.float32, (.5, .5, .5), 1,
+        ('diffuseLight[]', np.float32, (.5, .5, .5), 2,
          'Internal: Diffuse light direction*magnitude'),
         ('rotation', np.float32, (1, 0, 0, 0), 1,
          'Internal: Rotation to be applied to each scene as a quaternion'),
@@ -135,6 +135,9 @@ class Lines(draw.Lines, GLPrimitive):
 
     def __init__(self, *args, **kwargs):
         GLPrimitive.__init__(self)
+        # needed to set the size in shaders in case the value is never
+        # set
+        self.diffuseLight = (0, 0, 0)
         draw.Lines.__init__(self, *args, **kwargs)
 
     def update_arrays(self):

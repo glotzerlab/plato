@@ -82,14 +82,15 @@ class ConvexPolyhedra(draw.ConvexPolyhedra, GLPrimitive):
        // base light level
        uniform float ambientLight;
        // (x, y, z) direction*intensity
-       uniform vec3 diffuseLight;
+       uniform vec3 diffuseLight[NUM_DIFFUSELIGHT];
        uniform int transparency_mode;
        uniform float light_levels;
 
        void main()
        {
-           float light = max(0.0, -dot(v_normal, diffuseLight));
-           light += ambientLight;
+           float light = ambientLight;
+           for(int i = 0; i < NUM_DIFFUSELIGHT; ++i)
+               light += max(0.0, -dot(v_normal, diffuseLight[i]));
 
            light *= float(v_normal.z > 0.0);
 
@@ -119,10 +120,6 @@ class ConvexPolyhedra(draw.ConvexPolyhedra, GLPrimitive):
        varying vec3 v_position;
 
        uniform mat4 camera;
-       // base light level
-       uniform float ambientLight;
-       // (x, y, z) direction*intensity
-       uniform vec3 diffuseLight;
        uniform float render_positions = 0.0;
 
        void main()
@@ -141,7 +138,7 @@ class ConvexPolyhedra(draw.ConvexPolyhedra, GLPrimitive):
          'Internal: 4x4 Camera matrix for world projection'),
         ('ambientLight', np.float32, .25, 0,
          'Internal: Ambient (minimum) light level for all surfaces'),
-        ('diffuseLight', np.float32, (.5, .5, .5), 1,
+        ('diffuseLight[]', np.float32, (.5, .5, .5), 2,
          'Internal: Diffuse light direction*magnitude'),
         ('rotation', np.float32, (1, 0, 0, 0), 1,
          'Internal: Rotation to be applied to each scene as a quaternion'),

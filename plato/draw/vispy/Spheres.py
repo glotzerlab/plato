@@ -68,7 +68,7 @@ class Spheres(draw.Spheres, GLPrimitive):
        // base light level
        uniform float ambientLight;
        // (x, y, z) direction*intensity
-       uniform vec3 diffuseLight;
+       uniform vec3 diffuseLight[NUM_DIFFUSELIGHT];
        uniform int transparency_mode;
        uniform mat4 camera;
        uniform float light_levels;
@@ -101,8 +101,9 @@ class Spheres(draw.Spheres, GLPrimitive):
 
            vec3 r_local = vec3(v_image.xy, sqrt(Rsq - rsq));
            vec3 normal = normalize(r_local);
-           float light = max(0.0, -dot(normal, diffuseLight));
-           light += ambientLight;
+           float light = ambientLight;
+           for(int i = 0; i < NUM_DIFFUSELIGHT; ++i)
+               light += max(0.0, -dot(normal, diffuseLight[i]));
 
            if(light_levels > 0.0)
            {
@@ -135,9 +136,6 @@ class Spheres(draw.Spheres, GLPrimitive):
 
     shaders['fragment_plane'] = """
        // base light level
-       uniform float ambientLight;
-       // (x, y, z) direction*intensity
-       uniform vec3 diffuseLight;
        uniform mat4 camera;
        uniform float render_positions = 0.0;
 
@@ -156,8 +154,6 @@ class Spheres(draw.Spheres, GLPrimitive):
 
            vec3 r_local = vec3(v_image.xy, sqrt(Rsq - rsq));
            vec3 normal = normalize(r_local);
-           float light = max(0.0, dot(normal, diffuseLight));
-           light += ambientLight;
            #ifndef WEBGL
            float depth = v_depth + r_local.z;
            gl_FragDepth = 0.5*(camera[2][2]*depth + camera[3][2] +
@@ -178,7 +174,7 @@ class Spheres(draw.Spheres, GLPrimitive):
          'Internal: 4x4 Camera matrix for world projection'),
         ('ambientLight', np.float32, .25, 0,
          'Internal: Ambient (minimum) light level for all surfaces'),
-        ('diffuseLight', np.float32, (.5, .5, .5), 1,
+        ('diffuseLight[]', np.float32, (.5, .5, .5), 2,
          'Internal: Diffuse light direction*magnitude'),
         ('rotation', np.float32, (1, 0, 0, 0), 1,
          'Internal: Rotation to be applied to each scene as a quaternion'),

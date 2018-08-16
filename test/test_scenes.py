@@ -93,8 +93,9 @@ def colored_spheres(num_per_side=6):
     diameters = np.ones((rs.shape[0],))/np.sqrt(2)
     rs -= np.mean(rs, axis=0, keepdims=True)
 
-    prim = draw.Spheres(positions=rs, colors=colors, diameters=diameters, outline=.01)
-    features = dict(ambient_light=.25, directional_light=(-.1, -.15, -1))
+    prim = draw.Spheres(positions=rs, colors=colors, diameters=diameters, outline=.02)
+    features = dict(ambient_light=.25)
+    features['directional_light'] = .5*np.array([(.5, .25, -.5), (0, -.25, -.25)])
     rotation = [0.43797198, -0.4437895 ,  0.08068451,  0.7776423]
     return draw.Scene(prim, features=features, zoom=4, rotation=rotation)
 

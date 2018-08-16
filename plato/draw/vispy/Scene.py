@@ -85,8 +85,9 @@ class Scene(draw.Scene):
         if name == 'directional_light':
             lights = parameters.get('value', (.25, .5, -1))
             lights = np.atleast_2d(lights).astype(np.float32)
+            from .Spheres import Spheres
             for prim in self._primitives:
-                prim.diffuseLight = lights[0]
+                prim.diffuseLight = lights
 
         elif name == 'ambient_light':
             light = parameters.get('value', .25)
