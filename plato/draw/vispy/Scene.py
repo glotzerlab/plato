@@ -2,6 +2,7 @@ import vispy.io
 from .Canvas import Canvas
 from ... import draw
 import numpy as np
+from .internal import DEFAULT_DIRECTIONAL_LIGHTS
 
 def set_orthographic_projection(camera, left, right, bottom, top, near, far):
     camera[:] = 0
@@ -83,9 +84,8 @@ class Scene(draw.Scene):
 
     def enable(self, name, **parameters):
         if name == 'directional_light':
-            lights = parameters.get('value', (.25, .5, -1))
+            lights = parameters.get('value', DEFAULT_DIRECTIONAL_LIGHTS)
             lights = np.atleast_2d(lights).astype(np.float32)
-            from .Spheres import Spheres
             for prim in self._primitives:
                 prim.diffuseLight = lights
 

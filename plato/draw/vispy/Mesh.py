@@ -2,7 +2,7 @@ from collections import defaultdict
 import itertools
 import numpy as np
 from ... import mesh
-from .internal import GLPrimitive, GLShapeDecorator
+from .internal import GLPrimitive, GLShapeDecorator, DEFAULT_DIRECTIONAL_LIGHTS
 from ... import draw
 from ..internal import ShapeAttribute
 from vispy import gloo
@@ -129,7 +129,7 @@ class Mesh(draw.Mesh, GLPrimitive):
          'Internal: 4x4 Camera matrix for world projection'),
         ('ambientLight', np.float32, .25, 0,
          'Internal: Ambient (minimum) light level for all surfaces'),
-        ('diffuseLight[]', np.float32, (.5, .5, .5), 2,
+        ('diffuseLight[]', np.float32, DEFAULT_DIRECTIONAL_LIGHTS, 2,
          'Internal: Diffuse light direction*magnitude'),
         ('rotation', np.float32, (1, 0, 0, 0), 1,
          'Internal: Rotation to be applied to each scene as a quaternion'),

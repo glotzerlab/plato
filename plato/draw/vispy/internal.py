@@ -8,6 +8,12 @@ from ..internal import array_size_checkers, ATTRIBUTE_DOCSTRING_TEMPLATE
 
 ATTRIBUTE_DOCSTRING_HEADER = '\n\nThis primitive has the following opengl-specific attributes:'
 
+DEFAULT_DIRECTIONAL_LIGHTS = (
+    [ 0.4,  -0.4,    -0.4 ],
+    [-0.25, -0.0625, -0.25 ],
+    [    0,  0.125,  -0.125]
+)
+
 class GLPrimitive:
     def __init__(self):
         # hold intermediate computations wrt convex hull/meshes
