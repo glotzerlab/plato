@@ -31,6 +31,9 @@ class GLPrimitive:
             value = size_checker(np.asarray(attr.default, dtype=attr.dtype))
             self._gl_uniforms[attr.name] = value
 
+        for attr in self._GL_UNIFORMS:
+            setattr(self, attr.name.replace('[]', ''), attr.default)
+
     def make_prelude(self, config={}):
         prelude_lines = []
         if self._webgl:

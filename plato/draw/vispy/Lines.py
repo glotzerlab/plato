@@ -122,7 +122,7 @@ class Lines(draw.Lines, GLPrimitive):
          'Internal: 4x4 Camera matrix for world projection'),
         ('ambientLight', np.float32, .25, 0,
          'Internal: Ambient (minimum) light level for all surfaces'),
-        ('diffuseLight[]', np.float32, (.5, .5, .5), 2,
+        ('diffuseLight[]', np.float32, (0, 0, 0), 2,
          'Internal: Diffuse light direction*magnitude'),
         ('rotation', np.float32, (1, 0, 0, 0), 1,
          'Internal: Rotation to be applied to each scene as a quaternion'),
@@ -135,9 +135,6 @@ class Lines(draw.Lines, GLPrimitive):
 
     def __init__(self, *args, **kwargs):
         GLPrimitive.__init__(self)
-        # needed to set the size in shaders in case the value is never
-        # set
-        self.diffuseLight = (0, 0, 0)
         draw.Lines.__init__(self, *args, **kwargs)
 
     def update_arrays(self):
