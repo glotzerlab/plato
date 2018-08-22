@@ -65,6 +65,7 @@ Contents:
    matplotlib
    povray
    vispy
+   troubleshooting
 
 Indices and tables
 ==================
