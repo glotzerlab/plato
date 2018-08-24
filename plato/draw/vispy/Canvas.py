@@ -794,7 +794,10 @@ class Canvas(vispy.app.Canvas):
                 self._programs['fxaa_post']['resolution'] = size
                 self._programs['fxaa_post']['a_position'] = [(-1, -1), (-1, 1), (1, -1), (1, 1)]
 
-                self._final_render_target = self._fbos['fxaa_target']
+                if 'ssao' in self._scene._enabled_features:
+                    self._final_render_target = self._fbos['ssao_target']
+                else:
+                    self._final_render_target = self._fbos['fxaa_target']
             elif feature == 'ssao':
                 if self._webgl:
                     raise RuntimeWarning('Can\'t use SSAO with webgl')
@@ -825,9 +828,6 @@ class Canvas(vispy.app.Canvas):
                 pass
             else:
                 raise RuntimeError('Unknown rendering feature {}'.format(feature))
-
-        if 'ssao' in self._scene._enabled_features and 'fxaa' in self._scene._enabled_features:
-            self._final_render_target = self._fbos['ssao_target']
 
     def _disable_feature(self, *features):
         """Removes a feature from the set of used features. Features must be
