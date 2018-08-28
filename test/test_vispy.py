@@ -12,6 +12,8 @@ class VispyTests(unittest.TestCase):
         fname = get_fname('vispy_{}.png'.format(name))
         scene.show()
         scene.save(fname)
+        scene._canvas.close()
+        vispy.app.process_events()
 
     def test_fxaa_ssao(self):
         original_scene = test_scenes.colored_spheres()
@@ -53,4 +55,3 @@ for i, (name, scene) in enumerate(test_scenes.translate_usable_scenes(draw)):
 
 if __name__ == '__main__':
     unittest.main()
-    vispy.app.run()
