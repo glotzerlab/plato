@@ -148,40 +148,11 @@ class Mesh(draw.Mesh, GLPrimitive):
 
     def update_arrays(self):
         if 'vertices' in self._dirty_attributes:
-            image = self.vertices
-            indices = self.indices
-
-            # compute the vertex normals
-            # first, compute the normal for each face
-            expandedVertices = image[indices]
-            faceNormals = np.cross(expandedVertices[:, 1, :] - expandedVertices[:, 0, :],
-                                    expandedVertices[:, 2, :] - expandedVertices[:, 0, :])
-            faceNormals /= np.linalg.norm(faceNormals, axis=-1, keepdims=True)
-
-            # store the normals of faces adjacent to each vertex here
-            vertexFaceNormals = defaultdict(list)
-
-            for ((i, j, k), normal) in zip(indices, faceNormals):
-                vertexFaceNormals[i].append(normal)
-                vertexFaceNormals[j].append(normal)
-                vertexFaceNormals[k].append(normal)
-
-            # use the (normalized) mean normal of each adjacent face
-            # as the vertex normal
-            vertexNormals = []
-            for i in range(len(image)):
-                if vertexFaceNormals[i]:
-                    normal = np.mean(vertexFaceNormals[i], axis=0)
-                    normal /= np.linalg.norm(normal)
-                else:
-                    normal = [0, 0, 0]
-                vertexNormals.append(normal)
-
-            normal = np.array(vertexNormals, dtype=np.float32)
+            normal = mesh.computeNormals_(self.vertices, self.indices)
 
             self._gl_attributes['image'] = self.vertices
             self._gl_attributes['normal'] = normal
-            self._gl_attributes['indices'] = indices
+            self._gl_attributes['indices'] = self.indices
 
         try:
             for name in self._dirty_attributes:
