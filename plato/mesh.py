@@ -5,6 +5,35 @@ import numpy as np
 
 from .geometry import convexHull, massProperties, Polygon
 
+def computeNormals_(vertices, indices):
+    # first, compute the normal for each face
+    expandedVertices = vertices[indices]
+    faceNormals = np.cross(expandedVertices[:, 1, :] - expandedVertices[:, 0, :],
+                            expandedVertices[:, 2, :] - expandedVertices[:, 0, :])
+    faceNormals /= np.linalg.norm(faceNormals, axis=-1, keepdims=True)
+
+    # store the normals of faces adjacent to each vertex here
+    vertexFaceNormals = defaultdict(list)
+
+    for ((i, j, k), normal) in zip(indices, faceNormals):
+        vertexFaceNormals[i].append(normal)
+        vertexFaceNormals[j].append(normal)
+        vertexFaceNormals[k].append(normal)
+
+    # use the (normalized) mean normal of each adjacent face
+    # as the vertex normal
+    vertexNormals = []
+    for i in range(len(vertices)):
+        if vertexFaceNormals[i]:
+            normal = np.mean(vertexFaceNormals[i], axis=0)
+            normal /= np.linalg.norm(normal)
+        else:
+            normal = [0, 0, 0]
+        vertexNormals.append(normal)
+
+    normal = np.array(vertexNormals, dtype=np.float32)
+    return normal
+
 def unfoldProperties(*args):
     """Unfolds (i.e. replicates) groups of NxM properties (M is assumed to be 1
     if given an array of shape (M,)). As an example, given arguments with shapes::
