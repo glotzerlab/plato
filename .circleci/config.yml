@@ -5,10 +5,28 @@ jobs:
       - image: mspells/plato-tests
     steps:
       - run:
-          command: supervisord
+          name: Checkout
+          command: |
+              git clone https://bitbucket.org/glotzer/plato plato
+              cd plato
+              git checkout ${CIRCLE_SHA1}
+
+      - run:
+          name: Install
+          working_directory: plato
+          command: pip install .
+
+      - run:
+          name: Run tests
+          working_directory: plato/test
+          command: |
+              mkdir -p /tmp/test_results/plato /tmp/plato_output
+              xvfb-run -a -s "-screen 0 1600x1200x24 +extension GLX +render +iglx" python3 -m nose --with-xunit --xunit-file=/tmp/test_results/plato/results.xml
           environment:
               PLATO_TEST_ARTIFACT_DIR: /tmp/plato_output
+
       - store_artifacts:
           path: /tmp/plato_output
+
       - store_test_results:
           path: /tmp/test_results
