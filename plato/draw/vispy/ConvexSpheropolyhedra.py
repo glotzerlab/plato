@@ -159,6 +159,8 @@ class ConvexSpheropolyhedra(draw.ConvexSpheropolyhedra, GLPrimitive):
 
            if(render_positions > 0.5)
                gl_FragColor = vec4(gl_FragCoord.xyz, 1.0);
+           else if(render_positions < -0.5)
+               gl_FragColor = 0.5 + 0.5*vec4(normal.xyz, 1.0);
            else // Store the plane equation as a color
                gl_FragColor = vec4(normal, dot(normal, v_position.xyz));
        }

@@ -444,10 +444,6 @@ class Canvas(vispy.app.Canvas):
     _VALID_FEATURES = ['translucency', 'outlines', 'fxaa', 'ssao', 'additive_rendering']
 
     def __init__(self, scene, **kwargs):
-        super(Canvas, self).__init__(size=scene.size_pixels.astype(np.uint32))
-
-        gloo.set_viewport(0, 0, *scene.size_pixels.astype(np.uint32))
-
         self._fbos = {}
         self._programs = {}
         self._textures = {}
@@ -457,6 +453,10 @@ class Canvas(vispy.app.Canvas):
         self._mouse_origin = np.array([0, 0], dtype=np.float32)
         self._selection_callback = None
         self._clip_planes = np.array([1, 100], dtype=np.float32)
+
+        super(Canvas, self).__init__(size=scene.size_pixels.astype(np.uint32))
+
+        gloo.set_viewport(0, 0, *scene.size_pixels.astype(np.uint32))
 
         for feature in self._scene._enabled_features:
             if feature in self._VALID_FEATURES:
@@ -562,6 +562,11 @@ class Canvas(vispy.app.Canvas):
                 gloo.clear(color=True, depth=True)
                 self._programs['outlines_post']['camera'] = prim.camera
                 self._programs['outlines_post'].draw('triangle_strip')
+        elif 'render_normals' in self._scene._enabled_features:
+            with self._final_render_target:
+                gloo.clear(color=True, depth=True)
+                for prim in self._scene._primitives:
+                    prim.render_normals()
         else:
             with self._final_render_target:
                 gloo.clear(color=clear_color, depth=True)

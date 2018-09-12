@@ -111,12 +111,14 @@ class Mesh(draw.Mesh, GLPrimitive):
 
        uniform mat4 camera;
        // base light level
-       uniform float render_positions = 0.0;
+       uniform float render_positions;
 
        void main()
        {
            if(render_positions > 0.5)
                gl_FragColor = vec4(gl_FragCoord.xyz, 1.0);
+           else if(render_positions < -0.5)
+               gl_FragColor = vec4(abs(v_normal.x), abs(v_normal.y), abs(v_normal.z), 1.0);
            else // Store the plane equation as a color
                gl_FragColor = vec4(v_normal, dot(v_normal, v_position.xyz));
        }

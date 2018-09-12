@@ -105,6 +105,11 @@ class GLPrimitive:
         self._dirty_uniforms.add('render_positions')
         self.render_generic(self._plane_programs, self.make_plane_program)
 
+    def render_normals(self):
+        self._gl_uniforms['render_positions'] = -1
+        self._dirty_uniforms.add('render_positions')
+        self.render_generic(self._plane_programs, self.make_plane_program)
+
     def render_positions(self):
         self._gl_uniforms['render_positions'] = 1
         self._dirty_uniforms.add('render_positions')
