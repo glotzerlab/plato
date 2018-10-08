@@ -68,7 +68,11 @@ class GLPrimitive:
         self.update_arrays()
 
         for _ in range(len(programs), len(self._gl_vertex_arrays['indices'])):
-            programs.append(make_program_function(config))
+            try:
+                programs.append(make_program_function(config))
+            except KeyError:
+                # we were missing some shader code
+                continue
             self._dirty_vertex_attribs.update(self._gl_vertex_arrays)
             self._dirty_uniforms.update(self._gl_uniforms)
 
