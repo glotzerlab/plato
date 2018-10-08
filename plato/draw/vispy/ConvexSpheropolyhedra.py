@@ -90,13 +90,13 @@ class ConvexSpheropolyhedra(draw.ConvexSpheropolyhedra, GLPrimitive):
            vec3 tangent = v_imageDelta - dot(v_imageDelta, v_normal)*v_normal;
            float tangentsq = dot(tangent, tangent);
 
-           if(tangentsq > 1e-6)
+           if(tangentsq > 1e-6*radius*radius)
            {
                float lam = sqrt(tangentsq)/radius;
                float scaledRadius = radius*camera[2][2];
                normal = v_imageDelta/sqrt(deltasq);
            }
-           else if(deltasq <= radius*radius + 1e-4)
+           else if(deltasq <= radius*radius*(1.0 + 1e-5))
            {
                normal = v_normal;
            }
@@ -145,13 +145,13 @@ class ConvexSpheropolyhedra(draw.ConvexSpheropolyhedra, GLPrimitive):
            vec3 tangent = v_imageDelta - dot(v_imageDelta, v_normal)*v_normal;
            float tangentsq = dot(tangent, tangent);
 
-           if(tangentsq > 1e-6)
+           if(tangentsq > 1e-6*radius*radius)
            {
                float lam = sqrt(tangentsq)/radius;
                float scaledRadius = radius*camera[2][2];
                normal = v_imageDelta/sqrt(deltasq);
            }
-           else if(deltasq <= radius*radius + 1e-4)
+           else if(deltasq <= radius*radius*(1.0 + 1e-5))
            {
                normal = v_normal;
            }
