@@ -454,7 +454,7 @@ class Canvas(vispy.app.Canvas):
         self._selection_callback = None
         self._clip_planes = np.array([1, 100], dtype=np.float32)
 
-        super(Canvas, self).__init__(size=scene.size_pixels.astype(np.uint32))
+        super(Canvas, self).__init__(size=scene.size_pixels.astype(np.uint32), **kwargs)
 
         gloo.set_viewport(0, 0, *scene.size_pixels.astype(np.uint32))
 
