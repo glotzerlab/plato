@@ -1,0 +1,4 @@
+include setup.py LICENSE.txt README.md changelog.md
+recursive-include doc Makefile *.py *.rst
+recursive-include plato *.py
+recursive-include test *.py
