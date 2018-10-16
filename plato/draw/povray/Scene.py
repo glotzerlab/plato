@@ -49,6 +49,8 @@ class Scene(draw.Scene):
         return [camera]
 
     def render_lights(self):
+        # adjust povray lights to be of the same intensity as other lights
+        light_scale = np.sqrt(2)
         result = []
 
         if 'ambient_light' in self._enabled_features:
@@ -77,7 +79,9 @@ class Scene(draw.Scene):
 
             dz = np.sqrt(np.sum((self.size/self.zoom)**2))
             for direction in lights:
-                magnitude = np.linalg.norm(direction)
+                magnitude = np.linalg.norm(direction)*light_scale
+                if magnitude < 1e-6:
+                    continue
                 norm = direction/magnitude
                 position = -norm*dz*2
 
@@ -87,7 +91,10 @@ class Scene(draw.Scene):
                 halftheta = np.arccos(norm[2])/2
                 cross = np.cross([0, 0, 1], norm)
                 cross /= np.linalg.norm(cross)
-                quat = np.array([np.cos(halftheta)] + (np.sin(halftheta)*cross).tolist())
+                if np.any(np.logical_not(np.isfinite(cross))):
+                    quat = [1., 0, 0, 0]
+                else:
+                    quat = np.array([np.cos(halftheta)] + (np.sin(halftheta)*cross).tolist())
 
                 basis0 = np.array([dz, 0, 0])
                 basis0 = math.quatrot(quat, basis0)
