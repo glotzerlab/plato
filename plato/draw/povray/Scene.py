@@ -105,9 +105,10 @@ class Scene(draw.Scene):
                 else:
                     quat = np.array([np.cos(halftheta)] + (np.sin(halftheta)*cross).tolist())
 
-                basis0 = np.array([dz, 0, 0])
+                light_length = dz*2
+                basis0 = np.array([light_length, 0, 0])
                 basis0 = math.quatrot(quat, basis0)
-                basis1 = np.array([0, dz, 0])
+                basis1 = np.array([0, light_length, 0])
                 basis1 = math.quatrot(quat, basis1)
 
                 light = ('light_source {{ <{pos[0]}, {pos[1]}, {pos[2]}> color '
