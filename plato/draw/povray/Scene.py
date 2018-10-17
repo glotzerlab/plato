@@ -49,12 +49,16 @@ class Scene(draw.Scene):
         return [camera]
 
     def render_lights(self):
-        # adjust povray lights to be of the same intensity as other lights
-        light_scale = np.sqrt(2)
         result = []
+
+        result.append('global_settings {ambient_light rgb <0, 0, 0>}')
+
+        # adjust povray lights to be of the same intensity as other lights
+        light_scale = 5./3
 
         if 'ambient_light' in self._enabled_features:
             config = self._enabled_features['ambient_light']
+            magnitude = config.get('value', 0.25)*light_scale
 
             (width, height) = self.size/self.zoom
             dz = np.sqrt(np.sum(width**2 + height**2))
@@ -68,7 +72,7 @@ class Scene(draw.Scene):
                      'area_light <{basis0[0]}, {basis0[1]}, {basis0[2]}>, '
                      '<{basis1[0]}, {basis1[1]}, {basis1[2]}>, 5, 5 '
                      'adaptive 1 jitter shadowless }}').format(
-                         pos=pos, mag=config.get('value', 0.25),
+                         pos=pos, mag=magnitude,
                          basis0=basis0, basis1=basis1)
             result.append(light)
 
