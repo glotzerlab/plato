@@ -1,3 +1,11 @@
+## v1.2
+
+- Support multiple directional lights in vispy (mspells)
+- Add double-sided Mesh helper function (mspells)
+- Experimental vispy normal-rendering mode (mspells)
+- Increased povray light intensity (mspells)
+- Fix vispy canvas kwargs (mootimot)
+
 ## v1.1
 
 - Add outlines to vispy Spheres (mspells)
