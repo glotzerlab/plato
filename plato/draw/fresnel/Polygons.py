@@ -8,6 +8,7 @@ class Polygons(draw.Polygons):
     def __init__(self, *args, material=None, **kwargs):
         if material is None:
             self._material = fresnel.material.Material(primitive_color_mix=1)
+            self._material.solid = 1
         else:
             self._material = material
         draw.Polygons.__init__(self, *args, **kwargs)
@@ -18,7 +19,7 @@ class Polygons(draw.Polygons):
         bottom = np.zeros((len(self.vertices), 3))
         bottom[:, :2] = self.vertices
         top = bottom.copy()
-        top[:, 2] = 1
+        top[:, 2] = 0.5
         vertices = np.concatenate((bottom, top))
         polyhedron_info = fresnel.util.convex_polyhedron_from_vertices(vertices)
         geometry = fresnel.geometry.ConvexPolyhedron(

@@ -7,9 +7,10 @@ class Disks(draw.Disks):
 
     def __init__(self, *args, material=None, **kwargs):
         if material is None:
-            self.material = fresnel.material.Material(primitive_color_mix=1)
+            self._material = fresnel.material.Material(primitive_color_mix=1)
+            self._material.solid = 1
         else:
-            self.material = material
+            self._material = material
         draw.Disks.__init__(self, *args, **kwargs)
 
     def render(self, scene):
@@ -20,6 +21,6 @@ class Disks(draw.Disks):
             position=positions,
             radius=self.radii,
             color=self.colors[:, :3],
-            material=self.material,
+            material=self._material,
             outline_width=self.outline)
         return geometry

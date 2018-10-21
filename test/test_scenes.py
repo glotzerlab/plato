@@ -38,6 +38,28 @@ def translate_usable_scenes(draw):
     return result
 
 @register_scene
+def sunflower_2d(seed=13):
+
+    center_disk = draw.Disks(outline=.05, positions=np.zeros((1, 2)),
+                             colors=np.array([0.225, 0.1, 0., 1]),
+                             diameters=np.sqrt(3))
+    thetas = np.linspace(0, 2*np.pi, 6, endpoint=False)
+    vertices = np.array([np.cos(thetas), np.sin(thetas)]).T
+    orientations = np.array([[np.cos(np.pi/12), 0, 0, np.sin(np.pi/12)]] * 6)
+    petals = draw.Polygons(positions=np.sqrt(3)*vertices, colors=np.array([[0.9, 0.7, 0, 1]]*6),
+                           vertices=vertices, outline=.05, orientations=orientations)
+
+    """
+    prim2 = draw.Disks(outline=.05, positions=positions,
+                       colors=colors, diameters=np.ones((num_particles,)))
+    prim3 = draw.Polygons(positions=-positions, colors=colors, vertices=vertices,
+                          outline=.05, orientations=orientations)
+                          """
+
+    scene = draw.Scene([center_disk, petals], zoom=4, features=dict(pan=True))
+    return scene
+
+@register_scene
 def simple_2d(seed=13, num_particles=2):
     np.random.seed(seed)
 
