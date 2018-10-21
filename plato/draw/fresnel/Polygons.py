@@ -13,14 +13,19 @@ class Polygons(draw.Polygons):
         draw.Polygons.__init__(self, *args, **kwargs)
 
     def render(self, scene):
-        angles = np.arctan2(self.orientations[:, 3], self.orientations[:, 0])*2
-        heights = np.ones(len(self.positions))*0.5
-        geometry = fresnel.geometry.Prism(
+        positions = np.zeros((len(self.positions), 3))
+        positions[:, :2] = self.positions
+        bottom = np.zeros((len(self.vertices), 3))
+        bottom[:, :2] = self.vertices
+        top = bottom.copy()
+        top[:, 2] = 1
+        vertices = np.concatenate((bottom, top))
+        polyhedron_info = fresnel.util.convex_polyhedron_from_vertices(vertices)
+        geometry = fresnel.geometry.ConvexPolyhedron(
             scene=scene,
-            vertices=self.vertices,
-            position=self.positions,
-            angle=angles,
-            height=heights,
+            polyhedron_info=polyhedron_info,
+            position=positions,
+            orientation=self.orientations,
             color=self.colors[:, :3],
             material=self._material,
             outline_width=self.outline)
