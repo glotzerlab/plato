@@ -40,7 +40,7 @@ class Scene(draw.Scene):
         else:
             if self._output is None:
                 self.render()
-            image = PIL.Image.fromarray(self._output, mode='RGBA')
+            image = PIL.Image.fromarray(self._output[:], mode='RGBA')
             image.save(filename)
 
     def render(self, *args, tracer='path', **kwargs):
