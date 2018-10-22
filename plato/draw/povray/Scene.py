@@ -88,11 +88,12 @@ class Scene(draw.Scene):
 
             dz = np.sqrt(np.sum((self.size/self.zoom)**2))
             for direction in lights:
-                magnitude = np.linalg.norm(direction)*light_scale
+                magnitude = np.linalg.norm(direction)
                 if magnitude < 1e-6:
                     continue
                 norm = direction/magnitude
                 position = -norm*dz*2
+                magnitude *= light_scale
 
                 # we want to rotate the basis vectors, constructed to
                 # be at (0, 0, dz), to be perpendicular to the given
