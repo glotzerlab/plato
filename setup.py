@@ -31,9 +31,10 @@ setup(name='plato-draw',
       packages=[
           'plato', 'plato.draw',
           'plato.draw.blender',
+          'plato.draw.fresnel',
           'plato.draw.matplotlib',
           'plato.draw.povray',
-          'plato.draw.vispy'
+          'plato.draw.vispy',
       ],
       project_urls={
           'Documentation': 'http://plato-draw.readthedocs.io/',
