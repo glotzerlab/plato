@@ -56,12 +56,12 @@ class Scene:
 
         for feature in features:
             config = features[feature]
-            try:
+            if isinstance(config, dict):
                 if 'name' in config:
                     raise ValueError('Feature parameters can\'t be named "name"')
 
                 self.enable(feature, **config)
-            except TypeError: # config is not of a mapping type
+            else:
                 self.enable(feature, value=config)
 
         for name in kwargs:
