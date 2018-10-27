@@ -46,7 +46,7 @@ class Scene(draw.Scene):
 
     def render_camera(self):
         (width, height) = self.size/self.zoom
-        dz = np.sqrt(np.sum(width**2 + height**2))
+        dz = np.linalg.norm(self.size/self.zoom)
 
         camera = ('camera {{ orthographic location <0, 0, {dz}> up <0, {height}, 0> '
                   'right <{width}, 0, 0> look_at <0, 0, 0> }}').format(
