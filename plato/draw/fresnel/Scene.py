@@ -1,4 +1,5 @@
 import fresnel
+import numpy as np
 from ... import draw
 
 
@@ -15,7 +16,7 @@ class Scene(draw.Scene):
         super(Scene, self).__init__(*args, **kwargs)
         self._device = fresnel.Device()
         self._fresnel_scene = fresnel.Scene(device=self._device)
-        default_size = [600, 400]
+        default_size = self.size_pixels.astype(np.uint32)
         self._preview_tracer = fresnel.tracer.Preview(
             device=self._device, w=default_size[0], h=default_size[1])
         self._path_tracer = fresnel.tracer.Path(
