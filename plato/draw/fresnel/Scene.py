@@ -1,5 +1,6 @@
 import fresnel
 import numpy as np
+import rowan
 from ... import draw
 
 
@@ -57,6 +58,17 @@ class Scene(draw.Scene):
         for prim in self._primitives:
             geometry = prim.render(self._fresnel_scene)
             self._geometries.append(geometry)
+
+        # Set up the camera
+        camera_up = rowan.rotate(rowan.conjugate(self.rotation), [0, 1, 0])
+        camera_position = rowan.rotate(rowan.conjugate(self.rotation), -self.translation)
+        camera_look_at = camera_position + rowan.rotate(rowan.conjugate(self.rotation), [0, 0, -1])
+        camera_height = self.size[1]/self.zoom
+        self._fresnel_scene.camera = fresnel.camera.orthographic(
+            position=camera_position,
+            look_at=camera_look_at,
+            up=camera_up,
+            height=camera_height)
 
         if 'pathtracer' in self._enabled_features:
             # Use path tracer if enabled
