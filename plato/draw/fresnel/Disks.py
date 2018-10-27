@@ -14,13 +14,13 @@ class Disks(draw.Disks):
         draw.Disks.__init__(self, *args, **kwargs)
 
     def render(self, scene):
-        positions = np.zeros((len(self.positions), 3))
-        positions[:, :2] = self.positions
         geometry = fresnel.geometry.Sphere(
             scene=scene,
-            position=positions,
-            radius=self.radii,
-            color=self.colors[:, :3],
+            N=len(self.positions),
             material=self._material,
             outline_width=self.outline)
+        geometry.position[:, :2] = self.positions
+        geometry.position[:, 2] = 0
+        geometry.radius[:] = self.radii
+        geometry.color[:] = self.colors[:, :3]
         return geometry

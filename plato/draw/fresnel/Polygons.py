@@ -14,8 +14,6 @@ class Polygons(draw.Polygons):
         draw.Polygons.__init__(self, *args, **kwargs)
 
     def render(self, scene):
-        positions = np.zeros((len(self.positions), 3))
-        positions[:, :2] = self.positions
         bottom = np.zeros((len(self.vertices), 3))
         bottom[:, :2] = self.vertices
         top = bottom.copy()
@@ -25,9 +23,11 @@ class Polygons(draw.Polygons):
         geometry = fresnel.geometry.ConvexPolyhedron(
             scene=scene,
             polyhedron_info=polyhedron_info,
-            position=positions,
-            orientation=self.orientations,
-            color=self.colors[:, :3],
+            N=len(self.positions),
             material=self._material,
             outline_width=self.outline)
+        geometry.position[:, :2] = self.positions
+        geometry.position[:, 2] = 0
+        geometry.orientation[:] = self.orientations
+        geometry.color[:] = self.colors[:, :3]
         return geometry
