@@ -15,7 +15,8 @@ class Lines(draw.Lines):
 
     def __init__(self, *args, material=None, **kwargs):
         if material is None:
-            self._material = fresnel.material.Material(solid=1.0, color=(0,0,0))
+            self._material = fresnel.material.Material(primitive_color_mix=1)
+            self._material.solid = 1
         else:
             self._material = material
         draw.Lines.__init__(self, *args, **kwargs)
