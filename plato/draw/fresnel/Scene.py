@@ -7,8 +7,8 @@ class Scene(draw.Scene):
     __doc__ = draw.Scene.__doc__ + """
     This Scene supports the following features:
 
-    * *directional_light*: Add directional lights. The given value indicates the magnitude*direction normal vector.
-    * *ambient_light*: Enable trivial ambient lighting. The given value indicates the magnitude of the light (in [0, 1]).
+    * *antialiasing*: Enable antialiasing, for the preview tracer only. This uses fresnel's aa_level=3 if set, 0 otherwise.
+    * *pathtracer*: Enable the path tracer. Accepts parameter ``samples`` with default value 64.
     * *outlines*: Enable cartoony outlines. The given value indicates the width of the outlines (start small, perhaps 1e-5 to 1e-3).
     """
 
@@ -44,7 +44,7 @@ class Scene(draw.Scene):
             image = PIL.Image.fromarray(self._output[:], mode='RGBA')
             image.save(filename)
 
-    def render(self, *args, tracer='path', **kwargs):
+    def render(self):
         """Render this Scene object."""
         # Remove existing fresnel geometries from the scene
         for geometry in self._geometries:
@@ -58,20 +58,17 @@ class Scene(draw.Scene):
             geometry = prim.render(self._fresnel_scene)
             self._geometries.append(geometry)
 
-        if tracer == 'preview':
-            tracer = self._preview_tracer
-            if 'aa_level' in kwargs:
-                tracer.aa_level = kwargs.pop('aa_level')
-            render_function = tracer.render
-        elif tracer == 'path':
+        if 'pathtracer' in self._enabled_features:
+            # Use path tracer if enabled
+            config = self._enabled_features.get('pathtracer', {})
             tracer = self._path_tracer
-            if 'samples' in kwargs:
-                samples = kwargs.pop('samples')
-            else:
-                samples = 64
+            samples = config.get('samples', 64)
             def render_function(scene, **kwargs):
                 return tracer.sample(scene, samples, **kwargs)
         else:
-            raise RuntimeError("Tracer '{}' does not exist.".format(tracer))
+            # Use preview tracer by default
+            tracer = self._preview_tracer
+            tracer.aa_level = 3 if 'antialiasing' in self._enabled_features else 0
+            render_function = tracer.render
 
-        self._output = render_function(self._fresnel_scene, *args, **kwargs)
+        self._output = render_function(self._fresnel_scene)
