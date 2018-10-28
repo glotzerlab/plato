@@ -11,8 +11,7 @@ class Scene(draw.Scene):
     * *antialiasing*: Enable antialiasing, for the preview tracer only. This uses fresnel's aa_level=3 if set, 0 otherwise.
     * *pathtracer*: Enable the path tracer. Accepts parameter ``samples`` with default value 64.
     * *directional_light*: Add directional lights. The given vector(s) indicates the light direction. The length of the vector(s) determines the magnitude of the light(s).
-    * *ambient_light*: Enable trivial ambient lighting. The given value indicates the magnitude of the light (in [0, 1]).
-    * *outlines*: Enable cartoony outlines. The given value indicates the width of the outlines (start small, perhaps 1e-5 to 1e-3).
+    * *ambient_light*: Enable ambient lighting. The given value indicates the magnitude of the light.
     """
 
     def __init__(self, *args, tracer_kwargs={}, **kwargs):
