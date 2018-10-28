@@ -10,6 +10,7 @@ class Scene(draw.Scene):
 
     * *antialiasing*: Enable antialiasing, for the preview tracer only. This uses fresnel's aa_level=3 if set, 0 otherwise.
     * *pathtracer*: Enable the path tracer. Accepts parameter ``samples`` with default value 64.
+    * *ambient_light*: Enable trivial ambient lighting. The given value indicates the magnitude of the light (in [0, 1]).
     * *outlines*: Enable cartoony outlines. The given value indicates the width of the outlines (start small, perhaps 1e-5 to 1e-3).
     """
 
@@ -70,6 +71,29 @@ class Scene(draw.Scene):
             up=camera_up,
             height=camera_height)
 
+        # Set up lights
+        lights = []
+        if 'ambient_light' in self._enabled_features:
+            config = self._enabled_features['ambient_light']
+            magnitude = config.get('value', 0.25)
+            if magnitude > 0:
+                lights.append(fresnel.light.Light(direction=(0, 0, 1),
+                                                  color=(magnitude, magnitude, magnitude),
+                                                  theta=np.pi))
+        if 'directional_light' in self._enabled_features:
+            config = self._enabled_features['directional_light']
+            directions = config.get('value', (.25, .5, -1))
+            directions = np.atleast_2d(directions).astype(np.float32)
+            for direction in directions:
+                magnitude = np.linalg.norm(direction)
+                if magnitude > 0:
+                    lights.append(fresnel.light.Light(direction=-direction,
+                                                      color=(magnitude, magnitude, magnitude),
+                                                      theta=0.7))
+        if len(lights) > 0:
+            self._fresnel_scene.lights = lights
+
+        # Set up tracer
         if 'pathtracer' in self._enabled_features:
             # Use path tracer if enabled
             config = self._enabled_features.get('pathtracer', {})

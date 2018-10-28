@@ -1,14 +1,12 @@
 import fresnel
 from ... import draw
+from . import FresnelPrimitive
 
-class Spheres(draw.Spheres):
+class Spheres(draw.Spheres, FresnelPrimitive):
     __doc__ = draw.Spheres.__doc__
 
     def __init__(self, *args, material=None, **kwargs):
-        if material is None:
-            self._material = fresnel.material.Material(primitive_color_mix=1)
-        else:
-            self._material = material
+        FresnelPrimitive.__init__(self, *args, material, **kwargs)
         draw.Spheres.__init__(self, *args, **kwargs)
 
     def render(self, scene):

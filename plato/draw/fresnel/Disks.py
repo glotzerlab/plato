@@ -1,16 +1,15 @@
 import fresnel
 import numpy as np
 from ... import draw
+from . import FresnelPrimitive
 
-class Disks(draw.Disks):
+class Disks(draw.Disks, FresnelPrimitive):
     __doc__ = draw.Disks.__doc__
 
     def __init__(self, *args, material=None, **kwargs):
+        FresnelPrimitive.__init__(self, *args, material, **kwargs)
         if material is None:
-            self._material = fresnel.material.Material(primitive_color_mix=1)
             self._material.solid = 1
-        else:
-            self._material = material
         draw.Disks.__init__(self, *args, **kwargs)
 
     def render(self, scene):

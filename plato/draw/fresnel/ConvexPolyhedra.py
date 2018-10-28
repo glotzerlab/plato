@@ -3,8 +3,9 @@ import itertools
 import numpy as np
 from ... import draw
 from ..internal import ShapeAttribute
+from . import FresnelPrimitive
 
-class ConvexPolyhedra(draw.ConvexPolyhedra):
+class ConvexPolyhedra(draw.ConvexPolyhedra, FresnelPrimitive):
     __doc__ = draw.ConvexPolyhedra.__doc__
 
     _ATTRIBUTES = draw.ConvexPolyhedra._ATTRIBUTES
@@ -14,10 +15,7 @@ class ConvexPolyhedra(draw.ConvexPolyhedra):
     ])))
 
     def __init__(self, *args, material=None, **kwargs):
-        if material is None:
-            self._material = fresnel.material.Material(primitive_color_mix=1)
-        else:
-            self._material = material
+        FresnelPrimitive.__init__(self, *args, material, **kwargs)
         draw.ConvexPolyhedra.__init__(self, *args, **kwargs)
 
     def render(self, scene):
