@@ -1,7 +1,7 @@
 import fresnel
 import numpy as np
 from ... import draw
-from . import FresnelPrimitive
+from .FresnelPrimitive import FresnelPrimitive
 
 class Disks(draw.Disks, FresnelPrimitive):
     __doc__ = draw.Disks.__doc__

@@ -1,7 +1,7 @@
 import fresnel
 import numpy as np
 from ... import draw
-from . import FresnelPrimitive
+from .FresnelPrimitive import FresnelPrimitive
 
 class Polygons(draw.Polygons, FresnelPrimitive):
     __doc__ = draw.Polygons.__doc__

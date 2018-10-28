@@ -1,7 +1,7 @@
 import fresnel
 from ... import draw
 from .Polygons import Polygons
-from . import FresnelPrimitive
+from .FresnelPrimitive import FresnelPrimitive
 
 class Arrows2D(draw.Arrows2D, Polygons):
     __doc__ = draw.Arrows2D.__doc__

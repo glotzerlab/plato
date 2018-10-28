@@ -3,7 +3,7 @@ import itertools
 import numpy as np
 from ... import draw
 from ..internal import ShapeAttribute
-from . import FresnelPrimitive
+from .FresnelPrimitive import FresnelPrimitive
 
 class Lines(draw.Lines, FresnelPrimitive):
     __doc__ = draw.Lines.__doc__

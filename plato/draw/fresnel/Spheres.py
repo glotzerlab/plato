@@ -1,6 +1,6 @@
 import fresnel
 from ... import draw
-from . import FresnelPrimitive
+from .FresnelPrimitive import FresnelPrimitive
 
 class Spheres(draw.Spheres, FresnelPrimitive):
     __doc__ = draw.Spheres.__doc__
