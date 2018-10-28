@@ -74,15 +74,15 @@ class Scene(draw.Scene):
 
         # Set up lights
         lights = []
-        if 'ambient_light' in self._enabled_features:
-            config = self._enabled_features['ambient_light']
+        if 'ambient_light' in self.enabled_features:
+            config = self.get_feature_config('ambient_light')
             magnitude = config.get('value', 0.25)
             if magnitude > 0:
                 lights.append(fresnel.light.Light(direction=(0, 0, 1),
                                                   color=(magnitude, magnitude, magnitude),
                                                   theta=np.pi))
-        if 'directional_light' in self._enabled_features:
-            config = self._enabled_features['directional_light']
+        if 'directional_light' in self.enabled_features:
+            config = self.get_feature_config('directional_light')
             directions = config.get('value', (.25, .5, -1))
             directions = np.atleast_2d(directions).astype(np.float32)
             for direction in directions:
@@ -95,9 +95,9 @@ class Scene(draw.Scene):
             self._fresnel_scene.lights = lights
 
         # Set up tracer
-        if 'pathtracer' in self._enabled_features:
+        if 'pathtracer' in self.enabled_features:
             # Use path tracer if enabled
-            config = self._enabled_features.get('pathtracer', {})
+            config = self.get_feature_config('pathtracer')
             tracer = self._path_tracer
             samples = config.get('samples', 64)
             def render_function(scene, **kwargs):
@@ -105,7 +105,7 @@ class Scene(draw.Scene):
         else:
             # Use preview tracer by default
             tracer = self._preview_tracer
-            tracer.aa_level = 3 if 'antialiasing' in self._enabled_features else 0
+            tracer.aa_level = 3 if 'antialiasing' in self.enabled_features else 0
             render_function = tracer.render
 
         self._output = render_function(self._fresnel_scene)
