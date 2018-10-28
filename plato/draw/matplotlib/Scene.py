@@ -26,7 +26,7 @@ class Scene(draw.Scene):
         kwargs = dict(rotation=self.rotation,
                       size=self.size, pixel_scale=self.pixel_scale, zoom=self.zoom)
 
-        if 'antialiasing' in self._enabled_features:
+        if 'antialiasing' in self.enabled_features:
             pixel_size = np.array(figure.get_size_inches(), dtype=np.float32)*figure.dpi
             kwargs['aa_pixel_size'] = np.max(np.array(self.size, dtype=np.float32)/pixel_size)/self.zoom
         else:

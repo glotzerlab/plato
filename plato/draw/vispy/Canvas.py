@@ -458,9 +458,9 @@ class Canvas(vispy.app.Canvas):
 
         gloo.set_viewport(0, 0, *scene.size_pixels.astype(np.uint32))
 
-        for feature in self._scene._enabled_features:
+        for feature in self._scene.enabled_features:
             if feature in self._VALID_FEATURES:
-                self._enable_feature(**{feature: self._scene._enabled_features[feature]})
+                self._enable_feature(**{feature: self._scene.get_feature_config(feature)})
 
     def on_resize(self, event):
         size = event.size
@@ -471,9 +471,9 @@ class Canvas(vispy.app.Canvas):
         for name in self._fbos:
             self._fbos[name].resize(reversed_size)
 
-        if 'fxaa' in self._scene._enabled_features:
+        if 'fxaa' in self._scene.enabled_features:
             self._programs['fxaa_post']['resolution'] = size
-        if 'ssao' in self._scene._enabled_features:
+        if 'ssao' in self._scene.enabled_features:
             self._programs['ssao_post']['resolution'] = size
 
         vispy.gloo.set_viewport(0, 0, *size)
@@ -483,8 +483,8 @@ class Canvas(vispy.app.Canvas):
 
         clear_color = (1, 1, 1, 1)
         gloo.set_depth_func('lequal')
-        if 'additive_rendering' in self._scene._enabled_features:
-            config = self._scene._enabled_features['additive_rendering']
+        if 'additive_rendering' in self._scene.enabled_features:
+            config = self._scene.get_feature_config('additive_rendering')
 
             if config.get('invert', False):
                 clear_color = (1, 1, 1, 1)
@@ -510,7 +510,7 @@ class Canvas(vispy.app.Canvas):
             gloo.set_blend_func('src_alpha', 'one_minus_src_alpha')
         gloo.clear(color=clear_color, depth=True)
 
-        if 'translucency' in self._scene._enabled_features:
+        if 'translucency' in self._scene.enabled_features:
             with self._fbos['translucency_opaque']:
                 gloo.clear(color=clear_color)
                 for prim in self._scene._primitives:
@@ -543,7 +543,7 @@ class Canvas(vispy.app.Canvas):
                                depth_mask=False)
             with self._final_render_target:
                 self._programs['translucency_post'].draw('triangle_strip')
-        elif 'outlines' in self._scene._enabled_features:
+        elif 'outlines' in self._scene.enabled_features:
             gloo.set_state(preset='opaque',
                            depth_test=True,
                            blend=False,
@@ -562,7 +562,7 @@ class Canvas(vispy.app.Canvas):
                 gloo.clear(color=True, depth=True)
                 self._programs['outlines_post']['camera'] = prim.camera
                 self._programs['outlines_post'].draw('triangle_strip')
-        elif 'render_normals' in self._scene._enabled_features:
+        elif 'render_normals' in self._scene.enabled_features:
             with self._final_render_target:
                 gloo.clear(color=True, depth=True)
                 for prim in self._scene._primitives:
@@ -573,7 +573,7 @@ class Canvas(vispy.app.Canvas):
                 for prim in self._scene._primitives:
                     prim.render_color()
 
-        if 'ssao' in self._scene._enabled_features:
+        if 'ssao' in self._scene.enabled_features:
             with self._fbos['ssao_plane']:
                 gloo.set_state(preset='opaque',
                                    depth_test=True,
@@ -587,13 +587,13 @@ class Canvas(vispy.app.Canvas):
                                depth_test=False,
                                blend=False,
                                depth_mask=False)
-            if 'fxaa' in self._scene._enabled_features:
+            if 'fxaa' in self._scene.enabled_features:
                 with self._fbos['fxaa_target']:
                     self._programs['ssao_post'].draw('triangle_strip')
             else:
                 self._programs['ssao_post'].draw('triangle_strip')
 
-        if 'fxaa' in self._scene._enabled_features:
+        if 'fxaa' in self._scene.enabled_features:
             gloo.set_state(preset='opaque',
                                depth_test=False,
                                blend=False,
@@ -601,8 +601,8 @@ class Canvas(vispy.app.Canvas):
             self._programs['fxaa_post'].draw('triangle_strip')
 
     def _update_linked_rotation_targets(self):
-        if 'link_rotation' in self._scene._enabled_features:
-            targets = self._scene._enabled_features['link_rotation']['targets']
+        if 'link_rotation' in self._scene.enabled_features:
+            targets = self._scene.get_feature_config('link_rotation')['targets']
             for target in targets:
                 try:
                     canvas = target._canvas
@@ -645,7 +645,7 @@ class Canvas(vispy.app.Canvas):
             self._mouse_origin[:] = event.pos
             if 'control' in event.modifiers or 'meta' in event.modifiers:
                 self.planeRotation(event, delta)
-            elif 'alt' in event.modifiers or 'pan' in self._scene._enabled_features:
+            elif 'alt' in event.modifiers or 'pan' in self._scene.enabled_features:
                 # undo the mean size scaling we applied above
                 self._mouse_translate(delta*np.sqrt(np.product(self._scene.size_pixels)))
             else:
@@ -799,7 +799,7 @@ class Canvas(vispy.app.Canvas):
                 self._programs['fxaa_post']['resolution'] = size
                 self._programs['fxaa_post']['a_position'] = [(-1, -1), (-1, 1), (1, -1), (1, 1)]
 
-                if 'ssao' in self._scene._enabled_features:
+                if 'ssao' in self._scene.enabled_features:
                     self._final_render_target = self._fbos['ssao_target']
                 else:
                     self._final_render_target = self._fbos['fxaa_target']
@@ -848,13 +848,13 @@ class Canvas(vispy.app.Canvas):
 
                 if feature == 'ssao':
                     self._final_render_target = NoopContextManager()
-                    if 'fxaa' in self._scene._enabled_features:
+                    if 'fxaa' in self._scene.enabled_features:
                         self._enable_feature('fxaa')
 
                 if feature == 'fxaa':
                     self._final_render_target = NoopContextManager()
                     # redo SSAO setup so it will have the correct buffers
-                    if 'ssao' in self._scene._enabled_features:
+                    if 'ssao' in self._scene.enabled_features:
                         self._enable_feature('ssao')
 
     @property
@@ -864,5 +864,5 @@ class Canvas(vispy.app.Canvas):
     @clip_planes.setter
     def clip_planes(self, clip):
         self._clip_planes[:] = clip
-        if 'ssao' in self._scene._enabled_features:
+        if 'ssao' in self._scene.enabled_features:
             self._programs['ssao_post']['clip_planes'] = self._clip_planes

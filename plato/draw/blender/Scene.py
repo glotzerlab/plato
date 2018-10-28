@@ -39,12 +39,12 @@ class Scene(draw.Scene):
         scene.camera = camera_object
 
     def render_lights(self, scene, **kwargs):
-        if 'ambient_light' in self._enabled_features:
+        if 'ambient_light' in self.enabled_features:
             pass
 
-        if 'directional_light' in self._enabled_features:
-            parameters = self._enabled_features['directional_light']
-            lights = parameters.get('value', (.25, .5, -1))
+        if 'directional_light' in self.enabled_features:
+            config = self.get_feature_config('directional_light')
+            lights = config.get('value', (.25, .5, -1))
             lights = np.atleast_2d(lights).astype(np.float32)
 
             for (i, light) in enumerate(lights):

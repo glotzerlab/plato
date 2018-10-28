@@ -61,8 +61,8 @@ class Scene(draw.Scene):
         # adjust povray lights to be of the same intensity as other lights
         light_scale = 5./3
 
-        if 'ambient_light' in self._enabled_features:
-            config = self._enabled_features['ambient_light']
+        if 'ambient_light' in self.enabled_features:
+            config = self.get_feature_config('ambient_light')
             magnitude = config.get('value', 0.25)*light_scale
 
             (width, height) = self.size/self.zoom
@@ -81,8 +81,8 @@ class Scene(draw.Scene):
                          basis0=basis0, basis1=basis1)
             result.append(light)
 
-        if 'directional_light' in self._enabled_features:
-            config = self._enabled_features['directional_light']
+        if 'directional_light' in self.enabled_features:
+            config = self.get_feature_config('directional_light')
             lights = config.get('value', (.25, .5, -1))
             lights = np.atleast_2d(lights).astype(np.float32)
 
@@ -138,13 +138,13 @@ class Scene(draw.Scene):
         (width, height) = self.size_pixels
         povstring = self.render()
 
-        if 'antialiasing' in self._enabled_features:
-            antialiasing = self._enabled_features['antialiasing'].get('value', .3)
+        if 'antialiasing' in self.enabled_features:
+            antialiasing = self.get_feature_config('antialiasing').get('value', .3)
         else:
             antialiasing=None
 
-        if 'multithreading' in self._enabled_features:
-            threads = self._enabled_features['multithreading'].get(
+        if 'multithreading' in self.enabled_features:
+            threads = self.get_feature_config('multithreading').get(
                 'value', multiprocessing.cpu_count())
         else:
             threads = None

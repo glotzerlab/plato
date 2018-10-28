@@ -79,8 +79,8 @@ class Scene(draw.Scene):
     def add_primitive(self, primitive):
         super(Scene, self).add_primitive(primitive)
         self._update_camera()
-        for feature in list(self._enabled_features):
-            self.enable(feature, **self._enabled_features[feature])
+        for feature in list(self.enabled_features):
+            self.enable(feature, **self.get_feature_config(feature))
 
     def enable(self, name, **parameters):
         if name == 'directional_light':

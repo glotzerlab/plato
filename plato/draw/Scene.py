@@ -97,8 +97,8 @@ class Scene:
         for prim in self._primitives:
             prim.rotation = self._rotation
 
-        if 'link_rotation' in self._enabled_features:
-            for target in self._enabled_features['link_rotation']['targets']:
+        if 'link_rotation' in self.enabled_features:
+            for target in self.get_feature_config('link_rotation')['targets']:
                 for prim in target:
                     prim.rotation = self._rotation
 
