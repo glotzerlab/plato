@@ -42,6 +42,7 @@ class Mock(MagicMock):
 extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.coverage',
+    'sphinx.ext.intersphinx',
     'sphinx.ext.mathjax',
     'sphinx.ext.viewcode',
 ]
@@ -289,6 +290,14 @@ texinfo_documents = [
    author, 'plato', 'Visualization and analysis library.',
    'Miscellaneous'),
 ]
+
+# -- Extension configuration -------------------------------------------------
+
+# -- Options for intersphinx extension ---------------------------------------
+
+intersphinx_mapping = {
+    'fresnel': ('https://fresnel.readthedocs.io/en/stable/', None),
+}
 
 # Documents to append as an appendix to all manuals.
 #texinfo_appendices = []

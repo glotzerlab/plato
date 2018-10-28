@@ -62,6 +62,7 @@ Contents:
    :maxdepth: 2
 
    primitives
+   fresnel
    matplotlib
    povray
    vispy

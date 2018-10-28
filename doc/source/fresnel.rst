@@ -1,7 +1,7 @@
-Matplotlib Backend
-==================
+Fresnel Backend
+===============
 
-.. automodule:: plato.draw.matplotlib
+.. automodule:: plato.draw.fresnel
 
 .. autoclass:: Scene
    :members:
@@ -9,16 +9,10 @@ Matplotlib Backend
 2D Graphics Primitives
 ----------------------
 
-.. autoclass:: Arrows2D
-   :members:
-
 .. autoclass:: Disks
    :members:
 
 .. autoclass:: Polygons
-   :members:
-
-.. autoclass:: Spheropolygons
    :members:
 
 3D Graphics Primitives
@@ -27,5 +21,8 @@ Matplotlib Backend
 .. autoclass:: ConvexPolyhedra
    :members:
 
-.. autoclass:: SpherePoints
+.. autoclass:: Lines
+   :members:
+
+.. autoclass:: Spheres
    :members:

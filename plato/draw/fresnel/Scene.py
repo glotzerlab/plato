@@ -27,6 +27,7 @@ class Scene(draw.Scene):
         self._output = None
 
     def show(self):
+        """Render the scene to an image and display using ipython."""
         if self._output is None:
             self.render()
         return self._output

@@ -1,4 +1,3 @@
-
 Vispy Backend
 =============
 

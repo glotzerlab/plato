@@ -1,13 +1,15 @@
 """
 The fresnel backend uses `fresnel <https://bitbucket.org/glotzer/fresnel>`_
 to ray-trace scenes.
+
+All fresnel primitives accept an argument ``material`` of type :py:class:`fresnel.material.Material` to define how lights interact with the primitives.
 """
 
 from .FresnelPrimitive import FresnelPrimitive
 
 from .Scene import Scene
 
-from .Arrows2D import Arrows2D
+#from .Arrows2D import Arrows2D  # not working yet
 from .Disks import Disks
 from .Polygons import Polygons
 from .Lines import Lines
