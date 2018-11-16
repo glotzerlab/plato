@@ -22,6 +22,8 @@ class Mesh(draw.Mesh, GLPrimitive):
        attribute vec4 color;
        attribute vec3 normal;
        attribute vec3 image;
+       attribute vec3 position;
+       attribute vec4 orientation;
 
        varying vec4 v_color;
        varying vec3 v_normal;
@@ -46,9 +48,11 @@ class Mesh(draw.Mesh, GLPrimitive):
        void main()
        {
            vec3 vertexPos = image;
+           vertexPos = rotate(vertexPos, orientation) + position;
            vertexPos = rotate(vertexPos, rotation) + translation;
            vec4 screenPosition = camera * vec4(vertexPos, 1.0);
-           vec3 rotatedNormal = rotate(normal, rotation);
+           vec3 rotatedNormal = rotate(normal, orientation);
+           rotatedNormal = rotate(rotatedNormal, rotation);
 
            // transform to screen coordinates
            gl_Position = screenPosition;
@@ -124,7 +128,7 @@ class Mesh(draw.Mesh, GLPrimitive):
        }
        """
 
-    _vertex_attribute_names = ['color', 'normal', 'image']
+    _vertex_attribute_names = ['position', 'orientation', 'color', 'normal', 'image']
 
     _GL_UNIFORMS = list(itertools.starmap(ShapeAttribute, [
         ('camera', np.float32, np.eye(4), 2,
@@ -161,8 +165,14 @@ class Mesh(draw.Mesh, GLPrimitive):
                 self._gl_vertex_arrays[name][:] = self._attributes[name]
                 self._dirty_vertex_attribs.add(name)
         except (ValueError, KeyError):
-            vertex_arrays = [self.colors] + [self._gl_attributes[name] for name in ['normal', 'image']]
-            indices = self._gl_attributes['indices'].reshape((-1, 3))
+            vertex_arrays = mesh.unfoldProperties(
+                [self.positions, self.orientations],
+                [self.colors] + [self._gl_attributes[name] for name in ['normal', 'image']]
+                )
+
+            unfolded_shape = vertex_arrays[0].shape[:-1]
+            indices = (np.arange(unfolded_shape[0])[:, np.newaxis, np.newaxis]*unfolded_shape[1] +
+                       self._gl_attributes['indices'][np.newaxis, :, :]).reshape((-1, 3))
 
             self._finalize_array_updates(indices, vertex_arrays)
 

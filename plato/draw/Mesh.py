@@ -18,7 +18,11 @@ class Mesh(Shape):
         ('indices', np.uint32, (0, 0, 0), 2,
          'Indices of the vertex array specifying individual triangles'),
         ('colors', np.float32, (.5, .5, .5, 1), 2,
-         'Color, RGBA, [0, 1] for each vertex')
+         'Color, RGBA, [0, 1] for each vertex'),
+        ('positions', np.float32, (0, 0, 0), 2,
+         'Central positions for each mesh to be replicated'),
+        ('orientations', np.float32, (1, 0, 0, 0), 2,
+         'Orientations for each mesh to be replicated')
         ]))
 
     @classmethod

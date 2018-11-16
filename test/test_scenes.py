@@ -275,3 +275,42 @@ def disks_and_lines():
                        widths=np.ones((6,))*.25, colors=colors)
 
     return draw.Scene([prim2, prim1], zoom=10)
+
+def fibonacciSphere(N):
+    offset = 1./(N/2.)
+    golden_ratio = (np.sqrt(5)+1)/2. - 1
+    delta = 2*np.pi - 2*np.pi*golden_ratio
+
+    pos = []
+
+    for i in range(N):
+        y = i*offset - 1 + 0.5*offset
+        r = np.sqrt(1-pow(y, 2.0))
+        phi = ((i+1)%N)*delta
+        x = r*np.cos(phi)
+
+        z = r*np.sin(phi)
+
+        pos.append([x,y,z])
+
+    return np.array(pos)
+
+@register_scene
+def meshes():
+    vertices = fibonacciSphere(64)
+    vertices, faces = plato.mesh.convexHull(vertices)
+    # distance from y axis
+    x = vertices[:, 0]
+    y = vertices[:, 1]
+    z = vertices[:, 2]
+    d = np.sqrt(x*x + y*y)
+    # deform y
+    vertices[:, 2] -= 1 * (1-d)*z
+    colors = np.tile([[0.25, 0.25, 0.7, 1.0]], (len(vertices), 1))
+    positions = [[-1, 0, 0], [1, 0, 0.0]]
+    orientations = np.tile([[1, 0, 0, 0]], (len(positions), 1)).astype(np.float32)
+    halftheta = -np.pi/5
+    orientations[0] = (np.cos(halftheta), 0, np.sin(halftheta), 0)
+    prim = draw.Mesh(vertices=vertices, indices=faces, colors=colors,
+            positions=positions, orientations=orientations)
+    return draw.Scene(prim, zoom=10)
