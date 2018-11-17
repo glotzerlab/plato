@@ -1,6 +1,7 @@
 import functools
 import unittest
 import numpy as np
+import os
 import vispy, vispy.app
 import plato
 import plato.draw.vispy as draw
@@ -12,9 +13,12 @@ class VispyTests(unittest.TestCase):
     def render(self, scene, name=''):
         fname = get_fname('vispy_{}.png'.format(name))
         scene.show()
-        scene.save(fname)
-        scene._canvas.close()
-        vispy.app.process_events()
+        if os.environ.get('LIVE_VISPY_TESTS', None):
+            vispy.app.run()
+        else:
+            scene.save(fname)
+            scene._canvas.close()
+            vispy.app.process_events()
 
     def test_fxaa_ssao(self):
         original_scene = test_scenes.colored_spheres()
