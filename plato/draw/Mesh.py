@@ -13,7 +13,9 @@ class Mesh(Shape):
 
     Meshes with a common set of vertices and face indices can be
     replicated multiple times using a set of positions and
-    orientations.
+    orientations. In order to set the color of individual replicas of
+    the Mesh object, use the `shape_colors` and `shape_color_fraction`
+    attributes.
     """
 
     _ATTRIBUTES = list(itertools.starmap(ShapeAttribute, [
@@ -26,7 +28,11 @@ class Mesh(Shape):
         ('positions', np.float32, (0, 0, 0), 2,
          'Central positions for each mesh to be replicated'),
         ('orientations', np.float32, (1, 0, 0, 0), 2,
-         'Orientations for each mesh to be replicated')
+         'Orientations for each mesh to be replicated'),
+        ('shape_colors', np.float32, (.5, .5, .5, 1), 2,
+         'Color, RGBA, [0, 1] for each replica (shape) of the mesh'),
+        ('shape_color_fraction', np.float32, 0, 0,
+         'Fraction of a vertex\'s color that should be assigned based on shape_colors')
         ]))
 
     @classmethod

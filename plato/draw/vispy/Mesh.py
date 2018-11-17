@@ -18,12 +18,14 @@ class Mesh(draw.Mesh, GLPrimitive):
        uniform vec4 rotation;
        uniform vec3 translation;
        uniform vec3 diffuseLight[NUM_DIFFUSELIGHT];
+       uniform float shape_color_fraction;
 
        attribute vec4 color;
        attribute vec3 normal;
        attribute vec3 image;
        attribute vec3 position;
        attribute vec4 orientation;
+       attribute vec4 shape_color;
 
        varying vec4 v_color;
        varying vec3 v_normal;
@@ -56,7 +58,7 @@ class Mesh(draw.Mesh, GLPrimitive):
 
            // transform to screen coordinates
            gl_Position = screenPosition;
-           v_color = color;
+           v_color = mix(color, shape_color, shape_color_fraction);
            v_normal = rotatedNormal;
            for(int i = 0; i < NUM_DIFFUSELIGHT; ++i)
                v_light[i] = -dot(rotatedNormal, diffuseLight[i]);
@@ -128,7 +130,7 @@ class Mesh(draw.Mesh, GLPrimitive):
        }
        """
 
-    _vertex_attribute_names = ['position', 'orientation', 'color', 'normal', 'image']
+    _vertex_attribute_names = ['position', 'orientation', 'shape_color', 'color', 'normal', 'image']
 
     _GL_UNIFORMS = list(itertools.starmap(ShapeAttribute, [
         ('camera', np.float32, np.eye(4), 2,
@@ -145,7 +147,9 @@ class Mesh(draw.Mesh, GLPrimitive):
          'Internal: Transparency stage (<0: opaque, 0: all, 1: '
          'translucency stage 1, 2: translucency stage 2)'),
         ('light_levels', np.float32, 0, 0,
-         'Number of light levels to quantize to (0: disable)')
+         'Number of light levels to quantize to (0: disable)'),
+        ('shape_color_fraction', np.float32, 0, 0,
+         'Fraction of a vertex\'s color that should be assigned based on shape_colors')
         ]))
 
     def __init__(self, *args, **kwargs):
@@ -160,13 +164,27 @@ class Mesh(draw.Mesh, GLPrimitive):
             self._gl_attributes['normal'] = normal
             self._gl_attributes['indices'] = self.indices
 
+        if 'shape_colors' in self._dirty_attributes:
+            if len(self._attributes['colors']) < len(self._attributes['vertices']):
+                Ntile = int(np.ceil(len(self._attributes['vertices'])/
+                                    len(self._attributes['colors'])))
+                new_colors = np.tile(self._attributes['colors'], (Ntile, 1))
+                self.colors = new_colors
+
+        if 'colors' in self._dirty_attributes:
+            if len(self._attributes['shape_colors']) < len(self._attributes['positions']):
+                Ntile = int(np.ceil(len(self._attributes['positions'])/
+                                    len(self._attributes['shape_colors'])))
+                new_colors = np.tile(self._attributes['shape_colors'], (Ntile, 1))
+                self.shape_colors = new_colors
+
         try:
             for name in self._dirty_attributes:
                 self._gl_vertex_arrays[name][:] = self._attributes[name]
                 self._dirty_vertex_attribs.add(name)
         except (ValueError, KeyError):
             vertex_arrays = mesh.unfoldProperties(
-                [self.positions, self.orientations],
+                [self.positions, self.orientations, self.shape_colors],
                 [self.colors] + [self._gl_attributes[name] for name in ['normal', 'image']]
                 )
 
