@@ -307,10 +307,19 @@ def meshes():
     # deform y
     vertices[:, 2] -= 1 * (1-d)*z
     colors = np.tile([[0.25, 0.25, 0.7, 1.0]], (len(vertices), 1))
+    colors[:, 0] = vertices[:, 0]
+    colors[:, 0] -= np.min(colors[:, 0])
+    colors[:, 0] /= np.max(colors[:, 0])
+
     positions = [[-1, 0, 0], [1, 0, 0.0]]
     orientations = np.tile([[1, 0, 0, 0]], (len(positions), 1)).astype(np.float32)
     halftheta = -np.pi/5
     orientations[0] = (np.cos(halftheta), 0, np.sin(halftheta), 0)
     prim = draw.Mesh(vertices=vertices, indices=faces, colors=colors,
             positions=positions, orientations=orientations)
-    return draw.Scene(prim, zoom=10)
+
+    prim.shape_colors = [(0, .5, 0, 1), (0, 0, .5, 1)]
+    prim.shape_color_fraction = .5
+
+    features = dict(ambient_light=.25, directional_light=(-.1, -.15, -1))
+    return draw.Scene(prim, zoom=10, features=features)
