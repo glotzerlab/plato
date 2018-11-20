@@ -1,4 +1,7 @@
+import logging
 import numpy as np
+
+logger = logging.getLogger(__name__)
 
 class Scene:
     """A container to hold and display collections of primitives.
@@ -189,3 +192,32 @@ class Scene:
                 target._rotation = target._rotation.copy()
 
         del self._enabled_features[name]
+
+    def convert(self, backend, compatibility='warn'):
+        """Convert this scene and all of its primitives to another backend.
+
+        :param backend: Backend plato.draw.* module to use in the new scene
+        :param compatibility: Behavior when unsupported primitives are encountered: 'warn', 'ignore', or 'error'
+        """
+        backend_scene = backend.Scene(
+            features=self._enabled_features, size=self.size, translation=self.translation,
+            rotation=self.rotation, zoom=self.zoom, pixel_scale=self.pixel_scale)
+
+        for prim in self:
+            name = type(prim).__name__
+
+            try:
+                backend_cls = getattr(backend, name)
+            except AttributeError as e:
+                msg = 'Incompatible primitive {} for backend {}'.format(
+                    name, backend)
+                if compatibility == 'warn':
+                    logger.warning(msg)
+                elif compatibility == 'ignore':
+                    continue
+                else:
+                    raise TypeError(msg)
+
+            backend_scene.add_primitive(backend_cls.copy(prim))
+
+        return backend_scene
