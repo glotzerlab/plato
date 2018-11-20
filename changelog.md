@@ -1,3 +1,9 @@
+## v1.3
+
+- Add fresnel backend (bdice)
+- Replicated Mesh objects given positions/orientations (mootimot)
+- Scene.convert() method (mspells)
+
 ## v1.2
 
 - Support multiple directional lights in vispy (mspells)
