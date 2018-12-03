@@ -28,6 +28,9 @@ class Mesh(draw.Mesh):
         face_indices = ', '.join('<{},{},{}>,{},{},{}'.format(*(2*list(v)))
                                  for v in self.indices)
 
+        vertex_normals = mesh.computeNormals_(verts, self.indices)
+        vertex_normal_text = ' '.join('<{},{},{}>'.format(*v) for v in vertex_normals)
+
         quat_magnitude = np.linalg.norm(self.orientations, axis=-1, keepdims=True)
         qs = pmath.quatquat(rotation[np.newaxis, :], self.orientations/quat_magnitude)
         rotmats = np.array([[1 - 2*qs[:, 2]**2 - 2*qs[:, 3]**2,
@@ -52,11 +55,13 @@ class Mesh(draw.Mesh):
                                     for v in color)
             print(len(verts), len(color))
             meshStr = 'mesh2 {{vertex_vectors {{{} {}}} ' \
+                      'normal_vectors {{{}, {}}} ' \
                       'texture_list {{{} {}}} ' \
                       'face_indices {{{} {}}} ' \
                       'matrix <{},{},{},{},{},{},{},{},{},' \
                       '{},{},{}>}}'.format(
                           len(verts), vertex_vectors,
+                          len(verts), vertex_normal_text,
                           len(verts), texture_list,
                           len(self.indices), face_indices,
                           *(rotmat.tolist() + pos.tolist())
