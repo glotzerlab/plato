@@ -25,6 +25,11 @@ setup(name='plato-draw',
           'Topic :: Scientific/Engineering :: Visualization'
       ],
       description='Geometry and visualization tools for collections of particles',
+      extras_require={
+          'pyside': ['pyside', 'vispy >= 0.5.3'],
+          'pyside2': ['pyside2', 'vispy >= 0.6'],
+          'pythreejs': ['pythreejs'],
+      },
       install_requires=['numpy', 'scipy', 'rowan'],
       license='BSD',
       long_description=long_description,
