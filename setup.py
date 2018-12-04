@@ -34,6 +34,7 @@ setup(name='plato-draw',
           'plato.draw.fresnel',
           'plato.draw.matplotlib',
           'plato.draw.povray',
+          'plato.draw.pythreejs',
           'plato.draw.vispy',
       ],
       project_urls={
