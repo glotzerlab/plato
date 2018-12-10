@@ -15,7 +15,7 @@ class ThreeJSPrimitive:
     def _make_threejs_primitive(self):
         geometry = pythreejs.BufferGeometry()
         material = pythreejs.MeshStandardMaterial(
-            vertexColors=pythreejs.enums.Colors.VertexColors, metalness=0.0125, roughness=.55)
+            vertexColors=pythreejs.enums.Colors.VertexColors, metalness=0.05, roughness=.9)
         result = pythreejs.Mesh(geometry, material)
 
         return result
