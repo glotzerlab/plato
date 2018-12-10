@@ -144,6 +144,12 @@ def gl_uniform_setter(self, value, name, dtype, dimension, default):
     assert result.shape[-1:] == self._UNIFORM_DIMENSIONS[name], 'Invalid shape for uniform {}: {}'.format(name, result.shape)
     self._dirty_uniforms.add(name)
     self._gl_uniforms[name] = result
+    try:
+        self._attributes[name] = result
+    except AttributeError:
+        # only called on initialization, skip before plato.draw.Shape
+        # constructor has been called
+        pass
     if name.endswith('[]'):
         key = 'NUM_{}'.format(name[:-2].upper())
         value = str(result.shape[0])
