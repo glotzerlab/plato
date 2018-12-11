@@ -711,7 +711,10 @@ class Canvas(vispy.app.Canvas):
                              np.sin(theta/2)*norm[1], 0])
             real = (self._scene.rotation[0]*quat[0] - np.dot(self._scene.rotation[1:], quat[1:]))
             imag = (self._scene.rotation[0]*quat[1:] + quat[0]*self._scene.rotation[1:] + np.cross(quat[1:], self._scene.rotation[1:]))
-            self._scene.rotation = [real] + imag.tolist()
+            rotation = np.array([real] + imag.tolist(), dtype=np.float32)
+            # normalize to prevent accumulation of FP errors
+            rotation /= np.linalg.norm(rotation)
+            self._scene.rotation = rotation
             self._update_linked_rotation_targets()
             self.update()
 
