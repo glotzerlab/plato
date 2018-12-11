@@ -2,6 +2,15 @@
 The vispy backend uses `vispy <http://vispy.org/>`_ to render shapes
 interactively using openGL. It supports both desktop use with a
 variety of GUI backends and use inline in jupyter notebooks.
+
+Select the backend to use with the standard vispy mechanism::
+
+  import vispy, vispy.app
+  # use in ipython notebook
+  vispy.app.use_app('ipynb_webgl')
+  # use pyside2
+  vispy.app.use_app('pyside2')
+
 """
 
 from .Scene import Scene
