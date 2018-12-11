@@ -25,7 +25,9 @@ class Scene(draw.Scene):
         self._backend_objects['scene'].add(self._backend_objects['camera'])
 
         (pixel_width, pixel_height) = (width*10, height*10)
-        renderer_kwargs = dict(width=pixel_width, height=pixel_height, **self._backend_objects)
+        renderer_kwargs = dict(
+            width=pixel_width, height=pixel_height, antialias=True,
+            **self._backend_objects)
         renderer_kwargs['controls'] = [renderer_kwargs['controls']]
         self._backend_objects['renderer'] = pythreejs.Renderer(**renderer_kwargs)
 
