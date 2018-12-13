@@ -24,8 +24,7 @@ class Lines(draw.Lines, FresnelPrimitive):
         geometry = fresnel.geometry.Cylinder(
             scene=scene,
             N=len(self.start_points),
-            material=self._material,
-            outline_width=self.outline)
+            material=self._material)
         geometry.points[:, 0, :] = self.start_points
         geometry.points[:, 1, :] = self.end_points
         geometry.radius[:] = self.widths/2

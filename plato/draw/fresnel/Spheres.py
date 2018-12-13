@@ -15,6 +15,5 @@ class Spheres(draw.Spheres, FresnelPrimitive):
             position=self.positions,
             radius=self.radii,
             color=self.colors[:, :3],
-            material=self._material,
-            outline_width=self.outline)
+            material=self._material)
         return geometry
