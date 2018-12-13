@@ -91,8 +91,10 @@ class GLPrimitive:
         for name in self._dirty_uniforms:
             for program in itertools.chain(*self._all_program_sets):
                 if name.endswith('[]'):
-                    if name[:-2] in program:
-                        program[name[:-2]] = self._gl_uniforms[name]
+                    base_name = name[:-2]
+                    for (index, val) in enumerate(self._gl_uniforms[name]):
+                        target = '{}[{}]'.format(base_name, index)
+                        program[target] = val
                 elif name in program:
                     program[name] = self._gl_uniforms[name]
 
