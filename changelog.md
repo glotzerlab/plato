@@ -1,3 +1,10 @@
+## v1.4
+
+- Make povray Mesh objects smooth (mspells)
+- Add pythreejs backend (mspells)
+- Fix vispy-specialized attributes in Scene.copy() (mspells)
+- Fix usage of outline attributes in fresnel backend for Spheres and Lines (mspells)
+
 ## v1.3
 
 - Add fresnel backend (bdice)
