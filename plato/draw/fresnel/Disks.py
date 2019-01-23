@@ -21,5 +21,5 @@ class Disks(draw.Disks, FresnelPrimitive):
         geometry.position[:, :2] = self.positions
         geometry.position[:, 2] = 0
         geometry.radius[:] = self.radii
-        geometry.color[:] = self.colors[:, :3]
+        geometry.color[:] = fresnel.color.linear(self.colors)
         return geometry

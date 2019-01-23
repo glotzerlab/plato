@@ -28,5 +28,5 @@ class Polygons(draw.Polygons, FresnelPrimitive):
         geometry.position[:, :2] = self.positions
         geometry.position[:, 2] = 0
         geometry.orientation[:] = self.orientations
-        geometry.color[:] = self.colors[:, :3]
+        geometry.color[:] = fresnel.color.linear(self.colors)
         return geometry

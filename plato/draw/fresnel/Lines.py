@@ -28,6 +28,6 @@ class Lines(draw.Lines, FresnelPrimitive):
         geometry.points[:, 0, :] = self.start_points
         geometry.points[:, 1, :] = self.end_points
         geometry.radius[:] = self.widths/2
-        geometry.color[:, 0, :] = self.colors[:, :3]
-        geometry.color[:, 1, :] = self.colors[:, :3]
+        geometry.color[:, 0, :] = fresnel.color.linear(self.colors)
+        geometry.color[:, 1, :] = fresnel.color.linear(self.colors)
         return geometry

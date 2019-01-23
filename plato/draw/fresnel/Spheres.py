@@ -14,6 +14,6 @@ class Spheres(draw.Spheres, FresnelPrimitive):
             scene=scene,
             position=self.positions,
             radius=self.radii,
-            color=self.colors[:, :3],
+            color=fresnel.color.linear(self.colors),
             material=self._material)
         return geometry

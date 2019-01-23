@@ -25,7 +25,7 @@ class ConvexPolyhedra(draw.ConvexPolyhedra, FresnelPrimitive):
             polyhedron_info=polyhedron_info,
             position=self.positions,
             orientation=self.orientations,
-            color=self.colors[:, :3],
+            color=fresnel.color.linear(self.colors),
             material=self._material,
             outline_width=self.outline)
         return geometry
