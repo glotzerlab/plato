@@ -34,6 +34,25 @@ class Shape:
             pass
         super(Shape, self).__setattr__(name, value)
 
+    def __getitem__(self, key):
+        subset_attrs = {}
+        for attr in self._ATTRIBUTES:
+            if attr.dimension == 0 or not attr.per_shape:
+                subset_attrs[attr.name] = self._attributes[attr.name]
+            elif isinstance(key, slice):
+                subset_attrs[attr.name] = self._attributes[attr.name][key]
+            else:
+                subset_attrs[attr.name] = self._attributes[attr.name][np.atleast_1d(key)]
+        return self.__class__(**subset_attrs)
+
+    def __len__(self):
+        attr_lengths = list(map(lambda attr: len(self._attributes[attr.name]),
+                                filter(lambda attr: attr.per_shape, self._ATTRIBUTES)))
+        try:
+            return min(attr_lengths)
+        except ValueError:
+            return 1
+
     @classmethod
     def link(cls, other, share_redraw_state=True):
         """Causes this shape to share its data with another shape.
@@ -43,7 +62,7 @@ class Shape:
         :param other: Other shape to link this one to
         :param share_redraw_state: If True, share the redrawing state (for dynamic visualization backends) with `other`
         """
-        # use copy() in case ctor needs some non-default arguments
+        # use copy() in case constructor needs some non-default arguments
         # (should be cheap since we are just shuffling pointers anyway
         # for large array data)
         result = cls.copy(other)
@@ -95,4 +114,4 @@ def ShapeDecorator(cls):
     cls.__doc__ = inspect.cleandoc(cls.__doc__) + '\n'.join(attribute_doc_lines)
     return cls
 
-ShapeAttribute = namedtuple('ShapeAttrib', ['name', 'dtype', 'default', 'dimension', 'description'])
+ShapeAttribute = namedtuple('ShapeAttrib', ['name', 'dtype', 'default', 'dimension', 'per_shape', 'description'])

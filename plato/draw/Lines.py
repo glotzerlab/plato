@@ -12,12 +12,12 @@ class Lines(Shape):
     """
 
     _ATTRIBUTES = list(itertools.starmap(ShapeAttribute, [
-        ('start_points', np.float32, (0, 0, 0), 2,
+        ('start_points', np.float32, (0, 0, 0), 2, True,
          'Beginning coordinate for each line segment'),
-        ('end_points', np.float32, (0, 0, 0), 2,
+        ('end_points', np.float32, (0, 0, 0), 2, True,
          'Ending coordinate for each line segment'),
-        ('widths', np.float32, .1, 1,
+        ('widths', np.float32, .1, 1, True,
          'Width of each line segment'),
-        ('colors', np.float32, (.5, .5, .5, 1), 2,
+        ('colors', np.float32, (.5, .5, .5, 1), 2, True,
          'Color, RGBA, [0, 1] for each line segment'),
         ]))

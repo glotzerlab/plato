@@ -11,7 +11,8 @@ class ConvexPolyhedra(draw.ConvexPolyhedra, FresnelPrimitive):
     _ATTRIBUTES = draw.ConvexPolyhedra._ATTRIBUTES
 
     _ATTRIBUTES.extend(list(itertools.starmap(ShapeAttribute, [
-        ('outline', np.float32, 0, 0, 'Outline width for all particles')
+        ('outline', np.float32, 0, 0, False,
+         'Outline width for all particles')
     ])))
 
     def __init__(self, *args, material=None, **kwargs):

@@ -19,19 +19,19 @@ class Mesh(Shape):
     """
 
     _ATTRIBUTES = list(itertools.starmap(ShapeAttribute, [
-        ('vertices', np.float32, (0, 0, 0), 2,
+        ('vertices', np.float32, (0, 0, 0), 2, False,
          'Vertex array specifying coordinates of the mesh nodes'),
-        ('indices', np.uint32, (0, 0, 0), 2,
+        ('indices', np.uint32, (0, 0, 0), 2, False,
          'Indices of the vertex array specifying individual triangles (Nx3)'),
-        ('colors', np.float32, (.5, .5, .5, 1), 2,
+        ('colors', np.float32, (.5, .5, .5, 1), 2, False,
          'Color, RGBA, [0, 1] for each vertex'),
-        ('positions', np.float32, (0, 0, 0), 2,
+        ('positions', np.float32, (0, 0, 0), 2, True,
          'Central positions for each mesh to be replicated'),
-        ('orientations', np.float32, (1, 0, 0, 0), 2,
+        ('orientations', np.float32, (1, 0, 0, 0), 2, True,
          'Orientations for each mesh to be replicated'),
-        ('shape_colors', np.float32, (.5, .5, .5, 1), 2,
+        ('shape_colors', np.float32, (.5, .5, .5, 1), 2, True,
          'Color, RGBA, [0, 1] for each replica (shape) of the mesh'),
-        ('shape_color_fraction', np.float32, 0, 0,
+        ('shape_color_fraction', np.float32, 0, 0, False,
          'Fraction of a vertex\'s color that should be assigned based on shape_colors')
         ]))
 

@@ -136,22 +136,22 @@ class ConvexPolyhedra(draw.ConvexPolyhedra, GLPrimitive):
     _vertex_attribute_names = ['position', 'orientation', 'color', 'image', 'normal', 'face_center']
 
     _GL_UNIFORMS = list(itertools.starmap(ShapeAttribute, [
-        ('camera', np.float32, np.eye(4), 2,
+        ('camera', np.float32, np.eye(4), 2, False,
          'Internal: 4x4 Camera matrix for world projection'),
-        ('ambientLight', np.float32, .25, 0,
+        ('ambientLight', np.float32, .25, 0, False,
          'Internal: Ambient (minimum) light level for all surfaces'),
-        ('diffuseLight[]', np.float32, DEFAULT_DIRECTIONAL_LIGHTS, 2,
+        ('diffuseLight[]', np.float32, DEFAULT_DIRECTIONAL_LIGHTS, 2, False,
          'Internal: Diffuse light direction*magnitude'),
-        ('rotation', np.float32, (1, 0, 0, 0), 1,
+        ('rotation', np.float32, (1, 0, 0, 0), 1, False,
          'Internal: Rotation to be applied to each scene as a quaternion'),
-        ('translation', np.float32, (0, 0, 0), 1,
+        ('translation', np.float32, (0, 0, 0), 1, False,
          'Internal: Translation to be applied to the scene'),
-        ('transparency_mode', np.int32, 0, 0,
+        ('transparency_mode', np.int32, 0, 0, False,
          'Internal: Transparency stage (<0: opaque, 0: all, 1: '
          'translucency stage 1, 2: translucency stage 2)'),
-        ('outline', np.float32, 0, 0,
+        ('outline', np.float32, 0, 0, False,
          'Outline width for shapes'),
-        ('light_levels', np.float32, 0, 0,
+        ('light_levels', np.float32, 0, 0, False,
          'Number of light levels to quantize to (0: disable)')
         ]))
 

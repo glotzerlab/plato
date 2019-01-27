@@ -14,7 +14,7 @@ class Spheres(draw.Spheres):
 
     _ATTRIBUTES = draw.Spheres._ATTRIBUTES + list(itertools.starmap(
         internal.ShapeAttribute, [
-            ('light_levels', np.uint32, 3, 0,
+            ('light_levels', np.uint32, 3, 0, False,
              'Number of quantized light levels to use'),
         ]))
 

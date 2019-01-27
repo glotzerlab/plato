@@ -10,11 +10,11 @@ class Spheres(Shape):
     """
 
     _ATTRIBUTES = list(itertools.starmap(ShapeAttribute, [
-        ('positions', np.float32, (0, 0, 0), 2,
+        ('positions', np.float32, (0, 0, 0), 2, True,
          'Position of each particle'),
-        ('colors', np.float32, (.5, .5, .5, 1), 2,
+        ('colors', np.float32, (.5, .5, .5, 1), 2, True,
          'Color, RGBA, [0, 1] for each particle'),
-        ('radii', np.float32, .5, 1,
+        ('radii', np.float32, .5, 1, True,
          'Radius of each particle'),
         ]))
 

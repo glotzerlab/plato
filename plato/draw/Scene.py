@@ -1,5 +1,6 @@
 import logging
 import numpy as np
+from .internal import Shape
 
 logger = logging.getLogger(__name__)
 
@@ -53,9 +54,8 @@ class Scene:
         self.translation = translation
         self.rotation = rotation
 
-        try:
-            primitives = list(primitives)
-        except TypeError:
+        if isinstance(primitives, Shape):
+            # Convert an individual primitive object to a list of primitives
             primitives = [primitives]
 
         for prim in primitives:

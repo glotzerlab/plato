@@ -69,15 +69,15 @@ class Voronoi(draw.Voronoi, GLPrimitive):
     _vertex_attribute_names = ['position', 'color', 'image']
 
     _GL_UNIFORMS = list(itertools.starmap(ShapeAttribute, [
-        ('camera', np.float32, np.eye(4), 2,
+        ('camera', np.float32, np.eye(4), 2, False,
          'Internal: 4x4 Camera matrix for world projection'),
-        ('rotation', np.float32, (1, 0, 0, 0), 1,
+        ('rotation', np.float32, (1, 0, 0, 0), 1, False,
          'Internal: Rotation to be applied to each scene as a quaternion'),
-        ('translation', np.float32, (0, 0, 0), 1,
+        ('translation', np.float32, (0, 0, 0), 1, False,
          'Internal: Translation to be applied to the scene'),
-        ('radius', np.float32, 64, 0,
+        ('radius', np.float32, 64, 0, False,
          'Maximum distance between displayed points'),
-        ('clip_extent', np.float32, np.zeros((2, 2)), 2,
+        ('clip_extent', np.float32, np.zeros((2, 2)), 2, False,
          'Matrix specifying areas to not display when dot(clip_extent, position) is outside [-1, 1]')
         ]))
 

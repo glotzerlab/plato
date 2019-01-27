@@ -1,5 +1,6 @@
 import unittest
 import numpy as np
+import numpy.testing as npt
 import plato.draw as draw
 
 class SceneTests(unittest.TestCase):
@@ -12,6 +13,35 @@ class SceneTests(unittest.TestCase):
         np.testing.assert_allclose(scene.size, test_size)
         np.testing.assert_allclose(
             np.array(scene.size)*test_pixel_scale, scene.size_pixels)
+
+    def test_prim_container(self):
+        disk_primitive = draw.Disks(
+            positions=[[0, 0], [1, 2], [2, 4]],
+            colors=[[1, 1, 0, 1], [0, 0, 1, 1], [0, 0, 0, 1]],
+            radii=[1, 2, 3],
+            outline=0.5
+        )
+        assert len(disk_primitive) == 3
+        disk1 = disk_primitive[1]
+        disk_reversed = disk_primitive[::-1]
+        disk_masked = disk_primitive[[True, False, True]]
+        assert len(disk1) == 1
+        assert len(disk_reversed) == 3
+        assert len(disk_masked) == 2
+        npt.assert_almost_equal(disk1.positions, [[1, 2]])
+        npt.assert_almost_equal(disk_reversed.colors,
+                                [[0, 0, 0, 1], [0, 0, 1, 1], [1, 1, 0, 1]])
+        npt.assert_almost_equal(disk_masked.radii, [1, 3])
+
+        # Ensure that length corresponds to the size of the
+        # shortest per-particle property array
+        disk_primitive = draw.Disks(
+            positions=[[0, 0], [1, 2], [2, 4]],
+            colors=[[1, 1, 0, 1], [0, 0, 1, 1]],
+            radii=[1, 2, 3],
+            outline=0.5
+        )
+        assert len(disk_primitive) == 2
 
     def test_add_remove_prims(self):
         prim1 = draw.Disks()

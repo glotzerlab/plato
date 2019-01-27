@@ -90,20 +90,20 @@ class SpherePoints(draw.SpherePoints, GLPrimitive):
     _vertex_attribute_names = ['points']
 
     _GL_UNIFORMS = list(itertools.starmap(ShapeAttribute, [
-        ('camera', np.float32, np.eye(4), 2,
+        ('camera', np.float32, np.eye(4), 2, False,
          'Internal: 4x4 Camera matrix for world projection'),
-        ('rotation', np.float32, (1, 0, 0, 0), 1,
+        ('rotation', np.float32, (1, 0, 0, 0), 1, False,
          'Internal: Rotation to be applied to each scene as a quaternion'),
-        ('translation', np.float32, (0, 0, 0), 1,
+        ('translation', np.float32, (0, 0, 0), 1, False,
          'Internal: Translation to be applied to the scene'),
         draw.SpherePoints._ATTRIBUTES_BY_NAME['blur'],
         draw.SpherePoints._ATTRIBUTES_BY_NAME['intensity'],
         draw.SpherePoints._ATTRIBUTES_BY_NAME['on_surface'],
-        ('radius', np.float32, 1, 0,
+        ('radius', np.float32, 1, 0, False,
          'Radius of the sphere to normalize to'),
-        ('draw_front', np.uint32, 1, 0,
+        ('draw_front', np.uint32, 1, 0, False,
          'If True, draw only the points facing the viewer'),
-        ('inverse_size', np.float32, 1, 0,
+        ('inverse_size', np.float32, 1, 0, False,
          'Internal: inverse size of the given points array')
         ]))
 
