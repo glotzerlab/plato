@@ -27,10 +27,11 @@ class Scene(draw.Scene):
         self._output = None
 
     def show(self):
-        """Render the scene to an image and display using ipython."""
+        """Render the scene to an image and display using IPython."""
+        import IPython
         if self._output is None:
             self.render()
-        return self._output
+        IPython.display.display(self._output)
 
     def save(self, filename):
         """Render and save an image of this Scene.
