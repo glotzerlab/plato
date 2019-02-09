@@ -44,7 +44,7 @@ setup(name='plato-draw',
       ],
       project_urls={
           'Documentation': 'http://plato-draw.readthedocs.io/',
-          'Source': 'https://bitbucket.org/glotzer/plato'
+          'Source': 'https://github.com/glotzerlab/plato'
           },
       python_requires='>=3',
       version=__version__

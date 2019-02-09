@@ -1,5 +1,5 @@
 """
-The fresnel backend uses `fresnel <https://bitbucket.org/glotzer/fresnel>`_
+The fresnel backend uses `fresnel <https://github.com/glotzerlab/fresnel>`_
 to ray-trace scenes.
 
 All fresnel primitives accept an argument ``material`` of type :py:class:`fresnel.material.Material` to define how lights interact with the primitives.

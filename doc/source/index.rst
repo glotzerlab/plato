@@ -14,7 +14,7 @@ Plato is available on PyPI for installation via pip::
 
 You can also install plato from source, like this::
 
-   $ git clone https://bitbucket.org/glotzer/plato.git
+   $ git clone https://github.com/glotzerlab/plato.git
    $ # now install
    $ cd plato && python setup.py install
 
@@ -51,7 +51,7 @@ Examples
 
 Several usage examples are available. Many simple, but less
 interesting, scenes can be found in `the test demo scene script
-<https://bitbucket.org/glotzer/plato/src/master/test/test_scenes.py>`_. Somewhat
+<https://github.com/glotzerlab/plato/blob/master/test/test_scenes.py>`_. Somewhat
 less transparent examples can be found in `the plato-gallery
 repository <https://bitbucket.org/glotzer/plato-gallery>`_.
 
