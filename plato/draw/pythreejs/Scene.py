@@ -35,6 +35,11 @@ class Scene(draw.Scene):
         self._update_canvas_size()
         self._update_camera()
 
+        # Enable default directional lights so particles don't appear black
+        self._use_default_lights = True
+        self._default_lights = []
+        self.enable('directional_light')
+
     @staticmethod
     def _get_camera_quat(camera):
         norm_position = np.array(camera.position)
@@ -144,16 +149,23 @@ class Scene(draw.Scene):
             self.disable(name, strict=False)
             self._backend_objects['scene'].add(light)
         elif name == 'directional_light':
+
             (width, height) = self.size
             dz = np.sqrt(np.sum(self.size**2))*self._clip_scale
 
             lights = parameters.get('value', DEFAULT_DIRECTIONAL_LIGHTS)
             self.disable(name, strict=False)
+            if not self._use_default_lights:
+                for light in self._default_lights:
+                    self._backend_objects['camera'].remove(light)
             for light_vector in np.atleast_2d(lights):
                 position = (-light_vector*dz).tolist()
                 light = pythreejs.DirectionalLight(
                     color='#ffffff', position=position, intensity=np.linalg.norm(light_vector))
+                if self._use_default_lights:
+                    self._default_lights.append(light)
                 self._backend_objects['camera'].add(light)
+            self._use_default_lights = False
 
     def show(self):
         import IPython
