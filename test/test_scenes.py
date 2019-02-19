@@ -180,6 +180,7 @@ def convex_polyhedra(seed=16, num_particles=3):
     np.random.seed(seed)
     positions = np.random.uniform(0, 9, (num_particles, 3))
     colors = np.random.uniform(.75, .9, (num_particles, 4))**1.5
+    colors[:, 3] = 0.7
     orientations = np.random.rand(num_particles, 4)
     orientations /= np.linalg.norm(orientations, axis=-1, keepdims=True)
 
