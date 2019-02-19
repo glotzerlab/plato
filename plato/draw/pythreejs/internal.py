@@ -41,7 +41,7 @@ class ThreeJSPrimitive:
 
         colors = colors.astype(np.float32).reshape((-1, 4))
         if colors[0, 3] < 1 and np.allclose(colors[:, 3], colors[0, 3]):
-            # All colors have the same alpha
+            # If all colors have the same alpha, enable material transparency
             prim.material.transparent = True
             prim.material.depthWrite = False
             prim.material.opacity = colors[0, 3]
