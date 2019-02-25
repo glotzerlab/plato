@@ -105,7 +105,7 @@ def voronoi_with_disks(seed=13, num_points=32):
     return scene
 
 @register_scene
-def disk_union(seed=13, num_unions=4):
+def disk_union(seed=15, num_unions=5):
     np.random.seed(seed)
 
     points = np.array([[1.0, 0.0], [-0.5, 0.866], [-0.5, -0.866]])
