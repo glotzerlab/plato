@@ -13,9 +13,10 @@ All fresnel primitives accept an argument ``material`` of type :py:class:`fresne
 
 from .Scene import Scene
 
-#from .Arrows2D import Arrows2D  # not working yet
+from .Arrows2D import Arrows2D
 from .Disks import Disks
 from .Polygons import Polygons
+from .Spheropolygons import Spheropolygons
 from .Lines import Lines
 from .Spheres import Spheres
 from .ConvexPolyhedra import ConvexPolyhedra

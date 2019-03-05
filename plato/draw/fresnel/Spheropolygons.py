@@ -4,8 +4,8 @@ from ... import draw
 from .FresnelPrimitive import FresnelPrimitive
 import rowan
 
-class Polygons(draw.Polygons, FresnelPrimitive):
-    __doc__ = draw.Polygons.__doc__
+class Spheropolygons(draw.Spheropolygons, FresnelPrimitive):
+    __doc__ = draw.Spheropolygons.__doc__
 
     def __init__(self, *args, material=None, **kwargs):
         FresnelPrimitive.__init__(self, *args, material, **kwargs)
@@ -20,6 +20,7 @@ class Polygons(draw.Polygons, FresnelPrimitive):
             position=self.positions,
             angle=rowan.geometry.angle(rowan.normalize(self.orientations)),
             color=fresnel.color.linear(self.colors),
+            rounding_radius=self.radius,
             material=self._material,
             outline_width=self.outline)
         return geometry
