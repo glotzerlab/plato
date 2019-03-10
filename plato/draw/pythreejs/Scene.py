@@ -23,6 +23,7 @@ class Scene(draw.Scene):
         self._backend_objects['controls'] = pythreejs.OrbitControls(
             self._backend_objects['camera'], target=(0, 0, 0))
         self._backend_objects['scene'].add(self._backend_objects['camera'])
+        self._backend_objects['directional_lights'] = []
 
         (pixel_width, pixel_height) = (width*10, height*10)
         renderer_kwargs = dict(
@@ -36,9 +37,7 @@ class Scene(draw.Scene):
         self._update_camera()
 
         # Enable default directional lights so particles don't appear black
-        self._use_default_lights = True
-        self._default_lights = []
-        self.enable('directional_light')
+        self.enable('directional_light', value=DEFAULT_DIRECTIONAL_LIGHTS)
 
     @staticmethod
     def _get_camera_quat(camera):
@@ -142,30 +141,33 @@ class Scene(draw.Scene):
         self._backend_objects['scene'].remove(primitive.threejs_primitive)
         super(Scene, self).remove_primitive(primitive, strict)
 
+    def _remove_lights(self):
+        for _ in range(len(self._backend_objects['directional_lights'])):
+            light = self._backend_objects['directional_lights'].pop()
+            self._backend_objects['camera'].remove(light)
+
+    def disable(self, name, strict=True):
+        super(Scene, self).disable(name, strict)
+        if name == 'directional_light':
+            self._remove_lights()
+
     def enable(self, name, auto_value=None, **parameters):
         super(Scene, self).enable(name, auto_value, **parameters)
         if name == 'ambient_light':
-            light = pythreejs.AmbientLight('#FFFFFF', self.get_feature_config(name)['value'])
+            light = pythreejs.AmbientLight('#ffffff', self.get_feature_config(name)['value'])
             self.disable(name, strict=False)
             self._backend_objects['scene'].add(light)
         elif name == 'directional_light':
-
-            (width, height) = self.size
-            dz = np.sqrt(np.sum(self.size**2))*self._clip_scale
-
-            lights = parameters.get('value', DEFAULT_DIRECTIONAL_LIGHTS)
-            self.disable(name, strict=False)
-            if not self._use_default_lights:
-                for light in self._default_lights:
-                    self._backend_objects['camera'].remove(light)
-            for light_vector in np.atleast_2d(lights):
-                position = (-light_vector*dz).tolist()
+            # Remove existing lights
+            self._remove_lights()
+            # Create new lights
+            dz = np.linalg.norm(self.size) * self._clip_scale
+            for light_vector in np.atleast_2d(np.asarray(self.get_feature_config(name)['value'])):
+                position = (-light_vector * dz).tolist()
                 light = pythreejs.DirectionalLight(
                     color='#ffffff', position=position, intensity=np.linalg.norm(light_vector))
-                if self._use_default_lights:
-                    self._default_lights.append(light)
+                self._backend_objects['directional_lights'].append(light)
                 self._backend_objects['camera'].add(light)
-            self._use_default_lights = False
 
     def show(self):
         import IPython
