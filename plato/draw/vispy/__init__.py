@@ -10,6 +10,8 @@ Select the backend to use with the standard vispy mechanism::
   vispy.app.use_app('ipynb_webgl')
   # use pyside2
   vispy.app.use_app('pyside2')
+  scene = plato.draw.vispy.Scene(...)
+  scene.show()
   vispy.app.run()
 
 """
