@@ -6,9 +6,10 @@ from .internal import Shape, ShapeDecorator, ShapeAttribute
 class SphereUnion(Shape):
     """A collection of identical sphere-union bodies in 3D.
 
-    A "SphereUnion" object has a common union of points for the
-    whole collection. Each sphere in the union can have it's own color
-    and radius. Points in the union should be specified in counterclockwise order.
+    A `SphereUnion` object is a union of spheres, each of which has
+    its own color, radius, and local position. The `SphereUnion`
+    object can be rigidly rotated and translated via its position and
+    orientation attributes.
     """
 
     _ATTRIBUTES = list(itertools.starmap(ShapeAttribute, [
@@ -19,7 +20,7 @@ class SphereUnion(Shape):
         ('colors', np.float32, (.5, .5, .5, 1), 2, False,
          'Color, RGBA, [0, 1] for each sphere in the union'),
         ('points', np.float32, (0, 0, 0), 2, False,
-         'Positions in local coordinates for the spheres in the union, to be replicated for each particle (CCW order)'),
+         'Positions in local coordinates for the spheres in the union, to be replicated for each particle'),
         ('radii', np.float32, .5, 1, True,
          'Radius of each sphere in the union')
         ]))
