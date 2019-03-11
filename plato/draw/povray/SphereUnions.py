@@ -2,8 +2,8 @@ import numpy as np
 from ... import draw
 from ... import math
 
-class SphereUnion(draw.SphereUnion):
-    __doc__ = draw.SphereUnion.__doc__
+class SphereUnions(draw.SphereUnions):
+    __doc__ = draw.SphereUnions.__doc__
 
     def render(self, rotation=(1, 0, 0, 0), **kwargs):
         rotation = np.asarray(rotation)

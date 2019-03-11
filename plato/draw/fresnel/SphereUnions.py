@@ -4,12 +4,12 @@ from ... import math
 from .FresnelPrimitive import FresnelPrimitive
 import numpy as np
 
-class SphereUnion(draw.SphereUnion, FresnelPrimitive):
-    __doc__ = draw.SphereUnion.__doc__
+class SphereUnions(draw.SphereUnions, FresnelPrimitive):
+    __doc__ = draw.SphereUnions.__doc__
 
     def __init__(self, *args, material=None, **kwargs):
         FresnelPrimitive.__init__(self, *args, material, **kwargs)
-        draw.SphereUnion.__init__(self, *args, **kwargs)
+        draw.SphereUnions.__init__(self, *args, **kwargs)
 
     def render(self, scene):
 

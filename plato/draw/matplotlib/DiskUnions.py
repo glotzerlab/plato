@@ -4,8 +4,8 @@ from matplotlib.patches import Circle, Wedge, Polygon
 from matplotlib.collections import PatchCollection
 from matplotlib.transforms import Affine2D
 
-class DiskUnion(draw.DiskUnion):
-    __doc__ = draw.DiskUnion.__doc__
+class DiskUnions(draw.DiskUnions):
+    __doc__ = draw.DiskUnions.__doc__
 
     def render(self, axes, aa_pixel_size=0, **kwargs):
         collections = []

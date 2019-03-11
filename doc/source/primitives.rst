@@ -44,7 +44,7 @@ Base Drawing Module
 .. autoclass:: Arrows2D
    :members:
 
-.. autoclass:: DiskUnion
+.. autoclass:: DiskUnions
    :members:
 
 .. autoclass:: Disks
@@ -77,7 +77,7 @@ Base Drawing Module
 .. autoclass:: SpherePoints
    :members:
 
-.. autoclass:: SphereUnion
+.. autoclass:: SphereUnions
    :members:
 
 .. autoclass:: Spheres

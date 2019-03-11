@@ -12,7 +12,7 @@ Matplotlib Backend
 .. autoclass:: Arrows2D
    :members:
 
-.. autoclass:: DiskUnion
+.. autoclass:: DiskUnions
    :members:
 
 .. autoclass:: Disks

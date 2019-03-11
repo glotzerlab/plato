@@ -8,7 +8,7 @@ shapes using this backend.
 from .Scene import Scene
 
 from .Disks import Disks
-from .DiskUnion import DiskUnion
+from .DiskUnions import DiskUnions
 from .Arrows2D import Arrows2D
 from .Polygons import Polygons
 from .Spheropolygons import Spheropolygons

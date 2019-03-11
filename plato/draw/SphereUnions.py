@@ -3,11 +3,11 @@ import numpy as np
 from .internal import Shape, ShapeDecorator, ShapeAttribute
 
 @ShapeDecorator
-class SphereUnion(Shape):
+class SphereUnions(Shape):
     """A collection of identical sphere-union bodies in 3D.
 
-    A `SphereUnion` object is a union of spheres, each of which has
-    its own color, radius, and local position. The `SphereUnion`
+    A `SphereUnions` object is a union of spheres, each of which has
+    its own color, radius, and local position. The `SphereUnions`
     object can be rigidly rotated and translated via its position and
     orientation attributes.
     """

@@ -8,8 +8,8 @@ from ..internal import ShapeAttribute
 from vispy import gloo
 
 @GLShapeDecorator
-class DiskUnion(draw.DiskUnion, GLPrimitive):
-    __doc__ = draw.DiskUnion.__doc__
+class DiskUnions(draw.DiskUnions, GLPrimitive):
+    __doc__ = draw.DiskUnions.__doc__
 
     shaders = {}
 
@@ -130,7 +130,7 @@ class DiskUnion(draw.DiskUnion, GLPrimitive):
 
     def __init__(self, *args, **kwargs):
         GLPrimitive.__init__(self)
-        draw.DiskUnion.__init__(self, *args, **kwargs)
+        draw.DiskUnions.__init__(self, *args, **kwargs)
 
     def update_arrays(self):
 

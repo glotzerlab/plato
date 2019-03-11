@@ -6,7 +6,7 @@ from .Scene import Scene
 
 from .Lines import Lines
 from .Spheres import Spheres
-from .SphereUnion import SphereUnion
+from .SphereUnions import SphereUnions
 from .Mesh import Mesh
 from .ConvexPolyhedra import ConvexPolyhedra
 from .ConvexSpheropolyhedra import ConvexSpheropolyhedra

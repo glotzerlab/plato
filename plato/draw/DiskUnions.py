@@ -3,10 +3,10 @@ import numpy as np
 from .internal import Shape, ShapeDecorator, ShapeAttribute
 
 @ShapeDecorator
-class DiskUnion(Shape):
+class DiskUnions(Shape):
     """A collection of identical disk-union bodies in 2D.
 
-    A `DiskUnion` object consists of one or more disks, each with its
+    A `DiskUnions` object consists of one or more disks, each with its
     own radius and color. Each object has its own position and
     orientation that affect the final position of the constituent
     disks.

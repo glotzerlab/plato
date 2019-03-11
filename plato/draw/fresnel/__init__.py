@@ -19,5 +19,5 @@ from .Polygons import Polygons
 from .Spheropolygons import Spheropolygons
 from .Lines import Lines
 from .Spheres import Spheres
-from .SphereUnion import SphereUnion
+from .SphereUnions import SphereUnions
 from .ConvexPolyhedra import ConvexPolyhedra

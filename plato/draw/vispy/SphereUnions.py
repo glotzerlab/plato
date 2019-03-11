@@ -8,8 +8,8 @@ from ..internal import ShapeAttribute
 from vispy import gloo
 
 @GLShapeDecorator
-class SphereUnion(draw.SphereUnion, GLPrimitive):
-    __doc__ = draw.SphereUnion.__doc__
+class SphereUnions(draw.SphereUnions, GLPrimitive):
+    __doc__ = draw.SphereUnions.__doc__
 
     shaders = {}
 
@@ -197,7 +197,7 @@ class SphereUnion(draw.SphereUnion, GLPrimitive):
 
     def __init__(self, *args, **kwargs):
         GLPrimitive.__init__(self)
-        draw.SphereUnion.__init__(self, *args, **kwargs)
+        draw.SphereUnions.__init__(self, *args, **kwargs)
 
     def update_arrays(self):
 

@@ -114,7 +114,7 @@ def disk_union(seed=15, num_unions=5):
     colors = np.random.rand(len(points), 4)
     radii = np.random.uniform(0.5, 1.0, (len(points), 1))
 
-    prim1 = draw.DiskUnion(positions=positions, angles=angles, colors=colors,
+    prim1 = draw.DiskUnions(positions=positions, angles=angles, colors=colors,
                            points=points, radii=radii, outline=.125)
 
     scene = draw.Scene([prim1], zoom=2, features=dict(pan=True))
@@ -131,7 +131,7 @@ def sphere_union(seed=15, num_unions=5):
     colors = np.random.rand(len(points), 4)
     radii = np.random.uniform(0.5, 1.0, (len(points), 1))
 
-    prim1 = draw.SphereUnion(positions=positions, orientations=orientations,colors=colors,
+    prim1 = draw.SphereUnions(positions=positions, orientations=orientations,colors=colors,
                            points=points, radii=radii, outline=.10)
     features = dict(ambient_light=.25)
     features['directional_light'] = .5*np.array([(.5, .25, -.5), (0, -.25, -.25)])
