@@ -162,7 +162,8 @@ class Scene(draw.Scene):
             self._remove_lights()
             # Create new lights
             dz = np.linalg.norm(self.size) * self._clip_scale
-            for light_vector in np.atleast_2d(np.asarray(self.get_feature_config(name)['value'])):
+            for light_vector in np.atleast_2d(
+                    self.get_feature_config(name).get('value', DEFAULT_DIRECTIONAL_LIGHTS)):
                 position = (-light_vector * dz).tolist()
                 light = pythreejs.DirectionalLight(
                     color='#ffffff', position=position, intensity=np.linalg.norm(light_vector))
