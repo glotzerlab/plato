@@ -21,5 +21,8 @@ Povray Backend
 .. autoclass:: Mesh
    :members:
 
+.. autoclass:: SphereUnion
+   :members:
+
 .. autoclass:: Spheres
    :members:

@@ -12,6 +12,9 @@ Vispy Backend
 .. autoclass:: Arrows2D
    :members:
 
+.. autoclass:: DiskUnion
+   :members:
+
 .. autoclass:: Disks
    :members:
 
@@ -40,6 +43,9 @@ Vispy Backend
    :members:
 
 .. autoclass:: SpherePoints
+   :members:
+
+.. autoclass:: SphereUnion
    :members:
 
 .. autoclass:: Spheres

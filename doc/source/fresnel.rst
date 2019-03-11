@@ -24,5 +24,8 @@ Fresnel Backend
 .. autoclass:: Lines
    :members:
 
+.. autoclass:: SphereUnion
+   :members:
+
 .. autoclass:: Spheres
    :members:
