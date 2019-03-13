@@ -2,7 +2,12 @@ import functools
 import unittest
 import numpy as np
 import os
+
 import vispy, vispy.app
+vispy_backend_name = os.environ.get('VISPY_TEST_BACKEND', None)
+if vispy_backend_name:
+    vispy.app.use_app(vispy_backend_name)
+
 import plato
 import plato.draw.vispy as draw
 import test_scenes
