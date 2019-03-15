@@ -16,6 +16,7 @@ with the primitives.
 from .Scene import Scene
 
 from .Arrows2D import Arrows2D
+from .Box import Box
 from .ConvexPolyhedra import ConvexPolyhedra
 from .Disks import Disks
 from .Ellipsoids import Ellipsoids

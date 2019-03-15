@@ -1,15 +1,9 @@
 import fresnel
 from ... import draw
-from .FresnelPrimitive import FresnelPrimitive
+from .FresnelPrimitive import FresnelPrimitiveSolid
 
-class Disks(draw.Disks, FresnelPrimitive):
+class Disks(FresnelPrimitiveSolid, draw.Disks):
     __doc__ = draw.Disks.__doc__
-
-    def __init__(self, *args, material=None, **kwargs):
-        FresnelPrimitive.__init__(self, *args, material, **kwargs)
-        if material is None:
-            self._material.solid = 1
-        draw.Disks.__init__(self, *args, **kwargs)
 
     def render(self, scene):
         geometry = fresnel.geometry.Sphere(

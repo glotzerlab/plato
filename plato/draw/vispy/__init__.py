@@ -37,6 +37,7 @@ respectively.
 
 from .Scene import Scene
 
+from .Box import Box
 from .Arrows2D import Arrows2D
 from .Disks import Disks
 from .DiskUnions import DiskUnions

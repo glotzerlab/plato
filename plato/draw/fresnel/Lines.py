@@ -3,10 +3,10 @@ import itertools
 import numpy as np
 from ... import draw
 from ..internal import ShapeAttribute, ShapeDecorator
-from .FresnelPrimitive import FresnelPrimitive
+from .FresnelPrimitive import FresnelPrimitiveSolid
 
 @ShapeDecorator
-class Lines(draw.Lines, FresnelPrimitive):
+class Lines(FresnelPrimitiveSolid, draw.Lines):
     __doc__ = draw.Lines.__doc__
 
     _ATTRIBUTES = draw.Lines._ATTRIBUTES + list(
@@ -14,12 +14,6 @@ class Lines(draw.Lines, FresnelPrimitive):
         ('outline', np.float32, 0, 0, False,
          'Outline width for all particles')
     ]))
-
-    def __init__(self, *args, material=None, **kwargs):
-        FresnelPrimitive.__init__(self, *args, material, **kwargs)
-        if material is None:
-            self._material.solid = 1
-        draw.Lines.__init__(self, *args, **kwargs)
 
     def render(self, scene):
         geometry = fresnel.geometry.Cylinder(

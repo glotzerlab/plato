@@ -7,7 +7,7 @@ from ..internal import ShapeAttribute, ShapeDecorator
 from .FresnelPrimitive import FresnelPrimitive
 
 @ShapeDecorator
-class Ellipsoids(draw.Ellipsoids, FresnelPrimitive):
+class Ellipsoids(FresnelPrimitive, draw.Ellipsoids):
     __doc__ = draw.Ellipsoids.__doc__
 
     _ATTRIBUTES = draw.Ellipsoids._ATTRIBUTES + list(
@@ -17,10 +17,6 @@ class Ellipsoids(draw.Ellipsoids, FresnelPrimitive):
         ('vertex_count', np.int32, 256, 0, False,
          'Number of vertices used to render ellipsoid')
     ]))
-
-    def __init__(self, *args, material=None, **kwargs):
-        FresnelPrimitive.__init__(self, *args, material, **kwargs)
-        draw.Ellipsoids.__init__(self, *args, **kwargs)
 
     def render(self, scene):
         vertices = fibonacciPositions(self.vertex_count, self.a, self.b, self.c)

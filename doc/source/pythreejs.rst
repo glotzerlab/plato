@@ -9,6 +9,9 @@ Pythreejs Backend
 3D Graphics Primitives
 ----------------------
 
+.. autoclass:: Box
+   :members:
+
 .. autoclass:: ConvexPolyhedra
    :members:
 

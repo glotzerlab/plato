@@ -62,6 +62,9 @@ Base Drawing Module
 3D Graphics Primitives
 ----------------------
 
+.. autoclass:: Box
+   :members:
+
 .. autoclass:: ConvexPolyhedra
    :members:
 

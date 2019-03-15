@@ -1,4 +1,3 @@
-import itertools
 import numpy as np
 from .Polygons import Polygons
 from .internal import ShapeDecorator
@@ -20,7 +19,7 @@ class Arrows2D(Polygons):
     """
 
     def __init__(self, *args, **kwargs):
-        super(Polygons, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
         thickness = 0.14        # width of arrow shaft
         head_length = 0.35      # length from base of the head to the tip of the arrow

@@ -15,12 +15,12 @@ def quatquat(qi, qj):
     return rowan.multiply(qi, qj)
 
 def box_to_matrix(box):
-    """Converts a box tuple (in [lx, ly, lz, xy, xz, yz] order with HOOMD
+    """Converts a box tuple (in [Lx, Ly, Lz, xy, xz, yz] order with HOOMD
     meanings) into a box matrix"""
-    (lx, ly, lz, xy, xz, yz) = box
-    return np.array([[lx, xy*ly, xz*lz],
-                     [0,     ly, yz*lz],
-                     [0,      0,    lz]], dtype=np.float64)
+    (Lx, Ly, Lz, xy, xz, yz) = box
+    return np.array([[Lx, xy*Ly, xz*Lz],
+                     [0,     Ly, yz*Lz],
+                     [0,      0,    Lz]], dtype=np.float64)
 
 def make_fractions(box, positions):
     """Converts a box tuple and positions array into a set of box

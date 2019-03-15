@@ -6,6 +6,7 @@ povray should be installed and accessible on your executable path.
 
 from .Scene import Scene
 
+from .Box import Box
 from .ConvexPolyhedra import ConvexPolyhedra
 from .ConvexSpheropolyhedra import ConvexSpheropolyhedra
 from .Ellipsoids import Ellipsoids

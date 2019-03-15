@@ -77,12 +77,15 @@ class Shape:
         result = cls(**other._attributes)
         return result
 
-def attribute_setter(self, value, name, dtype, dimension, default):
+def attribute_setter(self, value, name, dtype, dimension, default, callback=None):
     size_checker = array_size_checkers[dimension]
     result = size_checker(np.asarray(value, dtype=dtype))
     assert default.ndim == 0 or result.shape[-default.ndim:] == self._ATTRIBUTE_DIMENSIONS[name], 'Invalid shape for property {}: {}'.format(name, result.shape)
     self._dirty_attributes.add(name)
     self._attributes[name] = result
+    if callback is not None:
+        print(name, callback, self, value)
+        callback(self, value)
 
 def attribute_getter(self, name):
     return self._attributes[name]
@@ -100,10 +103,17 @@ def ShapeDecorator(cls):
         attribute_doc_lines.append(ATTRIBUTE_DOCSTRING_TEMPLATE.format(
             name=attr.name, description=attr.description))
 
+        callback = getattr(cls, attr.name, None)
+        if callback:
+            callback = callback if callable(callback) else callback.fset
+            if isinstance(callback, functools.partial) and callback.func == attribute_setter:
+                callback = None
+
         getter = functools.partial(attribute_getter, name=attr.name)
         setter = functools.partial(
             attribute_setter, name=attr.name, dtype=attr.dtype,
-            dimension=attr.dimension, default=array_default)
+            dimension=attr.dimension, default=array_default,
+            callback=callback)
         prop = property(getter, setter, doc=attr.description)
 
         setattr(cls, attr.name, prop)

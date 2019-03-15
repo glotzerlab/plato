@@ -6,7 +6,7 @@ from ..internal import ShapeAttribute, ShapeDecorator
 from .FresnelPrimitive import FresnelPrimitive
 
 @ShapeDecorator
-class ConvexPolyhedra(draw.ConvexPolyhedra, FresnelPrimitive):
+class ConvexPolyhedra(FresnelPrimitive, draw.ConvexPolyhedra):
     __doc__ = draw.ConvexPolyhedra.__doc__
 
     _ATTRIBUTES = draw.ConvexPolyhedra._ATTRIBUTES + list(
@@ -14,10 +14,6 @@ class ConvexPolyhedra(draw.ConvexPolyhedra, FresnelPrimitive):
         ('outline', np.float32, 0, 0, False,
          'Outline width for all particles')
     ]))
-
-    def __init__(self, *args, material=None, **kwargs):
-        FresnelPrimitive.__init__(self, *args, material, **kwargs)
-        draw.ConvexPolyhedra.__init__(self, *args, **kwargs)
 
     def render(self, scene):
         polyhedron_info = fresnel.util.convex_polyhedron_from_vertices(self.vertices)

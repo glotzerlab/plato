@@ -10,9 +10,9 @@ formats, so it is ideal for saving vector versions of figures.
 
 from .Scene import Scene
 
+from .Arrows2D import Arrows2D
 from .Disks import Disks
 from .DiskUnions import DiskUnions
-from .Arrows2D import Arrows2D
 from .Polygons import Polygons
 from .Spheropolygons import Spheropolygons
 

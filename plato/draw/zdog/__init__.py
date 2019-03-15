@@ -8,6 +8,7 @@ inclusion in other pages.
 
 from .Scene import Scene
 
+from .Box import Box
 from .ConvexPolyhedra import ConvexPolyhedra
 from .ConvexSpheropolyhedra import ConvexSpheropolyhedra
 from .Lines import Lines
