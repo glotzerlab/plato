@@ -509,3 +509,27 @@ def simple_cubes_octahedra(N=4):
     rotation = [0.99795496,  0.01934275, -0.06089295,  0.00196485]
     scene = draw.Scene([cubes, octahedra], rotation=rotation, zoom=5.5)
     return scene
+
+@register_scene
+def boxes_3d():
+    prim = draw.Box(Lx=5, Ly=5, Lz=6, xy=0.2, xz=0.4, yz=0,
+                    width=0.2, color=[0, 0.2, 0.6, 1])
+    prim2 = draw.Box.from_box([3, 2.5, 4, 0.1, -0.2, 0.5],
+                    width=0.15, color=[0.9, 0.9, 0.2, 1])
+    prim3 = draw.Box.from_box(box=[2, 1.5, 2, 0.8, 0.1, -0.2],
+                    width=0.1, color=[0.5, 0.5, 0.5, 1])
+    features = dict(ambient_light=.25,
+                    directional_light=dict(lights=(-.1, -.15, -1)))
+    rotation = [9.9774611e-01, 2.3801494e-02, -6.2734932e-02, 5.5756618e-04]
+    return draw.Scene((prim, prim2, prim3), features=features,
+                      rotation=rotation, zoom=3)
+
+@register_scene
+def boxes_2d():
+    prim = draw.Box(Lx=5, Ly=5, Lz=0, xy=0.2, xz=0.4, yz=0,
+                    width=0.2, color=[0, 0.2, 0.6, 1])
+    prim2 = draw.Box.from_box({'Lx': 3, 'Ly': 2.5, 'xy': -0.3},
+                    width=0.15, color=[0.9, 0.9, 0.2, 1])
+    prim3 = draw.Box.from_box([2, 1.5],
+                    width=0.1, color=[0.5, 0.5, 0.5, 1])
+    return draw.Scene((prim, prim2, prim3), zoom=3)
