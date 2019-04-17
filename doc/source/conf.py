@@ -67,7 +67,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = 'plato'
-copyright = '2015-2018, Matthew Spellings'
+copyright = '2015-2018, The Regents of the University of Michigan'
 author = 'Matthew Spellings'
 
 # The version info for the project you're documenting, acts as replacement for
