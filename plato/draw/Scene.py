@@ -106,8 +106,8 @@ class Scene:
 
         if 'link_rotation' in self.enabled_features:
             for target in self.get_feature_config('link_rotation')['targets']:
-                for prim in target:
-                    prim.rotation = self._rotation
+                if target is not self and not np.allclose(target.rotation, value):
+                    target.rotation = value
 
     @property
     def size(self):
@@ -177,7 +177,7 @@ class Scene:
                 targets.append(parameters['value'])
 
             for target in targets:
-                target._rotation = self._rotation
+                target.rotation = self._rotation
 
         self._enabled_features[name] = dict(parameters)
 
