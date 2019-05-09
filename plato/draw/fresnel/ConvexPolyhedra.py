@@ -2,18 +2,18 @@ import fresnel
 import itertools
 import numpy as np
 from ... import draw
-from ..internal import ShapeAttribute
+from ..internal import ShapeAttribute, ShapeDecorator
 from .FresnelPrimitive import FresnelPrimitive
 
+@ShapeDecorator
 class ConvexPolyhedra(draw.ConvexPolyhedra, FresnelPrimitive):
     __doc__ = draw.ConvexPolyhedra.__doc__
 
-    _ATTRIBUTES = draw.ConvexPolyhedra._ATTRIBUTES
-
-    _ATTRIBUTES.extend(list(itertools.starmap(ShapeAttribute, [
+    _ATTRIBUTES = draw.ConvexPolyhedra._ATTRIBUTES + list(
+        itertools.starmap(ShapeAttribute, [
         ('outline', np.float32, 0, 0, False,
          'Outline width for all particles')
-    ])))
+    ]))
 
     def __init__(self, *args, material=None, **kwargs):
         FresnelPrimitive.__init__(self, *args, material, **kwargs)

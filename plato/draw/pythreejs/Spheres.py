@@ -3,7 +3,7 @@ import itertools
 from ... import draw
 from ... import mesh
 from .internal import ThreeJSPrimitive
-from ..internal import ShapeAttribute
+from ..internal import ShapeAttribute, ShapeDecorator
 import numpy as np
 import pythreejs
 
@@ -14,15 +14,15 @@ def fibonacciPositions(n_b, R=.5):
     return R*np.array([np.sqrt(1 - vy**2)*np.cos(phi),
                        vy, np.sqrt(1 - vy**2)*np.sin(phi)]).T
 
+@ShapeDecorator
 class Spheres(draw.Spheres, ThreeJSPrimitive):
     __doc__ = draw.Spheres.__doc__
 
-    _ATTRIBUTES = draw.Spheres._ATTRIBUTES
-
-    _ATTRIBUTES.extend(list(itertools.starmap(ShapeAttribute, [
+    _ATTRIBUTES = draw.Spheres._ATTRIBUTES + list(
+        itertools.starmap(ShapeAttribute, [
         ('vertex_count', np.int32, 64, 0, False,
          'Number of vertices used to render sphere')
-    ])))
+    ]))
 
     def update_arrays(self):
         if not self._dirty_attributes:
