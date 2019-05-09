@@ -4,17 +4,17 @@ from ... import draw
 from ... import mesh as pmesh
 from ... import geometry
 from ... import math as pmath
-from ..internal import ShapeAttribute
+from ..internal import ShapeAttribute, ShapeDecorator
 
+@ShapeDecorator
 class ConvexPolyhedra(draw.ConvexPolyhedra):
     __doc__ = draw.ConvexPolyhedra.__doc__
 
-    _ATTRIBUTES = draw.ConvexPolyhedra._ATTRIBUTES
-
-    _ATTRIBUTES.extend(list(itertools.starmap(ShapeAttribute, [
+    _ATTRIBUTES = draw.ConvexPolyhedra._ATTRIBUTES + list(
+        itertools.starmap(ShapeAttribute, [
         ('outline', np.float32, 0, 0, False,
          'Outline width for all particles')
-    ])))
+    ]))
 
     def render(self, rotation=(1, 0, 0, 0), name_suffix='', **kwargs):
         rotation = np.asarray(rotation)
