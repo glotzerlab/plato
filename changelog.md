@@ -1,15 +1,19 @@
+## Unreleased
+
+- Add `vertex_count` property to pythreejs Spheres (bdice)
+
 ## v1.4
 
 - Make povray Mesh objects smooth (mspells)
 - Add pythreejs backend (mspells)
-- Fix vispy-specialized attributes in Scene.copy() (mspells)
+- Fix vispy-specialized attributes in `Scene.copy()` (mspells)
 - Fix usage of outline attributes in fresnel backend for Spheres and Lines (mspells)
 
 ## v1.3
 
 - Add fresnel backend (bdice)
 - Replicated Mesh objects given positions/orientations (mootimot)
-- Scene.convert() method (mspells)
+- `Scene.convert()` method (mspells)
 
 ## v1.2
 
@@ -26,7 +30,7 @@
 
 ## v1.0
 
-- Reorganized entire project from being vispy focused (plato.gl) to having multiple backends (plato.draw.*) (mspells)
+- Reorganized entire project from being vispy focused (`plato.gl`) to having multiple backends (`plato.draw.*`) (mspells)
 - Port vispy backend (mspells)
 - Basic blender backend (mspells)
 - Basic matplotlib backend (mspells)
