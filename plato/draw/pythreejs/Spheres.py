@@ -28,7 +28,7 @@ class Spheres(draw.Spheres, ThreeJSPrimitive):
         if not self._dirty_attributes:
             return
 
-        vertices = fibonacciPositions(getattr(self, 'vertex_count', 64))
+        vertices = fibonacciPositions(self.vertex_count)
 
         (vertices, indices) = mesh.convexHull(vertices)
         (positions, colors, diameters, images) = mesh.unfoldProperties(
