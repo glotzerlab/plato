@@ -1,7 +1,9 @@
 from collections import defaultdict
+import itertools
 from ... import draw
 from ... import mesh
 from .internal import ThreeJSPrimitive
+from ..internal import ShapeAttribute
 import numpy as np
 import pythreejs
 
@@ -15,12 +17,18 @@ def fibonacciPositions(n_b, R=.5):
 class Spheres(draw.Spheres, ThreeJSPrimitive):
     __doc__ = draw.Spheres.__doc__
 
+    _ATTRIBUTES = draw.Spheres._ATTRIBUTES
+
+    _ATTRIBUTES.extend(list(itertools.starmap(ShapeAttribute, [
+        ('vertex_count', np.int32, 64, 0, False,
+         'Number of vertices used to render sphere')
+    ])))
+
     def update_arrays(self):
         if not self._dirty_attributes:
             return
 
-        # TODO make this a configurable attribute
-        vertices = fibonacciPositions(64)
+        vertices = fibonacciPositions(getattr(self, 'vertex_count', 64))
 
         (vertices, indices) = mesh.convexHull(vertices)
         (positions, colors, diameters, images) = mesh.unfoldProperties(
