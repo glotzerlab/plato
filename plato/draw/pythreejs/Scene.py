@@ -1,5 +1,4 @@
 from ... import draw
-from ... import math
 import rowan
 import numpy as np
 import pythreejs
@@ -39,25 +38,6 @@ class Scene(draw.Scene):
         # Enable default directional lights so particles don't appear black
         self.enable('directional_light', value=DEFAULT_DIRECTIONAL_LIGHTS)
 
-    @staticmethod
-    def _get_camera_quat(camera):
-        norm_position = np.array(camera.position)
-        norm_position /= np.linalg.norm(norm_position)
-        dot = -norm_position[2]
-        if dot > 1 - 1e-6:
-            # parallel, do nothing
-            return np.array([1, 0, 0, 0], dtype=np.float32)
-        elif dot < -1 + 1e-6:
-            # this is specialized in the -z direction, we know
-            # anything in the xy plane will be perpendicular so we can
-            # just rotate by pi about +x, for example
-            return np.array([np.cos(np.pi/2), np.sin(np.pi/2), 0, 0], dtype=np.float32)
-
-        halftheta = np.arccos(dot)/2
-        cross = np.cross((0, 0, -1), norm_position)
-        cross /= np.linalg.norm(cross)
-        return np.array([np.cos(halftheta)] + (np.sin(halftheta)*cross).tolist(), dtype=np.float32)
-
     @property
     def zoom(self):
         return self._backend_objects['camera'].zoom
@@ -69,17 +49,24 @@ class Scene(draw.Scene):
     @property
     def rotation(self):
         camera = self._backend_objects['camera']
-        return self._get_camera_quat(camera)
+        norm_out = -np.array(camera.position)
+        norm_out /= np.linalg.norm(norm_out)
+        norm_up = np.array(camera.up)
+        norm_up -= np.dot(norm_up, norm_out) * norm_out
+        norm_up /= np.linalg.norm(norm_up)
+        norm_right = np.cross(norm_up, norm_out)
+        rotation_matrix = np.array([norm_right, norm_up, norm_out]).T
+        return rowan.from_matrix(rotation_matrix)
 
     @rotation.setter
     def rotation(self, value):
-        old_quat = self.rotation
-        new_quat = np.asarray(value, dtype=np.float32)
-        rotation = math.quatquat(new_quat, math.quatconj(old_quat))
-
         camera = self._backend_objects['camera']
-        new_position = math.quatrot(rotation, camera.position)
-        camera.position = new_position.tolist()
+        camera_distance = np.linalg.norm(camera.position)
+
+        camera.position = rowan.rotate(rowan.conjugate(value),
+                                       [0, 0, camera_distance]).tolist()
+        camera.up = rowan.rotate(rowan.conjugate(value),
+                                 [0, 1, 0]).tolist()
         self._backend_objects['controls'].exec_three_obj_method('update')
 
     @property
@@ -123,7 +110,7 @@ class Scene(draw.Scene):
 
         dz = np.sqrt(np.sum(self.size**2))*self._clip_scale
 
-        translation = math.quatrot(self.rotation, [0, 0, -1 - dz/2])
+        translation = rowan.rotate(self.rotation, [0, 0, -1 - dz/2])
         translation[:2] -= self.translation[:2]
 
         camera.left = -width/2

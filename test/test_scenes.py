@@ -312,6 +312,79 @@ def disks_and_lines():
 
     return draw.Scene([prim2, prim1], zoom=10)
 
+def axes_scene(rotation=[1, 0, 0, 0]):
+    x = np.array([[6, 0, 0],
+                  [6, -1, -1],
+                  [6, -1, 1],
+                  [6, 1, -1],
+                  [6, 1, 1],
+                  [6, -0.5, -0.5],
+                  [6, -0.5, 0.5],
+                  [6, 0.5, -0.5],
+                  [6, 0.5, 0.5]])
+    x_sphere_prim = draw.Spheres(positions=x,
+                                 radii=0.25*np.ones(len(x)),
+                                 colors=[[1, 0, 0, 1]]*len(x))
+    x_lines_prim = draw.Lines(start_points=np.array([[0, 0, 0], *x[1:5]]),
+                              end_points=np.array([x[0]]*5),
+                              widths=0.5*np.ones(5),
+                              colors=[[1, 0, 0, 1]]*5)
+    y = np.array([[0, 6, 0],
+                  [1, 6, 1],
+                  [-1, 6, 1],
+                  [0, 6, -1],
+                  [0.5, 6, 0.5],
+                  [-0.5, 6, 0.5],
+                  [0, 6, -0.5]])
+    y_sphere_prim = draw.Spheres(positions=y,
+                                 radii=0.25*np.ones(len(y)),
+                                 colors=[[0, 1, 0, 1]]*len(y))
+    y_lines_prim = draw.Lines(start_points=np.array([[0, 0, 0], *y[1:4]]),
+                              end_points=np.array([y[0]]*4),
+                              widths=0.5*np.ones(4),
+                              colors=[[0, 1, 0, 1]]*4)
+    z = np.array([[0, 0, 6],
+                  [-1, 1, 6],
+                  [1, 1, 6],
+                  [-1, -1, 6],
+                  [1, -1, 6],
+                  [-0.5, -1, 6],
+                  [0, -1, 6],
+                  [0.5, -1, 6],
+                  [-0.5, 1, 6],
+                  [0, 1, 6],
+                  [0.5, 1, 6],
+                  [-0.5, -0.5, 6],
+                  [0.5, 0.5, 6]])
+    z_sphere_prim = draw.Spheres(positions=z,
+                                 radii=0.25*np.ones(len(z)),
+                                 colors=[[0, 0, 1, 1]]*len(z))
+    z_lines_prim = draw.Lines(start_points=np.array([[0, 0, 0], *z[1:4]]),
+                              end_points=np.array([z[0], *z[2:5]]),
+                              widths=0.5*np.ones(4),
+                              colors=[[0, 0, 1, 1]]*4)
+    scene = draw.Scene([x_sphere_prim, x_lines_prim,
+                        y_sphere_prim, y_lines_prim,
+                        z_sphere_prim, z_lines_prim],
+                       rotation=rotation)
+    return scene
+
+@register_scene
+def axes_unrotated():
+    return axes_scene()
+
+@register_scene
+def axes_isometric():
+    return axes_scene([0.88047624, 0.27984814, 0.3647052, 0.1159169])
+
+@register_scene
+def axes_rotated_30_deg_around_z():
+    return axes_scene([.96592583, 0., 0., 0.25881905])
+
+@register_scene
+def axes_rotated_randomly():
+    return axes_scene([0.22886531, -0.61944334, -0.68368065, 0.31063063])
+
 def fibonacciSphere(N):
     offset = 1./(N/2.)
     golden_ratio = (np.sqrt(5)+1)/2. - 1
