@@ -14,11 +14,13 @@ class Scene(draw.Scene):
         self._backend_objects = dict(scene=pythreejs.Scene())
         self._clip_scale = 1
 
+        self.z_offset = kwargs.get('translation', (0, 0, 0))[2]
+
         size = (40, 30)
         (width, height) = size
         dz = np.linalg.norm(size)*self._clip_scale
         self._backend_objects['camera'] = pythreejs.OrthographicCamera(
-            -width/2, width/2, height/2, -height/2, 1, 1 + dz, position=(0, 0, -1))
+            -width/2, width/2, height/2, -height/2, 1, 1 + dz, position=(0, 0, 1))
         self._backend_objects['controls'] = pythreejs.OrbitControls(
             self._backend_objects['camera'], target=(0, 0, 0))
         self._backend_objects['scene'].add(self._backend_objects['camera'])
@@ -33,7 +35,9 @@ class Scene(draw.Scene):
 
         super(Scene, self).__init__(*args, **kwargs)
         self._update_canvas_size()
-        self._update_camera()
+
+        # directly re-initialize rotation after camera has been set up
+        self.rotation = kwargs.get('rotation', (1, 0, 0, 0))
 
         # Enable default directional lights so particles don't appear black
         self.enable('directional_light', value=DEFAULT_DIRECTIONAL_LIGHTS)
@@ -47,26 +51,48 @@ class Scene(draw.Scene):
         self._backend_objects['camera'].zoom = value
 
     @property
+    def translation(self):
+        controls = self._backend_objects['controls']
+        translation = -np.array(controls.target)
+        translation = rowan.rotate(self.rotation, translation)
+        translation[2] += self.z_offset
+        return translation
+
+    @translation.setter
+    def translation(self, value):
+        controls = self._backend_objects['controls']
+        value = np.asarray(value) - (0, 0, self.z_offset)
+        value = rowan.rotate(rowan.conjugate(self.rotation), value)
+        controls.target = (-value).tolist()
+        controls.exec_three_obj_method('update')
+
+    @property
     def rotation(self):
         camera = self._backend_objects['camera']
-        norm_out = -np.array(camera.position)
+        norm_out = np.array(camera.position)
         norm_out /= np.linalg.norm(norm_out)
         norm_up = np.array(camera.up)
         norm_up -= np.dot(norm_up, norm_out) * norm_out
         norm_up /= np.linalg.norm(norm_up)
         norm_right = np.cross(norm_up, norm_out)
         rotation_matrix = np.array([norm_right, norm_up, norm_out]).T
-        return rowan.from_matrix(rotation_matrix)
+        result = rowan.from_matrix(rotation_matrix, require_orthogonal=False)
+        result = rowan.conjugate(result)
+        return result
 
     @rotation.setter
     def rotation(self, value):
         camera = self._backend_objects['camera']
+
+        # rotating a scene by q is equivalent to rotating the camera's
+        # position and up vector by q*
+        conj = rowan.conjugate(value)
         camera_distance = np.linalg.norm(camera.position)
 
-        camera.position = rowan.rotate(rowan.conjugate(value),
+        camera.position = rowan.rotate(conj,
                                        [0, 0, camera_distance]).tolist()
-        camera.up = rowan.rotate(rowan.conjugate(value),
-                                 [0, 1, 0]).tolist()
+        camera.up = rowan.rotate(conj, [0, 1, 0]).tolist()
+
         self._backend_objects['controls'].exec_three_obj_method('update')
 
     @property
@@ -110,14 +136,16 @@ class Scene(draw.Scene):
 
         dz = np.sqrt(np.sum(self.size**2))*self._clip_scale
 
-        translation = rowan.rotate(self.rotation, [0, 0, -1 - dz/2])
-        translation[:2] -= self.translation[:2]
+        conj = rowan.conjugate(self.rotation)
+
+        translation = rowan.rotate(conj, [0, 0, 1 + dz/2])
 
         camera.left = -width/2
         camera.right = width/2
         camera.top = height/2
         camera.bottom = -height/2
         camera.far = 1 + dz
+        camera.up = rowan.rotate(conj, (0, 1, 0)).tolist()
         camera.position = translation.tolist()
 
     def add_primitive(self, prim):
