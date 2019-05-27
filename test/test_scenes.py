@@ -252,7 +252,12 @@ def many_3d_primitives(seed=15, num_particles=3):
     colors[:] = .5
     prim5 = draw.Mesh(vertices=vertices, indices=indices, colors=colors)
 
-    prims = [prim, prim2, prim3, prim4, prim5]
+    prim6 = draw.Ellipsoids.copy(prim)
+    prim6.b = 1.05
+    prim6.c = 0.8
+    prim6.positions = (-1, 1, -1) - prim6.positions
+
+    prims = [prim, prim2, prim3, prim4, prim5, prim6]
     features = dict(ambient_light=.25, directional_light=(-.1, -.15, -1),
                     translucency=True)
     scene = draw.Scene(prims, zoom=5, clip_scale=10, features=features)
@@ -432,3 +437,16 @@ def meshes():
 
     features = dict(ambient_light=.25, directional_light=(-.1, -.15, -1))
     return draw.Scene(prim, zoom=10, features=features)
+
+@register_scene
+def ellipsoids():
+    prim0 = draw.Ellipsoids()
+    primx = draw.Ellipsoids(positions=(2, 0, 0), a=1.5, b=1.25)
+    primy = draw.Ellipsoids(positions=(0, 2, 0), b=1.5, c=2)
+    primz = draw.Ellipsoids(positions=(0, 0, 2), c=1.5)
+
+    prims = [prim0, primx, primy, primz]
+
+    features = dict(ambient_light=.25, directional_light=(-.1, -.15, -1))
+    return draw.Scene(prims, zoom=10, features=features,
+                      rotation=[0.88047624, 0.27984814, 0.3647052, 0.1159169])
