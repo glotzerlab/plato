@@ -31,8 +31,8 @@ class Ellipsoids(draw.Ellipsoids, ThreeJSPrimitive):
         vertices = fibonacciPositions(self.vertex_count, self.a, self.b, self.c)
 
         (vertices, indices) = mesh.convexHull(vertices)
-        (positions, colors, images) = mesh.unfoldProperties(
-            [self.positions, self.colors],
+        (positions, orientations, colors, images) = mesh.unfoldProperties(
+            [self.positions, self.orientations, self.colors],
             [vertices])
 
         # these are incorrect normals, but this looks to be the most
@@ -40,4 +40,4 @@ class Ellipsoids(draw.Ellipsoids, ThreeJSPrimitive):
         normals = images.copy()
 
         self._finalize_primitive_arrays(
-            positions, None, colors, images, normals, indices)
+            positions, orientations, colors, images, normals, indices)
