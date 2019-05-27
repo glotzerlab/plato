@@ -13,7 +13,10 @@ class Ellipsoids(draw.Ellipsoids):
         lines = []
         for (p, c, a) in zip(positions, self.colors[:, :3],
                                 1 - self.colors[:, 3]):
-            args = p.tolist() + [self.a, self.b, self.c] + c.tolist() + [a]
-            lines.append('sphere {{<{},{},{}> 1 scale<{}, {}, {}> pigment {{color '
-                         '<{},{},{}> transmit {}}}}}'.format(*args))
+            args = [self.a, self.b, self.c] + p.tolist() + c.tolist() + [a]
+            lines.append('sphere {{'
+                         'o, 1 scale<{}, {}, {}>'
+                         'translate <{}, {}, {}>'
+                         'pigment {{ color <{},{},{}> transmit {} }}'
+                         '}}'.format(*args))
         return lines
