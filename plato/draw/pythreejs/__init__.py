@@ -12,6 +12,7 @@ and is compatible with Jupyter notebooks.
 
 from .ConvexPolyhedra import ConvexPolyhedra
 from .ConvexSpheropolyhedra import ConvexSpheropolyhedra
+from .Ellipsoids import Ellipsoids
 from .Lines import Lines
 from .Mesh import Mesh
 from .Spheres import Spheres
