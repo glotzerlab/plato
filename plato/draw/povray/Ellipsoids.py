@@ -16,7 +16,7 @@ class Ellipsoids(draw.Ellipsoids):
                 positions, rotations, self.colors[:, :3], 1 - self.colors[:, 3]):
             lines.append('sphere {{ '
                          '0, 1 scale<{a}, {b}, {c}> '
-                         'rotate <{rot[0]}, {rot[1]}, {rot[2]}> '
+                         'rotate <{rot[2]}, {rot[1]}, {rot[0]}> '
                          'translate <{pos[0]}, {pos[1]}, {pos[2]}> '
                          'pigment {{ color <{col[0]}, {col[1]}, {col[2]}> transmit {alpha} }} '
                          '}}'.format(a=self.a, b=self.b, c=self.c,
