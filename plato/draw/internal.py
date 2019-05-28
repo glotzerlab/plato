@@ -111,7 +111,17 @@ def ShapeDecorator(cls):
     if cls.__doc__ is None:
         cls.__doc__ = ''
 
-    cls.__doc__ = inspect.cleandoc(cls.__doc__) + '\n'.join(attribute_doc_lines)
+    docstring = cls.__doc__
+
+    try:
+        skip_after = docstring.index(ATTRIBUTE_DOCSTRING_HEADER)
+        docstring = docstring[:skip_after]
+    except ValueError:
+        # this is the first time ShapeDecorator is modifying this
+        # class's docstring
+        pass
+
+    cls.__doc__ = inspect.cleandoc(docstring) + '\n'.join(attribute_doc_lines)
     return cls
 
 ShapeAttribute = namedtuple('ShapeAttrib', ['name', 'dtype', 'default', 'dimension', 'per_shape', 'description'])
