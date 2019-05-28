@@ -15,6 +15,9 @@ Povray Backend
 .. autoclass:: ConvexSpheropolyhedra
    :members:
 
+.. autoclass:: Ellipsoids
+   :members:
+
 .. autoclass:: Lines
    :members:
 

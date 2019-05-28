@@ -12,6 +12,9 @@ Pythreejs Backend
 .. autoclass:: ConvexPolyhedra
    :members:
 
+.. autoclass:: Ellipsoids
+   :members:
+
 .. autoclass:: Lines
    :members:
 
