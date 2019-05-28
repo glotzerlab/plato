@@ -3,6 +3,7 @@ import itertools
 import numpy as np
 import plato
 import plato.draw as draw
+import rowan
 
 ALL_TEST_SCENES = []
 
@@ -429,5 +430,60 @@ def ellipsoids():
     prims = [prim0, primx, primy, primz]
 
     features = dict(ambient_light=.25, directional_light=(-.1, -.15, -1))
-    return draw.Scene(prims, zoom=10, features=features,
+    return draw.Scene(prims, zoom=4.6, features=features,
                       rotation=[0.88047624, 0.27984814, 0.3647052, 0.1159169])
+
+def example_vector_field(N):
+    xs = np.linspace(-N/2, N/2, N)
+    positions = np.array(list(itertools.product(xs, xs, xs)), dtype=np.float32)
+    positions = positions.reshape((-1, 3))
+
+    thetas = np.arctan2(positions[:, 1], positions[:, 0])
+    circle = np.array([-np.sin(thetas), np.cos(thetas), np.zeros_like(thetas)]).T
+
+    rotated = np.cross(positions, circle)
+    norms = np.clip(np.linalg.norm(rotated, axis=-1, keepdims=True), 1e-5, np.inf)
+    rotated = rotated/norms
+
+    return positions, rotated
+
+def field_scene(N=10, use='ellipsoids'):
+    features = dict(ambient_light=.4)
+    (positions, units) = example_vector_field(5)
+
+    normalized_z = positions[:, 2].copy()
+    normalized_z -= np.min(normalized_z)
+    normalized_z /= np.max(normalized_z)
+
+    colors = plato.cmap.cubehelix(normalized_z, h=1.4)
+    colors[:, :3] = .5*(colors[:, :3] +
+        plato.cmap.cubeellipse(np.arctan2(positions[:, 1], positions[:, 0])))
+
+    if use == 'ellipsoids':
+        orientations = rowan.vector_vector_rotation([(1, 0, 0)], units)
+        prim = draw.Ellipsoids(
+            positions=positions, orientations=orientations, colors=colors,
+            a=.5, b=.125, c=.125)
+    elif use == 'lines':
+        features['ambient_light'] = 1
+        starts = positions - units/2
+        ends = positions + units/2
+
+        prim = draw.Lines(
+            start_points=starts, end_points=ends,
+            colors=colors, widths=np.ones(len(positions))*.25)
+    else:
+        raise NotImplementedError('Unknown primitive {}'.format(use))
+
+    rotation = [ 0.8126942 ,  0.35465172, -0.43531808,  0.15571932]
+    scene = draw.Scene(
+        prim, zoom=4, features=features, rotation=rotation)
+    return scene
+
+@register_scene
+def field_lines(N=10):
+    return field_scene(N, 'lines')
+
+@register_scene
+def field_ellipsoids(N=10):
+    return field_scene(N, 'ellipsoids')
