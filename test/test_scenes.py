@@ -442,8 +442,8 @@ def example_vector_field(N):
     circle = np.array([-np.sin(thetas), np.cos(thetas), np.zeros_like(thetas)]).T
 
     rotated = np.cross(positions, circle)
-    norms = np.clip(np.linalg.norm(rotated, axis=-1, keepdims=True), 1e-5, np.inf)
-    rotated = rotated/norms
+    rotated /= np.linalg.norm(rotated, axis=-1, keepdims=True)
+    rotated[np.logical_not(np.all(np.isfinite(rotated), axis=-1))] = (1, 0, 0)
 
     return positions, rotated
 
