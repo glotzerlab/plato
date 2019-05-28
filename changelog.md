@@ -1,6 +1,16 @@
-## Unreleased
+## v1.5
 
+- Use gamma correction in fresnel backend (bdice)
+- Make fresnel Scenes showable in IPython (bdice)
+- Add DiskUnions in vispy and matplotlib (wzygmunt)
+- Enable translucency in pythreejs (bdice)
+- Add Arrows and DiskUnions to fresnel (bdice)
+- Add SphereUnions (wzygmunt)
 - Add `vertex_count` property to pythreejs Spheres (bdice)
+- Fix pythreejs Scene orientation (bdice,mspells)
+- Add Ellipsoids and vispy implementation (mspells)
+- Add Ellipsoids povray, fresenel, and pythreejs implementations (bdice)
+- Consolidate uses of plato.geometry.fibonacciPositions (mspells)
 
 ## v1.4
 
