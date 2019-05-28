@@ -1,18 +1,12 @@
 from collections import defaultdict
 import itertools
 from ... import draw
+from ...geometry import fibonacciPositions
 from ... import mesh
 from .internal import ThreeJSPrimitive
 from ..internal import ShapeAttribute, ShapeDecorator
 import numpy as np
 import pythreejs
-
-def fibonacciPositions(n_b, a=.5, b=0.5, c=0.5):
-    m = np.arange(n_b).astype(np.float32)
-    phi = m*np.pi*(3 - np.sqrt(5))
-    vy = 2*m/n_b + 1/n_b - 1
-    return np.array([a*np.sqrt(1 - vy**2)*np.cos(phi),
-                     b*vy, c*np.sqrt(1 - vy**2)*np.sin(phi)]).T
 
 @ShapeDecorator
 class Ellipsoids(draw.Ellipsoids, ThreeJSPrimitive):

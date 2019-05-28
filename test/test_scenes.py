@@ -390,28 +390,9 @@ def axes_rotated_30_deg_around_z():
 def axes_rotated_randomly():
     return axes_scene([0.22886531, -0.61944334, -0.68368065, 0.31063063])
 
-def fibonacciSphere(N):
-    offset = 1./(N/2.)
-    golden_ratio = (np.sqrt(5)+1)/2. - 1
-    delta = 2*np.pi - 2*np.pi*golden_ratio
-
-    pos = []
-
-    for i in range(N):
-        y = i*offset - 1 + 0.5*offset
-        r = np.sqrt(1-pow(y, 2.0))
-        phi = ((i+1)%N)*delta
-        x = r*np.cos(phi)
-
-        z = r*np.sin(phi)
-
-        pos.append([x,y,z])
-
-    return np.array(pos)
-
 @register_scene
 def meshes():
-    vertices = fibonacciSphere(64)
+    vertices = plato.geometry.fibonacciPositions(64)
     vertices, faces = plato.mesh.convexHull(vertices)
     # distance from y axis
     x = vertices[:, 0]

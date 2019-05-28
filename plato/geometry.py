@@ -96,6 +96,20 @@ def fanTriangles(vertices, faces=None):
         for (i, j, k) in fanTriangleIndices(faces):
             yield (vertices[i], vertices[j], vertices[k])
 
+def fibonacciPositions(n_b, a=.5, b=0.5, c=0.5):
+    """Create positions on the surface of an ellipsoid using the Fibonacci sequence
+
+    :param n_b: Number of points to place
+    :param a: Radius (semi-axis length) in the x direction
+    :param b: Radius (semi-axis length) in the y direction
+    :param c: Radius (semi-axis length) in the z direction
+    """
+    m = np.arange(n_b).astype(np.float32)
+    phi = m*np.pi*(3 - np.sqrt(5))
+    vy = 2*m/n_b + 1/n_b - 1
+    return np.array([a*np.sqrt(1 - vy**2)*np.cos(phi),
+                     b*vy, c*np.sqrt(1 - vy**2)*np.sin(phi)]).T
+
 def massProperties(vertices, faces=None, factor=1.):
     """Returns (mass, center of mass, moment of inertia tensor in (xx,
     xy, xz, yy, yz, zz) order) specified by the given list of vertices
