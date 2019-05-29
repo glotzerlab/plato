@@ -1,0 +1,13 @@
+# specify dependencies for myblender.org operation (see also apt.txt
+# for the full set)
+channels:
+    - conda-forge
+dependencies:
+    - cython
+    - fresnel
+    - pip
+    - pip:
+      - matplotlib
+      - pythreejs
+      - git+https://github.com/vispy/vispy
+      - ..
