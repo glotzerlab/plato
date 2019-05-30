@@ -51,9 +51,11 @@ Examples
 
 Several usage examples are available. Many simple, but less
 interesting, scenes can be found in `the test demo scene script
-<https://github.com/glotzerlab/plato/blob/master/test/test_scenes.py>`_. Somewhat
+<https://github.com/glotzerlab/plato/blob/master/test/test_scenes.py>`_,
+available as `live examples on mybinder.org
+<https://mybinder.org/v2/gh/glotzerlab/plato/master?filepath=examples>`_. Somewhat
 less transparent examples can be found in `the plato-gallery
-repository <https://bitbucket.org/glotzer/plato-gallery>`_.
+repository <https://github.com/glotzerlab/plato-gallery>`_.
 
 Contents:
 =========

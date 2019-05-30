@@ -1,4 +1,4 @@
-# specify dependencies for myblender.org operation (see also apt.txt
+# specify dependencies for mybinder.org operation (see also apt.txt
 # for the full set)
 channels:
     - conda-forge
