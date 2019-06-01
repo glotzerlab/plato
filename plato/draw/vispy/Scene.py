@@ -2,7 +2,7 @@ import vispy.io
 from .Canvas import Canvas
 from ... import draw
 import numpy as np
-from .internal import DEFAULT_DIRECTIONAL_LIGHTS
+from ..Scene import DEFAULT_DIRECTIONAL_LIGHTS
 
 def set_orthographic_projection(camera, left, right, bottom, top, near, far):
     camera[:] = 0
@@ -82,7 +82,16 @@ class Scene(draw.Scene):
         for feature in list(self.enabled_features):
             self.enable(feature, **self.get_feature_config(feature))
 
-    def enable(self, name, **parameters):
+    def enable(self, name, auto_value=None, **parameters):
+        """Enable an optional rendering feature.
+
+        :param name: Name of the feature to enable
+        :param auto_value: Shortcut for features with single-value configuration. If given as a positional argument, will be given the default configuration name 'value'.
+        :param parameters: Keyword arguments specifying additional configuration options for the given feature
+        """
+        if auto_value is not None:
+            parameters['value'] = auto_value
+
         if name == 'directional_light':
             lights = parameters.get('value', DEFAULT_DIRECTIONAL_LIGHTS)
             lights = np.atleast_2d(lights).astype(np.float32)

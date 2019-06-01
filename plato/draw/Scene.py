@@ -2,6 +2,12 @@ import logging
 import numpy as np
 from .internal import Shape
 
+DEFAULT_DIRECTIONAL_LIGHTS = (
+    [ 0.4,  -0.4,    -0.4 ],
+    [-0.25, -0.0625, -0.25 ],
+    [    0,  0.125,  -0.125]
+)
+
 logger = logging.getLogger(__name__)
 
 class Scene:
@@ -60,6 +66,9 @@ class Scene:
 
         for prim in primitives:
             self.add_primitive(prim)
+
+        if 'directional_light' not in features:
+            self.enable('directional_light', DEFAULT_DIRECTIONAL_LIGHTS)
 
         for feature in features:
             config = features[feature]

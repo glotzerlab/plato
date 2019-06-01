@@ -1,13 +1,8 @@
 from ... import draw
+from ..Scene import DEFAULT_DIRECTIONAL_LIGHTS
 import rowan
 import numpy as np
 import pythreejs
-
-DEFAULT_DIRECTIONAL_LIGHTS = (
-    [ 0.4,  -0.4,    -0.4 ],
-    [-0.25, -0.0625, -0.25 ],
-    [    0,  0.125,  -0.125]
-)
 
 class Scene(draw.Scene):
     def __init__(self, *args, **kwargs):
@@ -38,9 +33,6 @@ class Scene(draw.Scene):
 
         # directly re-initialize rotation after camera has been set up
         self.rotation = kwargs.get('rotation', (1, 0, 0, 0))
-
-        # Enable default directional lights so particles don't appear black
-        self.enable('directional_light', value=DEFAULT_DIRECTIONAL_LIGHTS)
 
     @property
     def zoom(self):
