@@ -45,5 +45,36 @@ class Voronoi(draw.Voronoi):
         collection.set_facecolor(self.colors)
         collections.append(collection)
 
+        if self.outline:
+            paths = []
+
+            for ridge_indices in vor.ridge_vertices:
+                if -1 in ridge_indices or len(ridge_indices) != 2:
+                    continue
+
+                i, j = ridge_indices
+                ri = vor.vertices[i]
+                rij = vor.vertices[j] - ri
+                norm = rij/np.linalg.norm(rij, axis=-1, keepdims=True)
+                perp = 0.5*np.array([-norm[1], norm[0]])
+
+                vertices = [
+                    ri + perp*self.outline,
+                    ri + rij + perp*self.outline,
+                    ri + rij - perp*self.outline,
+                    ri - perp*self.outline,
+                    ri + perp*self.outline,
+                ]
+
+                commands = [Path.MOVETO] + 3*[Path.LINETO] + [Path.CLOSEPOLY]
+
+                paths.append(Path(vertices, commands))
+
+            outline_colors = np.zeros((len(paths), 3))
+
+            collection = PathCollection(paths)
+            collection.set_facecolor(outline_colors)
+            collections.append(collection)
+
         for collection in collections:
             axes.add_collection(collection)
