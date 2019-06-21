@@ -41,6 +41,7 @@ setup(name='plato-draw',
           'plato.draw.povray',
           'plato.draw.pythreejs',
           'plato.draw.vispy',
+          'plato.draw.zdog',
       ],
       project_urls={
           'Documentation': 'http://plato-draw.readthedocs.io/',

@@ -69,6 +69,7 @@ Contents:
    povray
    pythreejs
    vispy
+   zdog
    troubleshooting
 
 Indices and tables
