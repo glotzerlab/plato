@@ -33,6 +33,7 @@ class Scene(draw.Scene):
 
         # directly re-initialize rotation after camera has been set up
         self.rotation = kwargs.get('rotation', (1, 0, 0, 0))
+        self.translation = kwargs.get('translation', (0, 0, 0))
 
     @property
     def zoom(self):
