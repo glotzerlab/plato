@@ -495,7 +495,7 @@ class Canvas(vispy.app.Canvas):
                 gloo.set_blend_func('one', 'one', 'zero', 'one')
                 gloo.set_blend_equation('func_reverse_subtract')
             else:
-                clear_color = (0, 0, 0, 0)
+                clear_color = (0, 0, 0, 1)
                 gloo.set_state(preset='additive',
                                depth_test=False,
                                blend=True,
