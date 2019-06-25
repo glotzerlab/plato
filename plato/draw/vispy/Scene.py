@@ -1,8 +1,11 @@
+import logging
 import vispy.io
 from .Canvas import Canvas
 from ... import draw
 import numpy as np
 from ..Scene import DEFAULT_DIRECTIONAL_LIGHTS
+
+logger = logging.getLogger(__name__)
 
 def set_orthographic_projection(camera, left, right, bottom, top, near, far):
     camera[:] = 0
@@ -26,6 +29,7 @@ class Scene(draw.Scene):
     * *ssao*: Enable screen space ambient occlusion
     * *additive_rendering*: Enable additive rendering. This mode is good for visualizing densities projected through the viewing direction. Takes an optional 'invert' argument to invert the additive rendering (i.e., black-on-white instead of white-on-black).
     * *outlines*: Enable cartoony outlines. The given value indicates the width of the outlines (start small, perhaps 1e-5 to 1e-3).
+    * *static*: Enable static rendering. When possible (when vispy is using a non-notebook backend), display a statically-rendered image of a scene instead of the live webGL version when `Scene.show()` is called.
     """
 
     def __init__(self, *args, canvas_kwargs={}, **kwargs):
@@ -150,6 +154,27 @@ class Scene(draw.Scene):
 
     def show(self):
         """Display this Scene object."""
+        cfg = self.get_feature_config('static')
+
+        if cfg and cfg.get('value', False):
+            import imageio
+            import io
+            import IPython.display
+            import vispy.app
+
+            vispy_backend = vispy.app.use_app().backend_name
+            if 'webgl' not in vispy_backend:
+                target = io.BytesIO()
+                img = self._canvas.render()
+                imageio.imwrite(target, img, 'png')
+                return IPython.display.Image(data=target.getvalue())
+
+            msg = ('vispy has already loaded the {} backend, ignoring static'
+                   ' feature. Try manually selecting a desktop vispy backend '
+                   'before importing plato, for example:\n    import vispy.app; '
+                   'vispy.app.use_app("pyglet")'.format(vispy_backend))
+            logger.warning(msg)
+
         return self._canvas.show()
 
     def render(self):
