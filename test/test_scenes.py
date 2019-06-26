@@ -140,7 +140,7 @@ def sphere_union(seed=15, num_unions=5):
     scene = draw.Scene([prim1], zoom=2, features=features, rotation=rotation)
     return scene
 
-@selectively_register_scene('matplotlib')
+@register_scene
 def colored_spheres(num_per_side=6):
     xs = np.arange(num_per_side).astype(np.float32)
     rs = np.array(list(itertools.product(*(3*[xs]))))
@@ -487,3 +487,31 @@ def field_lines(N=10):
 @register_scene
 def field_ellipsoids(N=10):
     return field_scene(N, 'ellipsoids')
+
+@register_scene
+def simple_cubes_octahedra(N=4):
+    xs = np.linspace(-N/2, N/2, N)
+    positions = np.array(list(itertools.product(xs, xs, xs)))
+
+    cube_positions = positions[::2]
+    oct_positions = positions[1::2]
+
+    cube_colors = np.ones((len(cube_positions), 4))
+    cube_colors[:] = (.5, .6, .7, 1)
+    oct_colors = np.ones((len(oct_positions), 4))
+    oct_colors[:] = (.7, .5, .6, 1)
+
+    cube_vertices = list(itertools.product(*(3*[[-.5, .5]])))
+    oct_vertices = [np.roll((0, 0, v), i) for (i, v) in
+                    itertools.product(range(3), [-.5, .5])]
+
+    cubes = draw.ConvexPolyhedra(
+        vertices=cube_vertices, positions=cube_positions,
+        colors=cube_colors, orientations=np.ones_like(cube_colors)*(1, 0, 0, 0))
+    octahedra = draw.ConvexPolyhedra(
+        vertices=oct_vertices, positions=oct_positions,
+        colors=oct_colors, orientations=np.ones_like(oct_colors)*(1, 0, 0, 0))
+
+    rotation = [0.99795496,  0.01934275, -0.06089295,  0.00196485]
+    scene = draw.Scene([cubes, octahedra], rotation=rotation, zoom=5.5)
+    return scene
