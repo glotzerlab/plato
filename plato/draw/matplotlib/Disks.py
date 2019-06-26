@@ -1,24 +1,22 @@
 import numpy as np
 from ... import draw
+from .internal import PatchUser
 from matplotlib.patches import Circle, Wedge
-from matplotlib.collections import PatchCollection
 
-class Disks(draw.Disks):
+class Disks(draw.Disks, PatchUser):
     __doc__ = draw.Disks.__doc__
 
-    def render(self, axes, aa_pixel_size=0, **kwargs):
-        collections = []
+    def _render_patches(self, axes, aa_pixel_size=0, **kwargs):
+        result = []
         outline = self.outline
 
         if outline > 0:
             patches = []
             for (position, radius) in zip(self.positions, self.radii):
                 patches.append(Wedge(position, radius, 0, 360, width=outline))
-            patches = PatchCollection(patches)
             outline_colors = np.zeros_like(self.colors)
             outline_colors[:, 3] = self.colors[:, 3]
-            patches.set_facecolor(outline_colors)
-            collections.append(patches)
+            result.append((patches, outline_colors))
         else:
             aa_pixel_size = 0
 
@@ -27,9 +25,6 @@ class Disks(draw.Disks):
         patches = []
         for (position, radius) in zip(self.positions, shifted_radii):
             patches.append(Circle(position, radius))
-        patches = PatchCollection(patches)
-        patches.set_facecolor(self.colors)
-        collections.append(patches)
+        result.append((patches, self.colors))
 
-        for collection in collections:
-            axes.add_collection(collection)
+        return result

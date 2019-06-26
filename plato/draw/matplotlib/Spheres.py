@@ -4,12 +4,11 @@ from ... import math
 from ... import geometry
 from ... import draw
 from ...draw import internal
-from matplotlib.collections import PatchCollection
-from matplotlib.path import Path
+from .internal import PatchUser
 from matplotlib.patches import Circle
 
 @internal.ShapeDecorator
-class Spheres(draw.Spheres):
+class Spheres(draw.Spheres, PatchUser):
     __doc__ = draw.Spheres.__doc__
 
     _ATTRIBUTES = draw.Spheres._ATTRIBUTES + list(itertools.starmap(
@@ -18,8 +17,11 @@ class Spheres(draw.Spheres):
              'Number of quantized light levels to use'),
         ]))
 
-    def render(self, axes, aa_pixel_size=0, rotation=(1, 0, 0, 0),
+    def _render_patches(self, axes, aa_pixel_size=0, rotation=(1, 0, 0, 0),
                ambient_light=0, directional_light=(-.1, -.25, -1), **kwargs):
+        result = []
+        colors = []
+
         rotation = np.asarray(rotation)
         directional_light = np.atleast_2d(directional_light)[0]
         light_magnitude = np.linalg.norm(directional_light)
@@ -36,6 +38,7 @@ class Spheres(draw.Spheres):
             light_level = level_fraction*(1 - np.abs(light_normal[2])) + (1 - level_fraction)*1
             these_colors[:, :3] *= ambient_light + light_level*light_magnitude
             these_colors.clip(0, 1, these_colors)
+            colors.append(these_colors)
 
             for (position, radius, color, index) in zip(
                     rotated_positions, self.radii, these_colors, itertools.count()):
@@ -50,8 +53,6 @@ class Spheres(draw.Spheres):
 
                 patches.append(patch)
 
-        # matplotlib doesn't seem to support per-circle zorder for
-        # circles in a PatchCollection, so add them directly to the
-        # given axes object
-        for patch in patches:
-            axes.add_patch(patch)
+        result.append((patches, np.concatenate(colors, axis=0)))
+
+        return result

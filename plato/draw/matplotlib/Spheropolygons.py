@@ -2,16 +2,16 @@ import numpy as np
 from ... import math
 from ... import geometry
 from ... import draw
-from matplotlib.collections import PatchCollection
+from .internal import PatchUser
 from matplotlib.path import Path
 from matplotlib.patches import PathPatch
 from matplotlib.transforms import Affine2D
 
-class Spheropolygons(draw.Spheropolygons):
+class Spheropolygons(draw.Spheropolygons, PatchUser):
     __doc__ = draw.Spheropolygons.__doc__
 
-    def render(self, axes, aa_pixel_size=0, **kwargs):
-        collections = []
+    def _render_patches(self, axes, aa_pixel_size=0, **kwargs):
+        result = []
 
         vertices = self.vertices
         # distance vector from each vertex to the next vertex in a given shape
@@ -67,11 +67,10 @@ class Spheropolygons(draw.Spheropolygons):
             for (position, angle) in zip(self.positions, self.angles):
                 tf = Affine2D().rotate(angle).translate(*position)
                 patches.append(PathPatch(path.transformed(tf)))
-            patches = PatchCollection(patches)
             outline_colors = np.zeros_like(self.colors)
             outline_colors[:, 3] = self.colors[:, 3]
-            patches.set_facecolor(outline_colors)
-            collections.append(patches)
+
+            result.append((patches, outline_colors))
 
             vertices += np.sign(vertices)*aa_pixel_size
 
@@ -95,9 +94,6 @@ class Spheropolygons(draw.Spheropolygons):
         for (position, angle) in zip(self.positions, self.angles):
             tf = Affine2D().rotate(angle).translate(*position)
             patches.append(PathPatch(path.transformed(tf)))
-        patches = PatchCollection(patches)
-        patches.set_facecolor(self.colors)
-        collections.append(patches)
+        result.append((patches, self.colors))
 
-        for collection in collections:
-            axes.add_collection(collection)
+        return result

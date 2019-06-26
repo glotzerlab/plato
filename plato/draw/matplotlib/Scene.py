@@ -1,4 +1,5 @@
 import matplotlib, matplotlib.pyplot as pp
+from matplotlib.collections import PatchCollection
 from ... import draw
 import numpy as np
 
@@ -41,8 +42,15 @@ class Scene(draw.Scene):
             lights = np.atleast_2d(lights).astype(np.float32)
             kwargs['directional_light'] = lights
 
+        current_patches = []
         for prim in self._primitives:
-            prim.render(axes, **kwargs)
+            if hasattr(prim, '_render_patches'):
+                current_patches.extend(prim._render_patches(axes, **kwargs))
+            else:
+                # render any patches that have accumulated
+                self._render_patches(current_patches, axes)
+                prim.render(axes, **kwargs)
+        self._render_patches(current_patches, axes)
 
         (width, height) = self.size.astype(np.float32)/self.zoom
         (shift_x, shift_y, _) = -self.translation
@@ -51,6 +59,24 @@ class Scene(draw.Scene):
         axes.set_ylim(-height/2 + shift_y, height/2 + shift_y)
         axes.set_aspect(1)
         return (figure, axes)
+
+    def _render_patches(self, patches, axes):
+        if not patches:
+            return
+
+        all_patches = []
+        all_colors = []
+        for (p, c) in patches:
+            all_patches.extend(p)
+            all_colors.append(c)
+
+        all_colors = np.concatenate(all_colors, axis=0)
+
+        collection = PatchCollection(all_patches)
+        collection.set_facecolor(all_colors)
+
+        patches.clear()
+        axes.add_collection(collection)
 
     def show(self, figure=None, axes=None):
         """Render and show the shapes in this Scene.

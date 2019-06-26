@@ -2,15 +2,14 @@ import numpy as np
 from ... import math
 from ... import geometry
 from ... import draw
-from matplotlib.collections import PatchCollection
-from matplotlib.path import Path
-from matplotlib.patches import PathPatch, Polygon
+from .internal import PatchUser
+from matplotlib.patches import Polygon
 from matplotlib.transforms import Affine2D
 
-class ConvexPolyhedra(draw.ConvexPolyhedra):
+class ConvexPolyhedra(draw.ConvexPolyhedra, PatchUser):
     __doc__ = draw.ConvexPolyhedra.__doc__
 
-    def render(self, axes, aa_pixel_size=0, rotation=(1, 0, 0, 0),
+    def _render_patches(self, axes, aa_pixel_size=0, rotation=(1, 0, 0, 0),
                ambient_light=0, directional_light=(-.1, -.25, -1), **kwargs):
         rotation = np.asarray(rotation)
         directional_light = np.atleast_2d(directional_light)
@@ -52,9 +51,6 @@ class ConvexPolyhedra(draw.ConvexPolyhedra):
 
                 patches.append(Polygon(face_verts[:, :2], closed=True, zorder=-z))
                 colors.append(lit_color)
-        patches = PatchCollection(patches)
-        patches.set_facecolor(np.clip(colors, 0, 1))
-        collections.append(patches)
 
-        for collection in collections:
-            axes.add_collection(collection)
+        colors = np.clip(colors, 0, 1)
+        return [(patches, colors)]

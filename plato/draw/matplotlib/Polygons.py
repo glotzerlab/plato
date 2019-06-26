@@ -2,16 +2,16 @@ import numpy as np
 from ... import math
 from ... import geometry
 from ... import draw
-from matplotlib.collections import PatchCollection
+from .internal import PatchUser
 from matplotlib.path import Path
 from matplotlib.patches import PathPatch, Polygon
 from matplotlib.transforms import Affine2D
 
-class Polygons(draw.Polygons):
+class Polygons(draw.Polygons, PatchUser):
     __doc__ = draw.Polygons.__doc__
 
-    def render(self, axes, aa_pixel_size=0, **kwargs):
-        collections = []
+    def _render_patches(self, axes, aa_pixel_size=0, **kwargs):
+        result = []
 
         vertices = self.vertices
         scale_factors = np.linalg.norm(self.orientations, axis=-1)**2
@@ -38,12 +38,10 @@ class Polygons(draw.Polygons):
             for (position, angle, scale) in zip(self.positions, self.angles, scale_factors):
                 tf = Affine2D().scale(scale).rotate(angle).translate(*position)
                 patches.append(PathPatch(outline_path.transformed(tf)))
-            patches = PatchCollection(patches)
 
             outline_colors = np.zeros_like(self.colors)
             outline_colors[:, 3] = self.colors[:, 3]
-            patches.set_facecolor(outline_colors)
-            collections.append(patches)
+            result.append((patches, outline_colors))
 
             vertices += np.sign(vertices)*aa_pixel_size
 
@@ -51,9 +49,6 @@ class Polygons(draw.Polygons):
         for (position, angle, scale) in zip(self.positions, self.angles, scale_factors):
             tf = Affine2D().scale(scale).rotate(angle).translate(*position)
             patches.append(Polygon(vertices, closed=True, transform=tf))
-        patches = PatchCollection(patches)
-        patches.set_facecolor(self.colors)
-        collections.append(patches)
+        result.append((patches, self.colors))
 
-        for collection in collections:
-            axes.add_collection(collection)
+        return result
