@@ -25,7 +25,7 @@ class ConvexPolyhedra(draw.ConvexPolyhedra, GLPrimitive):
        attribute vec3 position;
        attribute vec3 normal;
        attribute vec3 image;
-       attribute vec3 face_center;
+       attribute vec3 outline_delta;
 
        varying vec4 v_color;
        varying vec3 v_normal;
@@ -50,13 +50,11 @@ class ConvexPolyhedra(draw.ConvexPolyhedra, GLPrimitive):
        void main()
        {
            vec3 rot_normal = rotate(normal, quatquat(rotation, orientation));
-           float local_scale = 1.0;
+           vec3 local_image = image;
            if(rot_normal.z > 0.0)
-               local_scale -= outline;
+               local_image += outline_delta*outline;
 
-           vec3 scaled_image = face_center + (image - face_center)*local_scale;
-
-           vec3 vertexPos = position + rotate(scaled_image, orientation);
+           vec3 vertexPos = position + rotate(local_image, orientation);
            vertexPos = rotate(vertexPos, rotation) + translation;
            vec4 screenPosition = camera * vec4(vertexPos, 1.0);
 
@@ -134,7 +132,7 @@ class ConvexPolyhedra(draw.ConvexPolyhedra, GLPrimitive):
        }
        """
 
-    _vertex_attribute_names = ['position', 'orientation', 'color', 'image', 'normal', 'face_center']
+    _vertex_attribute_names = ['position', 'orientation', 'color', 'image', 'normal', 'outline_delta']
 
     _GL_UNIFORMS = list(itertools.starmap(ShapeAttribute, [
         ('camera', np.float32, np.eye(4), 2, False,
@@ -166,16 +164,16 @@ class ConvexPolyhedra(draw.ConvexPolyhedra, GLPrimitive):
             if len(vertices) < 4:
                 vertices = np.concatenate([vertices,
                     [(-1, -1, -1), (1, 1, -1), (1, -1, 1), (-1, 1, 1)]], axis=0)
-            (image, normal, indices, face_center) = mesh.convexPolyhedronMesh(vertices)
+            (image, normal, indices, _, outline_delta) = mesh.convexPolyhedronMesh(vertices)
             self._gl_attributes['image'] = image
             self._gl_attributes['normal'] = normal
             self._gl_attributes['indices'] = indices
-            self._gl_attributes['face_center'] = face_center
+            self._gl_attributes['outline_delta'] = outline_delta
 
         try:
             for name in self._dirty_attributes:
                 if name == 'vertices':
-                    for quantity in ['image', 'normal', 'indices', 'face_center']:
+                    for quantity in ['image', 'normal', 'indices', 'outline_delta']:
                         self._gl_vertex_arrays[quantity][:] = self._gl_attributes[quantity][np.newaxis]
                         self._dirty_vertex_attribs.add(quantity)
                 else:
@@ -184,7 +182,7 @@ class ConvexPolyhedra(draw.ConvexPolyhedra, GLPrimitive):
         except (ValueError, KeyError):
             vertex_arrays = mesh.unfoldProperties(
                 [self.positions, self.orientations, self.colors],
-                [self._gl_attributes[name] for name in ['image', 'normal', 'face_center']])
+                [self._gl_attributes[name] for name in ['image', 'normal', 'outline_delta']])
 
             unfolded_shape = vertex_arrays[0].shape[:-1]
             indices = (np.arange(unfolded_shape[0])[:, np.newaxis, np.newaxis]*unfolded_shape[1] +

@@ -3,7 +3,7 @@ from collections import defaultdict, namedtuple
 from itertools import repeat
 import numpy as np
 
-from .geometry import convexHull, massProperties, Polygon
+from .geometry import convexHull, insetPolygon, massProperties, Polygon
 
 def computeNormals_(vertices, indices):
     # first, compute the normal for each face
@@ -73,16 +73,22 @@ def unfoldProperties(*args):
 
     return result
 
-ConvexPolyhedronMesh = namedtuple('ConvexPolyhedronMesh',
-                        ['image', 'normal', 'indices', 'face_centers'])
+ConvexPolyhedronMesh = namedtuple(
+    'ConvexPolyhedronMesh',
+    ['image', 'normal', 'indices', 'face_centers', 'outline_delta'])
 
 def convexPolyhedronMesh(vertices):
     """Generates a mesh (lists of per-vertex properties) of a convex
-    polyhedron's image (tessellated vertices of the shape), normal (face
-    normal for each vertex), and triangle indices."""
+    polyhedron's image (tessellated vertices of the shape), normal
+    (face normal for each vertex), triangle indices, face center, and
+    outline offset for an outline width of 1.
+    """
     (vertices, faces) = convexHull(vertices)
+    vertices = vertices.astype(np.float32)
 
     image = [[vertices[i] for i in face] for face in faces]
+    outline_image = [insetPolygon(vertices[face], 1.0) for face in faces]
+    outline_delta = [oimg - img for (oimg, img) in zip(outline_image, image)]
 
     vidx = 0
     indices = []
@@ -104,7 +110,9 @@ def convexPolyhedronMesh(vertices):
     image = sum(image, [])
     image = np.array(image, dtype=np.float32).reshape((-1, 3))
 
-    return ConvexPolyhedronMesh(image, normal, indices, face_centers)
+    outline_delta = np.concatenate(outline_delta, axis=0)
+
+    return ConvexPolyhedronMesh(image, normal, indices, face_centers, outline_delta)
 
 ConvexSpheropolyhedronMesh = namedtuple('ConvexSpheropolyhedronMesh',
                         ['image', 'innerImage', 'normal', 'indices'])
