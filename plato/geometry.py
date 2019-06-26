@@ -110,6 +110,46 @@ def fibonacciPositions(n_b, a=.5, b=0.5, c=0.5):
     return np.array([a*np.sqrt(1 - vy**2)*np.cos(phi),
                      b*vy, c*np.sqrt(1 - vy**2)*np.sin(phi)]).T
 
+def insetPolygon(vertices, distance):
+    """Create polygon vertices suitable for use in an outline
+
+    This method creates a new set of vertices that will form edges
+    parallel to those in the original vertices, but shifted inward by
+    the given distance. This method works for both 2D and 3D vertices
+    and is intended as a replacement for `Outline`. Vertices should be
+    planar and specified in right-handed order.
+
+    :param vertices: iterable of (x, y) or (x, y, z) vertex coordinates
+    :param distance: Distance (width) to inset by
+    """
+    vertices = np.asarray(vertices)
+    dimension = vertices.shape[1]
+
+    rijs = np.roll(vertices, -1, axis=0) - vertices
+    face_normal = np.cross(rijs[0], rijs[1])
+    face_normal /= np.linalg.norm(face_normal)
+    rijs_normal = rijs/np.linalg.norm(rijs, axis=-1, keepdims=True)
+    if dimension == 3:
+        perps = np.cross([face_normal], rijs_normal)
+        perps /= np.linalg.norm(perps, axis=-1, keepdims=True)
+    else:
+        perps = np.dot(rijs_normal, [[0, 1], [-1, 0]])
+
+    # construct a linear system of equations Ax=b solving for the
+    # intersection point of each inset vertex
+    A = np.tile(rijs_normal[:, :, np.newaxis], (1, 1, 2))
+    A[:, :, 1] = np.roll(rijs_normal, 1, axis=0)
+    b = distance*(perps - np.roll(perps, 1, axis=0))
+
+    if dimension == 3:
+        lams = np.array([np.linalg.lstsq(a_, b_, rcond=-1)[0]
+                         for (a_, b_) in zip(A, b)], dtype=np.float32)
+    else:
+        lams = np.linalg.solve(A, b)
+
+    result = vertices - lams[..., 1, np.newaxis]*rijs_normal + distance*perps
+    return result
+
 def massProperties(vertices, faces=None, factor=1.):
     """Returns (mass, center of mass, moment of inertia tensor in (xx,
     xy, xz, yy, yz, zz) order) specified by the given list of vertices

@@ -17,11 +17,8 @@ class Polygons(draw.Polygons, PatchUser):
         scale_factors = np.linalg.norm(self.orientations, axis=-1)**2
 
         if self.outline > 0:
-            tessellation = geometry.Polygon(self.vertices)
-            outline = geometry.Outline(tessellation, self.outline)
-
             outer_vertices = vertices
-            vertices = outline.inner.vertices
+            vertices = geometry.insetPolygon(vertices, self.outline)
 
             commands = [Path.MOVETO] + (vertices.shape[0] - 1)*[Path.LINETO] + [Path.CLOSEPOLY]
             commands = 2*commands
