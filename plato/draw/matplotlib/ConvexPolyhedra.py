@@ -41,8 +41,7 @@ class ConvexPolyhedra(draw.ConvexPolyhedra, PatchUser):
 
                 light = ambient_light
                 for light_direction in directional_light:
-                    light += -np.dot(light_direction, normal)
-                light = max(0, light)
+                    light += max(0, -np.dot(light_direction, normal))
 
                 lit_color = color.copy()
                 lit_color[:3] *= light
