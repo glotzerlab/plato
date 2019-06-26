@@ -72,11 +72,12 @@ class Scene(draw.Scene):
 
         all_colors = np.concatenate(all_colors, axis=0)
 
-        collection = PatchCollection(all_patches)
-        collection.set_facecolor(all_colors)
+        sort_indices = np.argsort([patch.zorder for patch in all_patches])
+        collection = PatchCollection([all_patches[i] for i in sort_indices])
+        collection.set_facecolor(all_colors[sort_indices])
+        axes.add_collection(collection)
 
         patches.clear()
-        axes.add_collection(collection)
 
     def show(self, figure=None, axes=None):
         """Render and show the shapes in this Scene.

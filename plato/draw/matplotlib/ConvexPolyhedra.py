@@ -49,7 +49,7 @@ class ConvexPolyhedra(draw.ConvexPolyhedra, PatchUser):
 
                 face_verts[:, :2] += np.sign(face_verts[:, :2])*aa_pixel_size
 
-                patches.append(Polygon(face_verts[:, :2], closed=True, zorder=-z))
+                patches.append(Polygon(face_verts[:, :2], closed=True, zorder=z))
                 colors.append(lit_color)
 
         colors = np.clip(colors, 0, 1)
