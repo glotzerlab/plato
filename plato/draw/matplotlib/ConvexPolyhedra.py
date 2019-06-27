@@ -3,7 +3,8 @@ from ... import math
 from ... import geometry
 from ... import draw
 from .internal import PatchUser
-from matplotlib.patches import Polygon
+from matplotlib.path import Path
+from matplotlib.patches import PathPatch, Polygon
 from matplotlib.transforms import Affine2D
 
 class ConvexPolyhedra(draw.ConvexPolyhedra, PatchUser):
@@ -25,6 +26,8 @@ class ConvexPolyhedra(draw.ConvexPolyhedra, PatchUser):
             vertex_orientations[:, np.newaxis], vertices[np.newaxis, :])
         rotated_vertices += rotated_positions[:, np.newaxis]
 
+        outline = self.outline
+
         colors = []
         patches = []
         for (vertices, color) in zip(rotated_vertices, self.colors):
@@ -39,6 +42,13 @@ class ConvexPolyhedra(draw.ConvexPolyhedra, PatchUser):
                 if normal[2] < 0:
                     continue
 
+                if outline > 0:
+                    outline_verts = face_verts
+                    face_verts = geometry.insetPolygon(face_verts, outline)
+                    outline_verts[:, :2] += np.sign(outline_verts[:, :2])*aa_pixel_size
+
+                face_verts[:, :2] += np.sign(face_verts[:, :2])*aa_pixel_size
+
                 light = ambient_light
                 for light_direction in directional_light:
                     light += max(0, -np.dot(light_direction, normal))
@@ -46,10 +56,25 @@ class ConvexPolyhedra(draw.ConvexPolyhedra, PatchUser):
                 lit_color = color.copy()
                 lit_color[:3] *= light
 
-                face_verts[:, :2] += np.sign(face_verts[:, :2])*aa_pixel_size
-
                 patches.append(Polygon(face_verts[:, :2], closed=True, zorder=z))
                 colors.append(lit_color)
+
+                if outline > 0:
+                    commands = ([Path.MOVETO] +
+                                (face_verts.shape[0] - 1)*[Path.LINETO] +
+                                [Path.CLOSEPOLY])
+                    commands = 2*commands
+
+                    # reverse the inner vertices order to make an open
+                    # polygon. Duplicate the first vertex of each polygon to
+                    # close the shapes.
+                    outline_vertices = np.concatenate(
+                        [outline_verts, outline_verts[:1],
+                         face_verts[::-1], face_verts[:1]], axis=0)[:, :2]
+
+                    outline_path = Path(outline_vertices, commands)
+                    patches.append(PathPatch(outline_path, zorder=z))
+                    colors.append(lit_color*(0, 0, 0, 1))
 
         colors = np.clip(colors, 0, 1)
         return [(patches, colors)]

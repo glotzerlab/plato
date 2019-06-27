@@ -17,10 +17,10 @@ class ConvexPolyhedra(draw.ConvexPolyhedra, ThreeJSPrimitive):
             vertices = np.concatenate([vertices,
                 [(-1, -1, -1), (1, 1, -1), (1, -1, 1), (-1, 1, 1)]], axis=0)
 
-        (image, normal, indices, _) = mesh.convexPolyhedronMesh(vertices)
+        poly_mesh = mesh.convexPolyhedronMesh(vertices)
         (positions, orientations, colors, images, normals) = mesh.unfoldProperties(
             [self.positions, self.orientations, self.colors],
-            [image, normal])
+            [poly_mesh.image, poly_mesh.normal])
 
         self._finalize_primitive_arrays(
-            positions, orientations, colors, images, normals, indices)
+            positions, orientations, colors, images, normals, poly_mesh.indices)
