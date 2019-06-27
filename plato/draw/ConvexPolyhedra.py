@@ -18,4 +18,6 @@ class ConvexPolyhedra(Shape):
          'Color, RGBA, [0, 1] for each particle'),
         ('vertices', np.float32, (0, 0, 0), 2, False,
          'Vertices in local coordinates for the shape, to be replicated for each particle'),
+        ('outline', np.float32, 0, 0, False,
+         'Outline width for all shapes'),
         ]))

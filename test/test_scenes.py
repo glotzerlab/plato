@@ -509,7 +509,7 @@ def simple_cubes_octahedra(N=4):
         vertices=cube_vertices, positions=cube_positions,
         colors=cube_colors, orientations=np.ones_like(cube_colors)*(1, 0, 0, 0))
     octahedra = draw.ConvexPolyhedra(
-        vertices=oct_vertices, positions=oct_positions,
+        vertices=oct_vertices, positions=oct_positions, outline=.025,
         colors=oct_colors, orientations=np.ones_like(oct_colors)*(1, 0, 0, 0))
 
     rotation = [0.99795496,  0.01934275, -0.06089295,  0.00196485]
