@@ -1,3 +1,14 @@
+## v1.6
+
+- Enable directional_light by default in all scenes (mspells)
+- Improve rendering of scenes with multiple matplotlib 3D primitives (mspells)
+- Add outlines to base ConvexPolyhedra (mspells)
+- Implement outlines in matplotlib ConvexPolyhedra (mspells)
+- Use distance- rather than scaling-based outlines in vispy ConvexPolyhedra (mspells)
+- Add zdog backend with support for ConvexPolyhedra, ConvexSpheropolyhedra, Lines, and Spheres (mspells)
+- Add static rendering feature to vispy scenes (mspells)
+- Fix pythreejs scenes not rendering when translation attribute is not given (bdice,mspells)
+
 ## v1.5
 
 - Use gamma correction in fresnel backend (bdice)
