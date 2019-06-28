@@ -37,17 +37,21 @@ class Scene(draw.Scene):
             self.rotation, convention='xyz', axis_type='intrinsic')
         translation = self.translation*(1, -1, 1)
 
+        pan_cfg = self.get_feature_config('pan')
+        pan = pan_cfg.get('value', True) if pan_cfg is not None else False
+
         js_lines.append("""
         let {illo_id} = new Zdog.Illustration({{
             element: '#{canvas_id}',
             zoom: {zoom},
-            dragRotate: true,
+            dragRotate: {rotation_enabled},
             rotate: {{x: {angle[0]}, y: {angle[1]}, z: {angle[2]}}},
             translate: {{x: {pos[0]}, y: {pos[1]}, z: {pos[2]}}},
         }});
         """.format(
             illo_id=illo_id, canvas_id=canvas_id, zoom=self.zoom*self.pixel_scale,
-            angle=euler, pos=translation))
+            angle=euler, pos=translation,
+            rotation_enabled=('false' if pan else 'true')))
 
         config = self.get_feature_config('ambient_light')
         ambient_light = 0 if config is None else config.get('value', .4)
@@ -74,6 +78,27 @@ class Scene(draw.Scene):
             """.format(canvas_id=canvas_id))
         html_lines.append(LOCAL_HELPER_SCRIPT)
         html_lines.extend(js_lines)
+
+        pan_snippet = """
+        new Zdog.Dragger({{
+            startElement: {illo_id}.element,
+            onDragStart: function( pointer, moveX, moveY) {{
+                this.lastX = 0;
+                this.lastY = 0;
+            }},
+            onDragMove: function( pointer, moveX, moveY ) {{
+                let deltax = moveX - this.lastX;
+                let deltay = moveY - this.lastY;
+                let scale = 1.0/{illo_id}.zoom;
+                {illo_id}.translate.x += deltax*scale;
+                {illo_id}.translate.y += deltay*scale;
+                this.lastX = moveX;
+                this.lastY = moveY;
+            }}
+        }});""".format(illo_id=illo_id)
+        if pan:
+            html_lines.append(pan_snippet)
+
         html_lines.append("""
             let this_canvas = document.querySelector("#{canvas_id}");
             """.format(canvas_id=canvas_id))
