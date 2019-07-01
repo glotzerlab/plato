@@ -1,7 +1,7 @@
 """
 The `pythreejs <https://github.com/jupyter-widgets/pythreejs>`_
 backend renders scenes using `three.js <https://threejs.org/>`_
-and is compatible with Jupyter notebooks.
+and is ideal for viewing scenes within Jupyter notebooks.
 
 .. note::
 

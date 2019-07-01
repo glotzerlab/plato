@@ -1,5 +1,7 @@
-"""The povray backend renders static views of scenes by externally
-calling a povray binary.
+"""
+The povray backend generates high-quality, ray-traced snapshots of
+scenes by externally calling a povray binary. To use this backend,
+povray should be installed and accessible on your executable path.
 """
 
 from .Scene import Scene

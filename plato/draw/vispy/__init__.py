@@ -1,9 +1,13 @@
 """
-The vispy backend uses `vispy <http://vispy.org/>`_ to render shapes
-interactively using openGL. It supports both desktop use with a
-variety of GUI backends and use inline in jupyter notebooks.
+The vispy backend uses `vispy <http://vispy.org/>`_ to render
+shapes interactively using openGL. It supports both desktop use with a
+variety of GUI backends and use inline in jupyter notebooks. While the
+GUI backends are essentially interchangeable, the notebook backend is
+more restrictive in its capabilities and some features are not
+currently available with it.
 
-Select the backend to use with the standard vispy mechanism::
+Select the **vispy** backend to use with the standard vispy mechanism before
+calling `Scene.show()`::
 
   import vispy, vispy.app
   # use in ipython notebook

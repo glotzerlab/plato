@@ -1,7 +1,7 @@
 """
 The zdog backend uses `zdog <https://zzz.dog>`_ to render
 shapes. Zdog is an HTML canvas-based engine that works best for
-simple, cartoon-style illustrations. Plato's version works inside
+simple, cartoon-style illustrations. Plato's implementation works inside
 notebook environments and also supports rendering standalone HTML for
 inclusion in other pages.
 """
