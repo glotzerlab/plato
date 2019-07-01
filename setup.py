@@ -31,7 +31,7 @@ setup(name='plato-draw',
           'pythreejs': ['pythreejs'],
       },
       install_requires=['numpy', 'scipy', 'rowan'],
-      license='BSD',
+      license='BSD-3-Clause',
       long_description=long_description,
       packages=[
           'plato', 'plato.draw',
