@@ -38,6 +38,41 @@ def translate_usable_scenes(draw):
             result.append((scene_fun.__name__, new_scene))
     return result
 
+Description = collections.namedtuple(
+    'Description', ['prim_types', 'scene', 'markdown'])
+
+DESCRIPTION_TEMPLATE = """# {scene_name}
+
+Primitive types:
+
+{prim_type_list}
+
+"""
+
+sort_key = lambda desc: (len(desc.prim_types), desc.prim_types)
+
+def get_described_scenes(draw):
+    all_scene_descriptions = []
+
+    for (name, scene) in translate_usable_scenes(draw):
+
+        all_prim_names = set()
+        for prim in scene:
+            all_prim_names.add(type(prim).__name__)
+        all_prim_names = tuple(sorted(all_prim_names))
+
+        prim_type_list = '\n'.join('- ' + name for name in all_prim_names)
+
+        description_markdown = DESCRIPTION_TEMPLATE.format(
+            scene_name=name, prim_type_list=prim_type_list)
+
+        description = Description(all_prim_names, scene, description_markdown)
+        all_scene_descriptions.append(description)
+
+    all_scene_descriptions.sort(key=sort_key)
+
+    return all_scene_descriptions
+
 @register_scene
 def sunflower_2d(seed=13):
 
