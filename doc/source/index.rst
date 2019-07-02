@@ -66,11 +66,17 @@ Contents:
 
    primitives
    fresnel
+   examples/fresnel test scenes.ipynb
    matplotlib
+   examples/matplotlib test scenes.ipynb
    povray
+   examples/povray test scenes.ipynb
    pythreejs
+   examples/pythreejs test scenes.ipynb
    vispy
+   examples/vispy test scenes static.ipynb
    zdog
+   examples/zdog test scenes.ipynb
    troubleshooting
 
 Indices and tables
