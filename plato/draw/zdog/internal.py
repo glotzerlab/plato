@@ -55,11 +55,10 @@ class PolyhedronRenderer:
             for (face_path, normal) in zip(face_paths, face_normals):
                 rotated_normal = rowan.rotate(full_rotation, normal)
 
-                light = 0
+                light = ambient_light
                 for direction in directional_light:
                     light += max(0, -np.dot(rotated_normal, direction))
                 light = np.clip(light, 0, 1)
-                light += ambient_light
 
                 (r, g, b) = map(int, light*color[:3])
 
