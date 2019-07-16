@@ -3,6 +3,13 @@ from ... import math
 import numpy as np
 import rowan
 
+LOCAL_HELPER_SCRIPT = """
+let is_in_view = function(elt) {
+    let bounding_rect = elt.getBoundingClientRect();
+    return bounding_rect.bottom >= 0 && bounding_rect.top <= window.innerHeight;
+}
+"""
+
 class Scene(draw.Scene):
     __doc__ = draw.Scene.__doc__ + """
     This Scene supports the following features:
@@ -65,11 +72,21 @@ class Scene(draw.Scene):
         html_lines.append("""<script>
             var fill_{canvas_id} = function() {{
             """.format(canvas_id=canvas_id))
+        html_lines.append(LOCAL_HELPER_SCRIPT)
         html_lines.extend(js_lines)
         html_lines.append("""
+            let this_canvas = document.querySelector("#{canvas_id}");
+            """.format(canvas_id=canvas_id))
+        html_lines.append("""
             let animate_{canvas_id} = function() {{
-                {illo_id}.updateRenderGraph();
-                requestAnimationFrame(animate_{canvas_id});
+                if(is_in_view(this_canvas))
+                {{
+                    {illo_id}.updateRenderGraph();
+                }}
+                if(document.contains(this_canvas))
+                {{
+                    requestAnimationFrame(animate_{canvas_id});
+                }}
             }};
             animate_{canvas_id}();""".format(canvas_id=canvas_id, illo_id=illo_id))
         # remove the global reference to this function after using it
