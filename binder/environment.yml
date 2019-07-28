@@ -9,5 +9,5 @@ dependencies:
     - pip:
       - matplotlib
       - pythreejs
-      - git+https://github.com/vispy/vispy
+      - vispy
       - ..

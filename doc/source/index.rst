@@ -29,8 +29,9 @@ Using Interactive Backends
 
 Plato contains a number of backends, each with its own set of
 dependencies. Getting the vispy backend working for both the desktop
-and jupyter notebook can be tricky. To help users install its
-dependencies, we keep some advice `here
+and jupyter notebook can be tricky. Make sure to check the official
+`vispy documentation <http://vispy.org/installation.html>`_. We also
+keep some advice `here
 <https://bitbucket.org/snippets/glotzer/nMg8Gr/plato-dependency-installation-tips>`_
 regarding particular known-good versions of dependencies for pip and
 conda.
