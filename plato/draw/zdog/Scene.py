@@ -11,7 +11,7 @@ let is_in_view = function(elt) {
 """
 
 class Scene(draw.Scene):
-    __doc__ = draw.Scene.__doc__ + """
+    __doc__ = (draw.Scene.__doc__ or '') + """
     This Scene supports the following features:
 
     * *ambient_light*: Enable trivial ambient lighting. The given value indicates the magnitude of the light (in [0, 1]).

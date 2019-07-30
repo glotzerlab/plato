@@ -111,7 +111,7 @@ def ShapeDecorator(cls):
     if cls.__doc__ is None:
         cls.__doc__ = ''
 
-    docstring = cls.__doc__
+    docstring = cls.__doc__ or ''
 
     try:
         skip_after = docstring.index(ATTRIBUTE_DOCSTRING_HEADER)

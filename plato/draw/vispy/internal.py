@@ -178,9 +178,9 @@ def GLShapeDecorator(cls):
 
         setattr(cls, attr.name.replace('[]', ''), prop)
 
-    if cls.__doc__ is None:
-        cls.__doc__ = ''
+    doc = cls.__doc__ or ''
 
     if len(attribute_doc_lines) > 1:
-        cls.__doc__ += '\n'.join(attribute_doc_lines)
+        doc += '\n'.join(attribute_doc_lines)
+        cls.__doc__ = doc
     return cls

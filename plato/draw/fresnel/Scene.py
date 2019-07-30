@@ -5,7 +5,7 @@ from ... import draw
 
 
 class Scene(draw.Scene):
-    __doc__ = draw.Scene.__doc__ + """
+    __doc__ = (draw.Scene.__doc__ or '') + """
     This Scene supports the following features:
 
     * *antialiasing*: Enable antialiasing, for the preview tracer only. This uses fresnel's aa_level=3 if set, 0 otherwise.

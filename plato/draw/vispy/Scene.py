@@ -18,7 +18,7 @@ def set_orthographic_projection(camera, left, right, bottom, top, near, far):
     camera[3, 3] = 1
 
 class Scene(draw.Scene):
-    __doc__ = draw.Scene.__doc__ + """
+    __doc__ = (draw.Scene.__doc__ or '') + """
     This Scene supports the following features:
 
     * *pan*: If enabled, mouse movement will translate the scene instead of rotating it

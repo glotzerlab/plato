@@ -9,7 +9,7 @@ from ... import __version__
 import numpy as np
 
 class Scene(draw.Scene):
-    __doc__ = draw.Scene.__doc__ + """
+    __doc__ = (draw.Scene.__doc__ or '') + """
     This Scene supports the following features:
 
     * *antialiasing*: Enable antialiasing using the given value (default 0.3).

@@ -4,7 +4,7 @@ from ... import draw
 import numpy as np
 
 class Scene(draw.Scene):
-    __doc__ = draw.Scene.__doc__ + """
+    __doc__ = (draw.Scene.__doc__ or '') + """
     This Scene supports the following features:
 
     * *antialiasing*: Enable antialiasing. Primitives that support antialiasing will fudge some distances (typically for drawing outlines) to reduce visual artifacts.
