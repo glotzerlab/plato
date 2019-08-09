@@ -619,12 +619,6 @@ class Canvas(vispy.app.Canvas):
             self._selection_callback = None
             callback(self._mouse_origin, event.pos)
 
-    def on_key_press(self, event):
-        if event.key == 'X' or event.key == 'Y' or event.key == 'Z':
-            self._mouse_origin = np.array([0, 0], dtype=np.float32)
-            self._scene.translation = (0, 0, 0)
-            self.update()
-
     def _mouse_translate(self, delta):
         scale = 2/np.array(self._scene.size_pixels)/self._scene.camera[[0, 1], [0, 1]]*[1, -1]
         translation = self._scene.translation
