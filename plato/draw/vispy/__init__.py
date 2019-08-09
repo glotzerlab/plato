@@ -18,6 +18,21 @@ calling `Scene.show()`::
   scene.show()
   vispy.app.run()
 
+**Mouse controls:** Live vispy windows support rotating the scene in
+three dimensions by dragging the mouse. Dragging while holding the
+control or meta keys causes the mouse movement to rotate the scene
+about the z axis and zoom in or out. Holding the alt key while
+dragging the mouse cursor will translate the scene; for
+two-dimensional scenes, it may be preferable to enable the `pan`
+feature, which causes mouse motion to translate, rather than rotate,
+the scene by default.
+
+**Keyboard controls:** Live vispy windows also support controlling the
+camera via the keyboard. Control or meta in conjunction with the arrow
+keys rotate the system in 15 degree increments. The same functionality
+is mapped to the I (up), J (left), K (down), and L (right) keys. X, Y,
+and Z directly snap the scene to look down the z axis, the y axis, or
+the x axis, respectively.
 """
 
 from .Scene import Scene
