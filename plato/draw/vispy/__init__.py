@@ -31,8 +31,8 @@ the scene by default.
 camera via the keyboard. Control or meta in conjunction with the arrow
 keys rotate the system in 15 degree increments. The same functionality
 is mapped to the I (up), J (left), K (down), and L (right) keys. X, Y,
-and Z directly snap the scene to look down the z axis, the y axis, or
-the x axis, respectively.
+and Z directly snap the scene to look down the x, y, or z axes,
+respectively.
 """
 
 from .Scene import Scene

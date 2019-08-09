@@ -666,12 +666,16 @@ class Canvas(vispy.app.Canvas):
             self.updateRotation(event, delta=(0, -np.pi/36))
         elif event.key == 'K':
             self.updateRotation(event, delta=(0, np.pi/36))
-        elif event.key == 'X' or event.key == 'Y' or event.key == 'Z':
+        elif event.key == 'X':
+            # rotate about y axis by -pi/2
+            rot = [np.cos(-np.pi/4), 0, np.sin(-np.pi/4), 0]
+            self._scene.rotation = np.asarray(rot, dtype=np.float32)
+        elif event.key == 'Y':
+            # rotate about x axis by pi/2
+            rot = [np.cos(np.pi/4), np.sin(np.pi/4), 0, 0]
+            self._scene.rotation = np.asarray(rot, dtype=np.float32)
+        elif event.key == 'Z':
             self._scene.rotation = np.asarray([1., 0., 0., 0.], dtype=np.float32)
-            if event.key == 'Y':
-                self.updateRotation(event, delta=(0, -np.pi/6), suppress=True)
-            elif event.key == 'Z':
-                self.updateRotation(event, delta=(-np.pi/6, 0), suppress=True)
         self.update()
 
     def grab_selection_area(self, callback):
