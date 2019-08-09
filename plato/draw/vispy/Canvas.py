@@ -654,20 +654,28 @@ class Canvas(vispy.app.Canvas):
     def on_key_press(self, event):
         if event.key == 'Right' and (
                 'control' in event.modifiers or 'meta' in event.modifiers):
-            self.updateRotation(event, delta=(np.pi/36,0))
+            self.updateRotation(event, delta=(np.pi/36, 0))
         elif event.key == 'Left' and (
                 'control' in event.modifiers or 'meta' in event.modifiers):
-            self.updateRotation(event, delta=(-np.pi/36,0))
+            self.updateRotation(event, delta=(-np.pi/36, 0))
         elif event.key == 'Up' and (
                 'control' in event.modifiers or 'meta' in event.modifiers):
-            self.updateRotation(event, delta=(0,-np.pi/36))
+            self.updateRotation(event, delta=(0, -np.pi/36))
         elif event.key == 'Down' and (
                 'control' in event.modifiers or 'meta' in event.modifiers):
-            self.updateRotation(event, delta=(0,np.pi/36))
+            self.updateRotation(event, delta=(0, np.pi/36))
+        elif event.key == 'L':
+            self.updateRotation(event, delta=(np.pi/36, 0))
+        elif event.key == 'J':
+            self.updateRotation(event, delta=(-np.pi/36, 0))
+        elif event.key == 'I':
+            self.updateRotation(event, delta=(0, -np.pi/36))
+        elif event.key == 'K':
+            self.updateRotation(event, delta=(0, np.pi/36))
         elif event.key == 'X' or event.key == 'Y' or event.key == 'Z':
             self._scene.rotation = np.asarray([1., 0., 0., 0.], dtype=np.float32)
             if event.key == 'Y':
-                self.updateRotation(event, delta=(0,-np.pi/6), suppress=True)
+                self.updateRotation(event, delta=(0, -np.pi/6), suppress=True)
             elif event.key == 'Z':
                 self.updateRotation(event, delta=(-np.pi/6, 0), suppress=True)
         self.update()
