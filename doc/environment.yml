@@ -1,0 +1,11 @@
+channels:
+    - conda-forge
+dependencies:
+    - fresnel
+    - pyglet
+    - pip
+    - pip:
+      - matplotlib
+      - pythreejs
+      - pyvirtualdisplay
+      - vispy

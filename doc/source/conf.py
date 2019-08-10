@@ -18,6 +18,7 @@ import sys
 from unittest.mock import MagicMock
 import os
 import shlex
+from ipywidgets.embed import DEFAULT_EMBED_REQUIREJS_URL
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
@@ -219,6 +220,11 @@ html_static_path = ['_static']
 # The name of a javascript file (relative to the configuration directory) that
 # implements a search results scorer. If empty, the default will be used.
 #html_search_scorer = 'scorer.js'
+
+html_js_files = [
+    'https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js',
+    DEFAULT_EMBED_REQUIREJS_URL,
+]
 
 # Output file base name for HTML help builder.
 htmlhelp_basename = 'platodoc'
