@@ -1,7 +1,9 @@
 channels:
     - conda-forge
+    - schrodinger
 dependencies:
     - fresnel
+    - povray
     - pyglet
     - pip
     - pip:
