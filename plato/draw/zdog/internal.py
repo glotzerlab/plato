@@ -1,6 +1,5 @@
 import numpy as np
 import rowan
-from ... import mesh as pmesh
 from ... import geometry
 
 class PolyhedronRenderer:

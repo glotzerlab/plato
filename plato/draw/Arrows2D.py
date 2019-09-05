@@ -1,7 +1,7 @@
 import itertools
 import numpy as np
 from .Polygons import Polygons
-from .internal import attribute_setter, ShapeDecorator, ShapeAttribute
+from .internal import ShapeDecorator
 
 @ShapeDecorator
 class Arrows2D(Polygons):

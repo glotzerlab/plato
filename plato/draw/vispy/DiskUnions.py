@@ -1,11 +1,9 @@
 import itertools
 import numpy as np
-from ... import geometry
 from ... import mesh
 from .internal import GLPrimitive, GLShapeDecorator
 from ... import draw
 from ..internal import ShapeAttribute
-from vispy import gloo
 
 @GLShapeDecorator
 class DiskUnions(draw.DiskUnions, GLPrimitive):

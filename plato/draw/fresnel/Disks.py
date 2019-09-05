@@ -1,5 +1,4 @@
 import fresnel
-import numpy as np
 from ... import draw
 from .FresnelPrimitive import FresnelPrimitive
 

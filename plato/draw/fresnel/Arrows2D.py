@@ -1,4 +1,3 @@
-import fresnel
 from ... import draw
 from .Polygons import Polygons
 from .FresnelPrimitive import FresnelPrimitive

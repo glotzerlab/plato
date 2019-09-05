@@ -5,7 +5,6 @@ from ... import draw
 from .internal import PatchUser
 from matplotlib.path import Path
 from matplotlib.patches import PathPatch, Polygon
-from matplotlib.transforms import Affine2D
 
 class ConvexPolyhedra(draw.ConvexPolyhedra, PatchUser):
     __doc__ = draw.ConvexPolyhedra.__doc__

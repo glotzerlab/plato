@@ -1,5 +1,4 @@
 import numpy as np
-from ... import math
 from ... import geometry
 from ... import draw
 from .internal import PatchUser

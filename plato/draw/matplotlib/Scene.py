@@ -1,4 +1,4 @@
-import matplotlib, matplotlib.pyplot as pp
+import matplotlib.pyplot as pp
 from matplotlib.collections import PatchCollection
 from ... import draw
 import numpy as np

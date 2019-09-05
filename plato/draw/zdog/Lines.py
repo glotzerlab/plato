@@ -1,9 +1,4 @@
-import numpy as np
-import rowan
 from ... import draw
-from ... import mesh as pmesh
-from ... import geometry
-from ... import math as pmath
 
 class Lines(draw.Lines):
     __doc__ = draw.Lines.__doc__

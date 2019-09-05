@@ -1,4 +1,3 @@
-from collections import defaultdict
 import itertools
 from ... import draw
 from ...geometry import fibonacciPositions
@@ -6,7 +5,6 @@ from ... import mesh
 from .internal import ThreeJSPrimitive
 from ..internal import ShapeAttribute, ShapeDecorator
 import numpy as np
-import pythreejs
 
 @ShapeDecorator
 class Spheres(draw.Spheres, ThreeJSPrimitive):

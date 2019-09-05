@@ -1,7 +1,6 @@
 import itertools
 import numpy as np
 from ... import math
-from ... import geometry
 from ... import draw
 from ...draw import internal
 from .internal import PatchUser

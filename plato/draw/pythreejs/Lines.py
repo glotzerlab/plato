@@ -1,10 +1,7 @@
-from collections import defaultdict
 from ... import draw
 from ... import geometry
-from ... import mesh
 from .internal import ThreeJSPrimitive
 import numpy as np
-import pythreejs
 import rowan
 
 class Lines(draw.Lines, ThreeJSPrimitive):

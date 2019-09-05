@@ -1,9 +1,7 @@
 from ... import draw
-from ... import math
 from ... import mesh
 from .internal import ThreeJSPrimitive
 import numpy as np
-import pythreejs
 
 class Mesh(draw.Mesh, ThreeJSPrimitive):
     __doc__ = draw.Mesh.__doc__

@@ -1,5 +1,4 @@
 from ... import draw
-from ... import math
 import numpy as np
 import rowan
 

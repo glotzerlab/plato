@@ -6,7 +6,6 @@ from .Spheres import Spheres
 from ... import draw
 from ..internal import ShapeAttribute
 from ..Scene import DEFAULT_DIRECTIONAL_LIGHTS
-from vispy import gloo
 
 @GLShapeDecorator
 class Ellipsoids(draw.Ellipsoids, GLPrimitive):

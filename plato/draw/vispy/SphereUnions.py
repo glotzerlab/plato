@@ -1,12 +1,10 @@
 import itertools
 import numpy as np
-from ... import geometry
 from ... import mesh
 from .internal import GLPrimitive, GLShapeDecorator
 from ... import draw
 from ..internal import ShapeAttribute
 from ..Scene import DEFAULT_DIRECTIONAL_LIGHTS
-from vispy import gloo
 
 @GLShapeDecorator
 class SphereUnions(draw.SphereUnions, GLPrimitive):
