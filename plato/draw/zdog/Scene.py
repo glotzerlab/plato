@@ -15,6 +15,7 @@ class Scene(draw.Scene):
 
     * *ambient_light*: Enable trivial ambient lighting. The given value indicates the magnitude of the light (in [0, 1]).
     * *directional_light*: Add directional lights. The given value indicates the magnitude*direction normal vector.
+    * *pan*: Translate, rather than rotate, when dragging with the mouse
     """
 
     CANVAS_INDEX = 0
