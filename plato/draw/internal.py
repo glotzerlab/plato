@@ -84,7 +84,6 @@ def attribute_setter(self, value, name, dtype, dimension, default, callback=None
     self._dirty_attributes.add(name)
     self._attributes[name] = result
     if callback is not None:
-        print(name, callback, self, value)
         callback(self, value)
 
 def attribute_getter(self, name):
