@@ -293,7 +293,7 @@ def lines_cube():
 
     prim = draw.Lines(start_points=vertices[edge_indices[:, 0]],
                       end_points=vertices[edge_indices[:, 1]],
-                      widths=widths, colors=colors)
+                      widths=widths, colors=colors, cap_mode=1)
 
     features = dict(ambient_light=.25, directional_light=dict(lights=(-.1, -.15, -1)))
     rotation = [ 9.9774611e-01,  2.3801494e-02, -6.2734932e-02,  5.5756618e-04]
@@ -328,13 +328,11 @@ def axes_scene(rotation=[1, 0, 0, 0]):
                   [6, -0.5, 0.5],
                   [6, 0.5, -0.5],
                   [6, 0.5, 0.5]])
-    x_sphere_prim = draw.Spheres(positions=x,
-                                 radii=0.25*np.ones(len(x)),
-                                 colors=[[1, 0, 0, 1]]*len(x))
     x_lines_prim = draw.Lines(start_points=np.array([[0, 0, 0], *x[1:5]]),
                               end_points=np.array([x[0]]*5),
                               widths=0.5*np.ones(5),
-                              colors=[[1, 0, 0, 1]]*5)
+                              colors=[[1, 0, 0, 1]]*5,
+                              cap_mode=1)
     y = np.array([[0, 6, 0],
                   [1, 6, 1],
                   [-1, 6, 1],
@@ -342,13 +340,11 @@ def axes_scene(rotation=[1, 0, 0, 0]):
                   [0.5, 6, 0.5],
                   [-0.5, 6, 0.5],
                   [0, 6, -0.5]])
-    y_sphere_prim = draw.Spheres(positions=y,
-                                 radii=0.25*np.ones(len(y)),
-                                 colors=[[0, 1, 0, 1]]*len(y))
     y_lines_prim = draw.Lines(start_points=np.array([[0, 0, 0], *y[1:4]]),
                               end_points=np.array([y[0]]*4),
                               widths=0.5*np.ones(4),
-                              colors=[[0, 1, 0, 1]]*4)
+                              colors=[[0, 1, 0, 1]]*4,
+                              cap_mode=1)
     z = np.array([[0, 0, 6],
                   [-1, 1, 6],
                   [1, 1, 6],
@@ -362,16 +358,14 @@ def axes_scene(rotation=[1, 0, 0, 0]):
                   [0.5, 1, 6],
                   [-0.5, -0.5, 6],
                   [0.5, 0.5, 6]])
-    z_sphere_prim = draw.Spheres(positions=z,
-                                 radii=0.25*np.ones(len(z)),
-                                 colors=[[0, 0, 1, 1]]*len(z))
     z_lines_prim = draw.Lines(start_points=np.array([[0, 0, 0], *z[1:4]]),
                               end_points=np.array([z[0], *z[2:5]]),
                               widths=0.5*np.ones(4),
-                              colors=[[0, 0, 1, 1]]*4)
-    scene = draw.Scene([x_sphere_prim, x_lines_prim,
-                        y_sphere_prim, y_lines_prim,
-                        z_sphere_prim, z_lines_prim],
+                              colors=[[0, 0, 1, 1]]*4,
+                              cap_mode=1)
+    scene = draw.Scene([x_lines_prim,
+                        y_lines_prim,
+                        z_lines_prim],
                        rotation=rotation)
     return scene
 
