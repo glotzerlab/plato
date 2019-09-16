@@ -1,3 +1,12 @@
+## v1.7
+
+- Add pan argument to zdog scenes (mspells)
+- Add new keyboard shortcuts for vispy camera control (hp393)
+- Change x/y/z key-axis mappings for vispy scenes (mspells)
+- Improve SSAO configuration in vispy backend (mspells)
+- Add configurable caps to vispy and povray Lines (mspells,bdice)
+- Add Box primitive (amayank,yeinlim,bdice,mspells)
+
 ## v1.6
 
 - Enable directional_light by default in all scenes (mspells)
