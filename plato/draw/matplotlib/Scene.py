@@ -95,3 +95,6 @@ class Scene(draw.Scene):
         """
         (figure, _) = self.render()
         return figure.savefig(filename, dpi=figure.dpi)
+
+    def _ipython_display_(self):
+        return self.show()

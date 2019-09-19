@@ -71,6 +71,7 @@ Contents:
    pythreejs
    vispy
    zdog
+   imperative
    troubleshooting
 
 Indices and tables

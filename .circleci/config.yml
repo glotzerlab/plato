@@ -24,6 +24,7 @@ jobs:
               xvfb-run -a -s "-screen 0 1600x1200x24 +extension GLX +render +iglx" python3 -m nose --with-xunit --xunit-file=/tmp/test_results/plato/results.xml
           environment:
               PLATO_TEST_ARTIFACT_DIR: /tmp/plato_output
+              VISPY_TEST_BACKEND: pyglet
 
       - store_artifacts:
           path: /tmp/plato_output

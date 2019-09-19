@@ -147,3 +147,6 @@ class Scene(draw.Scene):
 
         with open(filename, 'w') as f:
             f.write(result)
+
+    def _repr_html_(self):
+        return self.render()

@@ -30,6 +30,9 @@ be used, for example::
   scene = draw.Scene(disks, ...)
   scene.show()
 
+.. note:: For quick and simple visualizations, the imperative
+          :py:mod:`plato.imp` module may be easier.
+
 Base Drawing Module
 ===================
 

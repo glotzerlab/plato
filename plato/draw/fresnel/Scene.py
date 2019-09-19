@@ -110,3 +110,6 @@ class Scene(draw.Scene):
             render_function = tracer.render
 
         self._output = render_function(self._fresnel_scene)
+
+    def _ipython_display_(self):
+        return self.show()

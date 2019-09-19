@@ -176,3 +176,9 @@ class Scene(draw.Scene):
             return subprocess.check_call(command)
         finally:
             os.remove(povfile)
+
+    def _repr_png_(self):
+        with tempfile.NamedTemporaryFile(suffix='.png') as temp:
+            self.save(temp.name)
+            with open(temp.name, 'rb') as f:
+                return f.read()

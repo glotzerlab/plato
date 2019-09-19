@@ -181,3 +181,6 @@ class Scene(draw.Scene):
     def show(self):
         import IPython
         IPython.display.display(self._backend_objects['renderer'])
+
+    def _ipython_display_(self):
+        return self.show()

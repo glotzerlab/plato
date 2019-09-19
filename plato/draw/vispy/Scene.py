@@ -180,3 +180,6 @@ class Scene(draw.Scene):
     def render(self):
         """Have vispy redraw this Scene object."""
         self._canvas.update()
+
+    def _ipython_display_(self):
+        return self.show()
