@@ -87,6 +87,9 @@ class Scene:
         for prim in self._primitives:
             yield prim
 
+    def __len__(self):
+        return len(self._primitives)
+
     @property
     def translation(self):
         """(x, y, z) translation to be applied to the scene as a whole after rotating.
