@@ -77,6 +77,16 @@ class Shape:
         result = cls(**other._attributes)
         return result
 
+    def copy_from(self, other, ignore_scene_attrs=False):
+        """Copies values from another shape into this one.
+
+        :param ignore_scene_attrs: If True, don't copy attributes controlled by scenes (translation, rotation, zoom, camera)
+        """
+        for (key, value) in other._attributes.items():
+            if ignore_scene_attrs and key in ('translation', 'rotation', 'zoom', 'camera'):
+                continue
+            setattr(self, key, value)
+
 def attribute_setter(self, value, name, dtype, dimension, default, callback=None):
     size_checker = array_size_checkers[dimension]
     result = size_checker(np.asarray(value, dtype=dtype))
