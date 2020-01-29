@@ -55,7 +55,7 @@ class Shape:
 
     @classmethod
     def link(cls, other, share_redraw_state=True):
-        """Causes this shape to share its data with another shape.
+        """Create a new shape that shares its data with a source shape.
 
         Common values that are set in `other` will be set in this shape.
 
