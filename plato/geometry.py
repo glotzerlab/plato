@@ -252,8 +252,7 @@ def twiceTriangleArea(p0, p1, p2):
 class Polygon:
     """Basic class to hold a set of points for a 2D polygon"""
     def __init__(self, verts):
-        """Initialize a polygon with a counterclockwise list of 2D
-        points and checks that they are ordered counter-clockwise"""
+        """Initialize a polygon with a list of 2D points."""
         self.vertices = np.array(verts, dtype=np.float32);
 
         self.rmax = np.sqrt(np.max(np.sum(self.vertices**2, axis=-1)))
@@ -263,15 +262,6 @@ class Polygon:
         if len(self.vertices[1]) != 2:
             raise TypeError("positions must be an Nx2 array");
         self.n = len(self.vertices);
-
-        # This actually checks that the majority of the polygon is
-        # listed in counter-clockwise order, but seems like it should
-        # be sufficient for common use cases. Non-simple polygons can
-        # still sneak in clockwise vertices.
-        if self.area() < 0:
-            raise RuntimeError("Polygon was given with some clockwise vertices, "
-                               "but it requires that vertices be listed in "
-                               "counter-clockwise order");
 
     def area(self):
         """Calculate and return the signed area of the polygon with
