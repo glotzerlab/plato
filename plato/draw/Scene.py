@@ -229,6 +229,7 @@ class Scene:
                     name, backend)
                 if compatibility == 'warn':
                     logger.warning(msg)
+                    continue
                 elif compatibility == 'ignore':
                     continue
                 else:
