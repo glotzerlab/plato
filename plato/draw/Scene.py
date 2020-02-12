@@ -209,15 +209,17 @@ class Scene:
 
         del self._enabled_features[name]
 
-    def convert(self, backend, compatibility='warn'):
+    def convert(self, backend, compatibility='warn', **kwargs):
         """Convert this scene and all of its primitives to another backend.
 
         :param backend: Backend plato.draw.* module to use in the new scene
         :param compatibility: Behavior when unsupported primitives are encountered: 'warn', 'ignore', or 'error'
+        :param kwargs: Additional keyword arguments to be passed into the backend `Scene` constructor
         """
         backend_scene = backend.Scene(
             features=self._enabled_features, size=self.size, translation=self.translation,
-            rotation=self.rotation, zoom=self.zoom, pixel_scale=self.pixel_scale)
+            rotation=self.rotation, zoom=self.zoom, pixel_scale=self.pixel_scale,
+            **kwargs)
 
         for prim in self:
             name = type(prim).__name__
