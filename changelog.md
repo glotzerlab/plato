@@ -1,3 +1,10 @@
+## v1.8
+
+- Add imperative API (mspells)
+- Add `Shape.copy_from` (mspells)
+- Add extra keyword arguments to `Scene.convert` (mspells)
+- Remove requirement for Polygon vertices to be counterclockwise (mspells)
+
 ## v1.7
 
 - Add pan argument to zdog scenes (mspells)
