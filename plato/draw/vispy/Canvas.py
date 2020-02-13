@@ -808,7 +808,7 @@ class Canvas(vispy.app.Canvas):
                 self._programs['fxaa_post']['resolution'] = size
                 self._programs['fxaa_post']['a_position'] = [(-1, -1), (-1, 1), (1, -1), (1, 1)]
 
-                if 'ssao' in self._scene.enabled_features:
+                if 'ssao' in self._scene.enabled_features and 'ssao_target' in self._fbos:
                     self._final_render_target = self._fbos['ssao_target']
                 else:
                     self._final_render_target = self._fbos['fxaa_target']
