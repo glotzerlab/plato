@@ -179,8 +179,9 @@ class Scene(draw.Scene):
                 self._backend_objects['camera'].add(light)
 
     def show(self):
-        import IPython
-        IPython.display.display(self._backend_objects['renderer'])
+        import IPython.display
+        IPython.display.display(
+            self._backend_objects['renderer'], display_id=str(id(self)))
 
     def _ipython_display_(self):
         return self.show()

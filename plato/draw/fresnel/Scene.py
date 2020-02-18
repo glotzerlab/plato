@@ -31,7 +31,7 @@ class Scene(draw.Scene):
         import IPython
         if self._output is None:
             self.render()
-        IPython.display.display(self._output)
+        IPython.display.display(self._output, display_id=str(id(self)))
 
     def save(self, filename):
         """Render and save an image of this Scene.

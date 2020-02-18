@@ -1,7 +1,17 @@
+import contextlib
 import matplotlib.pyplot as pp
 from matplotlib.collections import PatchCollection
-from ... import draw
 import numpy as np
+from ... import draw
+
+@contextlib.contextmanager
+def manage_matplotlib_interactive():
+    was_interactive = pp.isinteractive()
+    pp.ioff()
+
+    yield None
+    if was_interactive:
+        pp.ion()
 
 class Scene(draw.Scene):
     __doc__ = (draw.Scene.__doc__ or '') + """
@@ -97,4 +107,7 @@ class Scene(draw.Scene):
         return figure.savefig(filename, dpi=figure.dpi)
 
     def _ipython_display_(self):
-        return self.show()
+        import IPython.display
+        with manage_matplotlib_interactive():
+            (fig, _) = self.render()
+        return IPython.display.display(fig, display_id=str(id(self)))

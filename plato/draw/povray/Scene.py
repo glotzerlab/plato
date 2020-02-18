@@ -128,7 +128,8 @@ class Scene(draw.Scene):
 
         with tempfile.NamedTemporaryFile(suffix='.png') as temp:
             self.save(temp.name)
-            return IPython.display.Image(filename=temp.name)
+            img = IPython.display.Image(filename=temp.name)
+            return IPython.display.display(img, display_id=str(id(self)))
 
     def save(self, filename):
         """Save the scene, either as povray source or a rendered image.

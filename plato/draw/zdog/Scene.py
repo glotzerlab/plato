@@ -136,10 +136,11 @@ class Scene(draw.Scene):
     def show(self):
         """Render the scene to an image and display using ipython."""
         import IPython.display
-        return IPython.display.HTML(self.render())
+        disp = IPython.display.HTML(self.render())
+        return IPython.display.display(disp, display_id=str(id(self)))
 
     def save(self, filename):
-        """Save the scene, either as povray source or a rendered image.
+        """Save the scene as an HTML file.
 
         :param filename: target filename to save the result into
         """

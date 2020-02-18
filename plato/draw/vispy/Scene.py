@@ -167,7 +167,8 @@ class Scene(draw.Scene):
                 target = io.BytesIO()
                 img = self._canvas.render()
                 imageio.imwrite(target, img, 'png')
-                return IPython.display.Image(data=target.getvalue())
+                to_display = IPython.display.Image(data=target.getvalue())
+                return IPython.display.display(to_display, display_id=str(id(self)))
 
             msg = ('vispy has already loaded the {} backend, ignoring static'
                    ' feature. Try manually selecting a desktop vispy backend '
