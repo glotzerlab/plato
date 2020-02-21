@@ -50,7 +50,7 @@ def unfoldProperties(*args):
     resizedGroups = []
     groupSizes = []
     for (i, group) in enumerate(groups):
-        resizedGroups.append([])
+        reshapedGroup = []
         for chunk in group:
             if chunk.ndim > 2:
                 chunk = chunk.reshape((-1, chunk.shape[-1]))
@@ -59,8 +59,22 @@ def unfoldProperties(*args):
             newSize = list(sizeTemplate)
             newSize[i] = chunk.shape[0]
             newSize[-1] = chunk.shape[-1]
-            resizedGroups[-1].append(chunk.reshape(newSize))
-        groupSizes.append(min(grp.size//grp.shape[-1] for grp in resizedGroups[-1]))
+            reshapedGroup.append(chunk.reshape(newSize))
+        try:
+            groupSize = min(grp.size//grp.shape[-1] for grp in reshapedGroup
+                            if grp.size//grp.shape[-1] > 1)
+        except ValueError: # empty sequence
+            groupSize = 1
+        groupSizes.append(groupSize)
+
+        resizedGroups.append([])
+        for chunk in reshapedGroup:
+            # broadcast single values
+            if chunk.shape[i] == 1 and groupSize > 1:
+                tile = chunk.ndim*[1]
+                tile[i] = groupSize
+                chunk = np.tile(chunk, tile)
+            resizedGroups[-1].append(chunk)
 
     result = []
     for (i, group) in enumerate(resizedGroups):
