@@ -28,6 +28,12 @@ class Scene:
       for prim in scene:
           # (do something with prim)
 
+    Primitives can also be accessed in the order they were added to
+    the scene using list-like syntax::
+
+      first_three_prims = scene[:3]
+      last_prim = scene[-1]
+
     Optional rendering arguments are enabled as *features*, which are
     name-value pairs identifying a feature by name and any
     configuration of the feature in the value.
@@ -82,6 +88,10 @@ class Scene:
 
         for name in kwargs:
             setattr(self, name, kwargs[name])
+
+    def __getitem__(self, key):
+        """Returns the primitive(s) given an integer index or slice."""
+        return self._primitives[key]
 
     def __iter__(self):
         for prim in self._primitives:

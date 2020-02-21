@@ -83,5 +83,19 @@ class SceneTests(unittest.TestCase):
             scene.get_feature_config('test3'),
             {'value': 'auto_value', 'another_value': None})
 
+    def test_indexing(self):
+        prim0 = draw.Spheres()
+        prim1 = draw.ConvexPolyhedra()
+
+        scene = draw.Scene([prim0, prim1])
+
+        self.assertIs(scene[0], prim0)
+        self.assertIs(scene[-1], prim1)
+        self.assertEqual(scene[:2], [prim0, prim1])
+        self.assertEqual(scene[:3], [prim0, prim1])
+
+        with self.assertRaises(IndexError):
+            scene[5]
+
 if __name__ == '__main__':
     unittest.main()
