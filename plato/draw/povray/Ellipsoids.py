@@ -1,19 +1,21 @@
 import numpy as np
 import rowan
-from ... import draw
+from ... import draw, mesh
 
 class Ellipsoids(draw.Ellipsoids):
     __doc__ = draw.Ellipsoids.__doc__
 
     def render(self, rotation=(1, 0, 0, 0), **kwargs):
-        positions = rowan.rotate(rotation, self.positions)
+        (positions, orientations, colors) = mesh.unfoldProperties([
+            self.positions, self.orientations, self.colors])
+        positions = rowan.rotate(rotation, positions)
         orientations = rowan.multiply(
-            rotation, rowan.normalize(self.orientations))
+            rotation, rowan.normalize(orientations))
         rotations = np.degrees(rowan.to_euler(orientations))
 
         lines = []
         for (pos, rot, col, alpha) in zip(
-                positions, rotations, self.colors[:, :3], 1 - self.colors[:, 3]):
+                positions, rotations, colors[:, :3], 1 - colors[:, 3]):
             lines.append('sphere {{ '
                          '0, 1 scale<{a}, {b}, {c}> '
                          'rotate <{rot[2]}, {rot[1]}, {rot[0]}> '

@@ -1,7 +1,7 @@
 import collections
 import itertools
 import numpy as np
-from ... import draw
+from ... import draw, mesh
 from ...draw import internal
 
 LightInfo = collections.namedtuple(
@@ -34,9 +34,9 @@ class Spheres(draw.Spheres):
 
             light_info.append(LightInfo(normal, mag))
 
-        particles = zip(
-            self.positions*(1, -1, 1), self.diameters, self.colors*255)
-        for i, (position, diameter, color) in enumerate(particles):
+        particles = zip(*mesh.unfoldProperties([
+            self.positions*(1, -1, 1), self.diameters, self.colors*255]))
+        for i, (position, (diameter,), color) in enumerate(particles):
             group_index = 'sphere_{}_{}'.format(name_suffix, i)
 
             lines.append("""

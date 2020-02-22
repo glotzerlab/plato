@@ -1,7 +1,6 @@
 import bpy
 import itertools
-from ... import geometry, math
-from ... import draw
+from ... import draw, geometry, math, mesh
 import numpy as np
 
 class ConvexPolyhedra(draw.ConvexPolyhedra):
@@ -22,8 +21,9 @@ class ConvexPolyhedra(draw.ConvexPolyhedra):
         group = bpy.data.groups.new(prim_name)
         positions = math.quatrot(rotation[np.newaxis, :], self.positions)
 
-        for (i, position, orientation, color) in zip(
-                itertools.count(), positions, self.orientations, self.colors):
+        particles = zip(*mesh.unfoldProperties([
+            positions, self.orientations, self.colors]))
+        for (i, (position, orientation, color)) in enumerate(particles):
             shape_name = prim_name + '_{}'.format(i)
             shape = bpy.data.objects.new(shape_name, object_data=mesh)
             shape.location = position

@@ -1,6 +1,6 @@
 import numpy as np
 import rowan
-from ... import geometry
+from ... import geometry, mesh
 
 class PolyhedronRenderer:
     def render(self, rotation=(1, 0, 0, 0), name_suffix='', illo_id='illo',
@@ -31,9 +31,9 @@ class PolyhedronRenderer:
         orientations_euler = rowan.to_euler(
             self.orientations, convention='xyz', axis_type='intrinsic')
 
-        particles = zip(
+        particles = zip(*mesh.unfoldProperties([
             self.positions*(1, -1, 1), self.orientations,
-            -orientations_euler, self.colors*255)
+            -orientations_euler, self.colors*255]))
         for i, (position, orientation, eulers, color) in enumerate(particles):
             group_index = 'convexPoly_{}_{}'.format(name_suffix, i)
 

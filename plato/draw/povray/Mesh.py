@@ -15,8 +15,8 @@ class Mesh(draw.Mesh):
             vertex_colors = np.tile(
                 vertex_colors, (int(np.ceil(len(verts)/len(vertex_colors))), 1))
 
-        positions = self.positions
-        shape_colors = self.shape_colors
+        (positions, orientations, shape_colors) = mesh.unfoldProperties([
+            self.positions, self.orientations, self.shape_colors])
         if len(shape_colors) < len(positions):
             shape_colors = np.tile(
                 shape_colors, (int(np.ceil(len(positions)/len(shape_colors))), 1))
@@ -31,8 +31,8 @@ class Mesh(draw.Mesh):
         vertex_normals = mesh.computeNormals_(verts, self.indices)
         vertex_normal_text = ' '.join('<{},{},{}>'.format(*v) for v in vertex_normals)
 
-        quat_magnitude = np.linalg.norm(self.orientations, axis=-1, keepdims=True)
-        qs = pmath.quatquat(rotation[np.newaxis, :], self.orientations/quat_magnitude)
+        quat_magnitude = np.linalg.norm(orientations, axis=-1, keepdims=True)
+        qs = pmath.quatquat(rotation[np.newaxis, :], orientations/quat_magnitude)
         rotmats = np.array([[1 - 2*qs[:, 2]**2 - 2*qs[:, 3]**2,
                             2*(qs[:, 1]*qs[:, 2] - qs[:, 3]*qs[:, 0]),
                             2*(qs[:, 1]*qs[:, 3] + qs[:, 2]*qs[:, 0])],

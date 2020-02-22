@@ -9,7 +9,9 @@ class ConvexSpheropolyhedra(draw.ConvexSpheropolyhedra):
 
     def render(self, rotation=(1, 0, 0, 0), name_suffix='', **kwargs):
         rotation = np.asarray(rotation)
-        quat_magnitude = np.linalg.norm(self.orientations, axis=-1, keepdims=True)
+        (positions, orientations, colors) = pmesh.unfoldProperties([
+            self.positions, self.orientations, self.colors])
+        quat_magnitude = np.linalg.norm(orientations, axis=-1, keepdims=True)
 
         lines = []
         decomp = geometry.convexDecomposition(self.vertices)
@@ -32,7 +34,7 @@ class ConvexSpheropolyhedra(draw.ConvexSpheropolyhedra):
             shapeName, '\n'.join(elt for elt in [meshStr] + edges + spheres))
         lines.append(shapedef)
 
-        qs = pmath.quatquat(rotation[np.newaxis, :], self.orientations/quat_magnitude)
+        qs = pmath.quatquat(rotation[np.newaxis, :], orientations/quat_magnitude)
         rotmat = np.array([[1 - 2*qs[:, 2]**2 - 2*qs[:, 3]**2,
                             2*(qs[:, 1]*qs[:, 2] - qs[:, 3]*qs[:, 0]),
                             2*(qs[:, 1]*qs[:, 3] + qs[:, 2]*qs[:, 0])],
@@ -45,9 +47,9 @@ class ConvexSpheropolyhedra(draw.ConvexSpheropolyhedra):
         rotmat = rotmat.transpose([2, 1, 0]).reshape((-1, 9))
         rotmat[:] *= quat_magnitude[:, 0, np.newaxis]**2
 
-        positions = pmath.quatrot(rotation[np.newaxis, :], self.positions)
+        positions = pmath.quatrot(rotation[np.newaxis, :], positions)
 
-        for (p, m, c) in zip(positions, rotmat, self.colors[:, :3]):
+        for (p, m, c) in zip(positions, rotmat, colors[:, :3]):
             args = [shapeName] + m.tolist() + p.tolist() + c.tolist()
             lines.append('object {{{} matrix <{},{},{},{},{},{},{},{},{},'
                          '{},{},{}> pigment {{color <{},{},{}>}}}}'.format(

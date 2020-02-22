@@ -1,4 +1,5 @@
 from ... import draw
+from ... import mesh
 
 class Lines(draw.Lines):
     __doc__ = draw.Lines.__doc__
@@ -9,10 +10,10 @@ class Lines(draw.Lines):
         # and z is toward you
         lines = []
 
-        particles = zip(
+        particles = zip(*mesh.unfoldProperties([
             self.start_points*(1, -1, 1), self.end_points*(1, -1, 1),
-            self.widths, self.colors*255)
-        for i, (start, end, width, color) in enumerate(particles):
+            self.widths, self.colors*255]))
+        for i, (start, end, (width,), color) in enumerate(particles):
             path = ', '.join('{{x: {}, y: {}, z: {}}}'.format(*v) for v in [start, end])
 
             (r, g, b) = map(int, color[:3])

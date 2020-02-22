@@ -1,7 +1,6 @@
 import bpy
 import itertools
-from ... import math
-from ... import draw
+from ... import draw, math, mesh
 import numpy as np
 
 class Spheres(draw.Spheres):
@@ -21,8 +20,9 @@ class Spheres(draw.Spheres):
         group = bpy.data.groups.new(prim_name)
         positions = math.quatrot(rotation[np.newaxis, :], self.positions)
 
-        for (i, position, radius, color) in zip(
-                itertools.count(), positions, self.radii, self.colors):
+        particles = zip(*mesh.unfoldProperties([
+            positions, self.radii, self.colors]))
+        for (i, (position, (radius,), color)) in enumerate(particles):
             shape_name = prim_name + '_{}'.format(i)
             shape = bpy.data.objects.new(shape_name, object_data=shape_params)
             shape.location = position
