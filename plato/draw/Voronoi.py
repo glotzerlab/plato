@@ -1,5 +1,7 @@
 import itertools
+
 import numpy as np
+
 from .internal import Shape, ShapeDecorator, ShapeAttribute
 
 @ShapeDecorator

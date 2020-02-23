@@ -1,7 +1,9 @@
-import bpy
 import itertools
-from ... import draw, math, mesh
+
+import bpy
 import numpy as np
+
+from ... import draw, math, mesh
 
 class Spheres(draw.Spheres):
 

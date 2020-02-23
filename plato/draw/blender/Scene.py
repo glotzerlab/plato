@@ -1,6 +1,7 @@
-from ... import draw
-import numpy as np
 import bpy
+import numpy as np
+
+from ... import draw
 
 class Scene(draw.Scene):
     __doc__ = draw.Scene.__doc__

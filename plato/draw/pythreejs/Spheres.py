@@ -1,10 +1,12 @@
 import itertools
+
+import numpy as np
+
 from ... import draw
 from ...geometry import fibonacciPositions
 from ... import mesh
 from .internal import ThreeJSPrimitive
 from ..internal import ShapeAttribute, ShapeDecorator
-import numpy as np
 
 @ShapeDecorator
 class Spheres(draw.Spheres, ThreeJSPrimitive):

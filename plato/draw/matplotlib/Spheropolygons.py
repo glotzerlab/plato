@@ -1,9 +1,10 @@
-import numpy as np
-from ... import draw
-from .internal import PatchUser
 from matplotlib.path import Path
 from matplotlib.patches import PathPatch
 from matplotlib.transforms import Affine2D
+import numpy as np
+
+from ... import draw
+from .internal import PatchUser
 
 class Spheropolygons(draw.Spheropolygons, PatchUser):
     __doc__ = draw.Spheropolygons.__doc__

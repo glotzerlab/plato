@@ -1,8 +1,10 @@
 import logging
+
+import numpy as np
 import vispy.io
+
 from .Canvas import Canvas
 from ... import draw
-import numpy as np
 from ..Scene import DEFAULT_DIRECTIONAL_LIGHTS
 
 logger = logging.getLogger(__name__)

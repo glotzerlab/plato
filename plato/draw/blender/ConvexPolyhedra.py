@@ -1,7 +1,9 @@
-import bpy
 import itertools
-from ... import draw, geometry, math, mesh
+
+import bpy
 import numpy as np
+
+from ... import draw, geometry, math, mesh
 
 class ConvexPolyhedra(draw.ConvexPolyhedra):
 

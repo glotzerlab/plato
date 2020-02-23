@@ -1,7 +1,8 @@
+import numpy as np
+
 from ... import draw
 from ... import mesh
 from .internal import ThreeJSPrimitive
-import numpy as np
 
 class ConvexPolyhedra(draw.ConvexPolyhedra, ThreeJSPrimitive):
     __doc__ = draw.ConvexPolyhedra.__doc__

@@ -1,6 +1,8 @@
-import fresnel
 import itertools
+
+import fresnel
 import numpy as np
+
 from ... import draw
 from ...geometry import fibonacciPositions
 from ..internal import ShapeAttribute, ShapeDecorator

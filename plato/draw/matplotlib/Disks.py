@@ -1,7 +1,8 @@
+from matplotlib.patches import Circle, Wedge
 import numpy as np
+
 from ... import draw
 from .internal import PatchUser
-from matplotlib.patches import Circle, Wedge
 
 class Disks(draw.Disks, PatchUser):
     __doc__ = draw.Disks.__doc__

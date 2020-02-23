@@ -1,8 +1,9 @@
 import fresnel
+import numpy as np
+
 from ... import draw
 from ... import math
 from .FresnelPrimitive import FresnelPrimitive
-import numpy as np
 
 class SphereUnions(FresnelPrimitive, draw.SphereUnions):
     __doc__ = draw.SphereUnions.__doc__

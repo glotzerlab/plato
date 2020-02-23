@@ -1,5 +1,6 @@
 import numpy as np
 import rowan
+
 from ... import draw, mesh
 
 class Ellipsoids(draw.Ellipsoids):

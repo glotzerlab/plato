@@ -1,6 +1,7 @@
-from ... import draw
 import numpy as np
 import rowan
+
+from ... import draw
 
 LOCAL_HELPER_SCRIPT = """
 let is_in_view = function(elt) {

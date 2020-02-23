@@ -1,10 +1,12 @@
 import itertools
+
+from matplotlib.patches import Circle
 import numpy as np
+
 from ... import math
 from ... import draw
 from ...draw import internal
 from .internal import PatchUser
-from matplotlib.patches import Circle
 
 @internal.ShapeDecorator
 class Spheres(draw.Spheres, PatchUser):

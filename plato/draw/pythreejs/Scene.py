@@ -1,8 +1,9 @@
-from ... import draw
-from ..Scene import DEFAULT_DIRECTIONAL_LIGHTS
 import rowan
 import numpy as np
 import pythreejs
+
+from ... import draw
+from ..Scene import DEFAULT_DIRECTIONAL_LIGHTS
 
 class Scene(draw.Scene):
     def __init__(self, *args, **kwargs):

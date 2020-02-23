@@ -1,6 +1,8 @@
 import collections
 import itertools
+
 import numpy as np
+
 from ... import draw, mesh
 from ...draw import internal
 

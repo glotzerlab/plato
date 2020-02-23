@@ -1,8 +1,8 @@
 import fresnel
 import numpy as np
 import rowan
-from ... import draw
 
+from ... import draw
 
 class Scene(draw.Scene):
     __doc__ = (draw.Scene.__doc__ or '') + """

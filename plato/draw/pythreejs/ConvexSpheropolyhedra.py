@@ -1,7 +1,8 @@
+import numpy as np
+
 from ... import draw
 from ... import mesh
 from .internal import ThreeJSPrimitive
-import numpy as np
 
 class ConvexSpheropolyhedra(draw.ConvexSpheropolyhedra, ThreeJSPrimitive):
     __doc__ = draw.ConvexSpheropolyhedra.__doc__

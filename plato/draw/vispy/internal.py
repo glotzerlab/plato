@@ -1,8 +1,10 @@
 import functools
 import itertools
+
 import numpy as np
 import vispy, vispy.app
 from vispy import gloo
+
 from ... import mesh
 from ..internal import array_size_checkers, ATTRIBUTE_DOCSTRING_TEMPLATE
 from ..Scene import DEFAULT_DIRECTIONAL_LIGHTS

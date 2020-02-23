@@ -1,7 +1,8 @@
 import fresnel
+import rowan
+
 from ... import draw
 from .FresnelPrimitive import FresnelPrimitiveSolid
-import rowan
 
 class Polygons(FresnelPrimitiveSolid, draw.Polygons):
     __doc__ = draw.Polygons.__doc__

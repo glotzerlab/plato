@@ -1,8 +1,9 @@
+import numpy as np
+import rowan
+
 from ... import draw
 from ... import geometry
 from .internal import ThreeJSPrimitive
-import numpy as np
-import rowan
 
 class Lines(draw.Lines, ThreeJSPrimitive):
     __doc__ = draw.Lines.__doc__

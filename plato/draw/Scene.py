@@ -1,5 +1,7 @@
 import logging
+
 import numpy as np
+
 from .internal import Shape
 
 DEFAULT_DIRECTIONAL_LIGHTS = (

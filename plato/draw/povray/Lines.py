@@ -1,5 +1,7 @@
 import itertools
+
 import numpy as np
+
 from ... import draw
 from ..internal import ShapeDecorator, ShapeAttribute
 from ... import math as pmath

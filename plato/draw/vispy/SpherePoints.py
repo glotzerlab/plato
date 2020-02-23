@@ -1,5 +1,7 @@
 import itertools
+
 import numpy as np
+
 from .internal import GLPrimitive, GLShapeDecorator
 from ... import draw
 from ..internal import ShapeAttribute

@@ -3,10 +3,11 @@ import os
 import subprocess
 import tempfile
 
+import numpy as np
+
 from ... import draw
 from ... import math
 from ... import __version__
-import numpy as np
 
 class Scene(draw.Scene):
     __doc__ = (draw.Scene.__doc__ or '') + """

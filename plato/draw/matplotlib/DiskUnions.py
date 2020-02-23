@@ -1,8 +1,9 @@
-import numpy as np
-from ... import draw
-from .internal import PatchUser
 from matplotlib.patches import Circle, Wedge
 from matplotlib.transforms import Affine2D
+import numpy as np
+
+from ... import draw
+from .internal import PatchUser
 
 class DiskUnions(draw.DiskUnions, PatchUser):
     __doc__ = draw.DiskUnions.__doc__

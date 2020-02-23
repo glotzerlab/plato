@@ -1,7 +1,9 @@
 import contextlib
+
 import matplotlib.pyplot as pp
 from matplotlib.collections import PatchCollection
 import numpy as np
+
 from ... import draw
 
 @contextlib.contextmanager

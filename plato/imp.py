@@ -24,8 +24,9 @@ Examples::
 """
 import functools
 import importlib
-import plato.draw as draw
 import sys
+
+from . import draw
 
 _pending_primitives = []
 _last_scene = None

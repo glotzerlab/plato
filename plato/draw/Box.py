@@ -1,6 +1,8 @@
 import functools
 import itertools
+
 import numpy as np
+
 from .. import math
 from .internal import ShapeDecorator, ShapeAttribute
 from .Lines import Lines

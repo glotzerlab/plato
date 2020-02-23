@@ -1,6 +1,7 @@
 import numpy as np
-from .Polygons import Polygons
+
 from .internal import ShapeDecorator
+from .Polygons import Polygons
 
 @ShapeDecorator
 class Arrows2D(Polygons):

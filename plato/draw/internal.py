@@ -1,6 +1,7 @@
+from collections import namedtuple
 import functools
 import inspect
-from collections import namedtuple
+
 import numpy as np
 
 ATTRIBUTE_DOCSTRING_HEADER = '\n\nThis primitive has the following attributes:'

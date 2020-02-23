@@ -1,6 +1,7 @@
 
 from collections import defaultdict, namedtuple
 from itertools import repeat
+
 import numpy as np
 
 from .geometry import convexHull, insetPolygon, massProperties, Polygon

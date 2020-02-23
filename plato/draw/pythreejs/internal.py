@@ -1,6 +1,7 @@
-from ... import math
 import numpy as np
 import pythreejs
+
+from ... import math
 
 class ThreeJSPrimitive:
     @property
