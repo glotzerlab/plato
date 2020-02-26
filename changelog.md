@@ -1,3 +1,9 @@
+## v1.9 - 2020/02/26
+
+- Improve display of many Scene objects in jupyter notebooks (mspells)
+- `mesh.unfoldProperties` now broadcasts quantities of length 1 (mspells)
+- Unify the broadcasting behavior of primitive attributes for vispy, blender, povray, and zdog backends; these backends now broadcast array quantities of length 1 when required (mspells)
+
 ## v1.8
 
 - Add imperative API (mspells)
