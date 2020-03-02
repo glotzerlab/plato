@@ -15,6 +15,9 @@ Pythreejs Backend
 .. autoclass:: ConvexPolyhedra
    :members:
 
+.. autoclass:: ConvexSpheropolyhedra
+   :members:
+
 .. autoclass:: Ellipsoids
    :members:
 

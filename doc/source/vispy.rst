@@ -51,8 +51,8 @@ Vispy Backend
 .. autoclass:: SpherePoints
    :members:
 
-.. autoclass:: SphereUnions
+.. autoclass:: Spheres
    :members:
 
-.. autoclass:: Spheres
+.. autoclass:: SphereUnions
    :members:

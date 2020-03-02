@@ -12,10 +12,10 @@ Matplotlib Backend
 .. autoclass:: Arrows2D
    :members:
 
-.. autoclass:: DiskUnions
+.. autoclass:: Disks
    :members:
 
-.. autoclass:: Disks
+.. autoclass:: DiskUnions
    :members:
 
 .. autoclass:: Polygons
@@ -31,4 +31,7 @@ Matplotlib Backend
    :members:
 
 .. autoclass:: SpherePoints
+   :members:
+
+.. autoclass:: Spheres
    :members:
