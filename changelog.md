@@ -1,3 +1,8 @@
+## v1.10 (unreleased)
+
+- `mesh.SpheropolygonMesh` returned object now also includes integer types for each vertex indicating convexity and concavity (mspells)
+- Add `Arrows2D`, `Disks`, `Polygons`, and `Spheropolygons` to zdog backend (mspells)
+
 ## v1.9 - 2020/02/26
 
 - Improve display of many Scene objects in jupyter notebooks (mspells)

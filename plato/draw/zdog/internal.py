@@ -3,6 +3,63 @@ import rowan
 
 from ... import geometry, mesh
 
+class PolygonRenderer:
+    def _get_path(self):
+        return ', '.join('{{x: {}, y: {}}}'.format(*v)
+                         for v in self.vertices*(1, -1))
+
+    def render(self, rotation=(1, 0, 0, 0), name_suffix='', illo_id='illo',
+               stroke=False, outline=False, **kwargs):
+
+        # in the zdog coordinate system, x is to the right, y is down,
+        # and z is toward you
+        lines = []
+
+        stroke = stroke or 'false'
+
+        path = self._get_path()
+
+        # account for clockwise positive rotation
+        angles = -self.angles
+
+        particles = zip(*mesh.unfoldProperties([
+            self.positions*(1, -1),
+            angles, self.colors*255]))
+        for i, (position, angle, color) in enumerate(particles):
+            # RGB components are 0-255, A component is a float 0-1
+            (r, g, b) = map(int, color[:3])
+            color_str = '"rgba({}, {}, {}, {})"'.format(r, g, b, color[3]/255)
+            shape_name = 'polygon_{}_{}'.format(name_suffix, i)
+
+            lines.append("""
+            let {shape_name} = new Zdog.Shape({{
+                addTo: {illo_id},
+                rotate: {{z: {angle}}},
+                translate: {{x: {pos[0]}, y: {pos[1]}}},
+                color: {color_str},
+                path: [{path}],
+                fill: true,
+                stroke: {stroke},
+            }});""".format(
+                shape_name=shape_name, illo_id=illo_id, angle=angle,
+                pos=position, color_str=color_str, path=path, stroke=stroke))
+
+            if outline:
+                outline_color = '"rgba(0, 0, 0, {})"'.format(color[3]/255)
+                lines.append("""
+                new Zdog.Shape({{
+                    addTo: {shape_name},
+                    color: {color},
+                    path: [{path}],
+                    fill: false,
+                    stroke: {stroke},
+                }});
+                """.format(
+                    shape_name=shape_name, color=outline_color,
+                    pos=position, path=path, stroke=outline))
+
+        return lines
+
 class PolyhedronRenderer:
     def render(self, rotation=(1, 0, 0, 0), name_suffix='', illo_id='illo',
                ambient_light=0.4, directional_light=[], stroke=False,

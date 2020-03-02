@@ -237,7 +237,8 @@ def convexSpheropolyhedronMesh(vertices, radius=.5):
 
     return ConvexSpheropolyhedronMesh(image, innerImage, normal, indices)
 
-SpheropolygonMesh = namedtuple('SpheropolygonMesh', ['image', 'innerImage', 'indices'])
+SpheropolygonMesh = namedtuple(
+    'SpheropolygonMesh', ['image', 'innerImage', 'indices', 'vertex_types'])
 
 def spheropolygonMesh(vertices, radius=1.0, granularity=5):
     """Approximate a spheropolygon by adding rounding to the
@@ -283,6 +284,12 @@ def spheropolygonMesh(vertices, radius=1.0, granularity=5):
 
     # Now interleave the pieces
     image = vertices.tolist()
+    # vertex_types: int mask with mask&1 indicating "inside shape (not
+    # boundary)", mask&2 "part of a curve", mask&4 "is an added curve
+    # vertex", mask&8 "is a vertex immediately before a curve"; this
+    # translates to: 1 inside vertex; 10 pre-curve boundary; 2
+    # post-curve boundary; 6 mid-curve boundary; 0 concave boundary
+    vertex_types = len(image)*[1]
     # image and innerImage are the same for the interior region
     innerImage = vertices.tolist()
     indices = Polygon(vertices).triangleIndices.tolist()
@@ -312,6 +319,9 @@ def spheropolygonMesh(vertices, radius=1.0, granularity=5):
             image.append(start);
 
             innerImage.extend((granularity + 2)*[vert])
+            vertex_types.append(10)
+            vertex_types.extend(granularity*[6])
+            vertex_types.append(2)
         # concave case: don't use the curved region, just find the
         # intersection and add that point.
         elif not skip:
@@ -325,16 +335,18 @@ def spheropolygonMesh(vertices, radius=1.0, granularity=5):
 
             image.append(vert + p*l);
             innerImage.append(vert)
+            vertex_types.append(0)
 
     image = np.vstack(image)
     innerImage = np.vstack(innerImage)
     indices = np.vstack(indices)
+    vertex_types = np.array(vertex_types, dtype=np.int32)
 
     # rounded segment indexing should be modulo number of rounded
     # segment vertices
     indices[indices >= len(image)] -= len(image) - len(vertices)
 
-    return SpheropolygonMesh(image, innerImage, indices)
+    return SpheropolygonMesh(image, innerImage, indices, vertex_types)
 
 def splitChunks(indices, maxIndex=None):
     """Split an index array into a series of chunks such that the

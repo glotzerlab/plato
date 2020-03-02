@@ -61,6 +61,28 @@ def sunflower_2d(seed=13):
     return scene
 
 @register_scene
+def concave_2d(seed=16, num_particles=3):
+    np.random.seed(seed)
+
+    positions = np.random.uniform(0, 6, (num_particles, 2))
+    colors = np.random.rand(num_particles, 4)
+    colors[:, 3] = 1
+    angles = np.random.uniform(0, 2*np.pi, num_particles)
+
+    thetas = np.linspace(0, 2*np.pi, 7, endpoint=False)
+    rs = [.1, .5, .5, .2, .5, .5, .5]
+    vertices = np.array([rs*np.cos(thetas), rs*np.sin(thetas)]).T
+
+    prim1 = draw.Polygons(
+        positions=positions, colors=colors, angles=angles, vertices=vertices)
+    prim2 = draw.Spheropolygons(
+        radius=.1, colors=colors, angles=angles, vertices=vertices)
+    prim2.positions = -prim1.positions
+
+    scene = draw.Scene([prim1, prim2], zoom=4, features=dict(pan=True))
+    return scene
+
+@register_scene
 def simple_2d(seed=13, num_particles=2):
     np.random.seed(seed)
 

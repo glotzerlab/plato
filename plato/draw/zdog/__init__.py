@@ -8,8 +8,12 @@ inclusion in other pages.
 
 from .Scene import Scene
 
+from .Arrows2D import Arrows2D
 from .Box import Box
 from .ConvexPolyhedra import ConvexPolyhedra
 from .ConvexSpheropolyhedra import ConvexSpheropolyhedra
+from .Disks import Disks
 from .Lines import Lines
+from .Polygons import Polygons
 from .Spheres import Spheres
+from .Spheropolygons import Spheropolygons
