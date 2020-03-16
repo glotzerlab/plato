@@ -454,6 +454,11 @@ class Canvas(vispy.app.Canvas):
         self._selection_callback = None
         self._clip_planes = np.array([1, 100], dtype=np.float32)
 
+        if self._webgl:
+            backend_kwargs = kwargs.setdefault('backend_kwargs', {})
+            webgl_kwargs = backend_kwargs.setdefault('webgl', {})
+            webgl_kwargs['preserveDrawingBuffer'] = True
+
         super(Canvas, self).__init__(size=scene.size_pixels.astype(np.uint32), **kwargs)
 
         gloo.set_viewport(0, 0, *scene.size_pixels.astype(np.uint32))
