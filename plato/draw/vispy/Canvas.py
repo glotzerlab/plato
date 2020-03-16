@@ -451,7 +451,7 @@ class Canvas(vispy.app.Canvas):
         self._final_render_target = NoopContextManager()
         self._scene = scene
         self._mouse_origin = np.array([0, 0], dtype=np.float32)
-        self._selection_callback = None
+        self._selection_callbacks = []
         self._clip_planes = np.array([1, 100], dtype=np.float32)
 
         super(Canvas, self).__init__(size=scene.size_pixels.astype(np.uint32), **kwargs)
@@ -614,9 +614,8 @@ class Canvas(vispy.app.Canvas):
         self._mouse_origin[:] = event.pos
 
     def on_mouse_release(self, event):
-        if self._selection_callback is not None:
-            callback = self._selection_callback
-            self._selection_callback = None
+        if self._selection_callbacks:
+            callback = self._selection_callbacks.pop()
             callback(self._mouse_origin, event.pos)
 
     def _mouse_translate(self, delta):
@@ -631,7 +630,7 @@ class Canvas(vispy.app.Canvas):
         self.update()
 
     def on_mouse_move(self, event):
-        if event.handled or self._selection_callback is not None:
+        if event.handled or self._selection_callbacks:
             return
 
         if 1 in event.buttons or 2 in event.buttons:
@@ -679,7 +678,7 @@ class Canvas(vispy.app.Canvas):
         self.update()
 
     def grab_selection_area(self, callback):
-        self._selection_callback = callback
+        self._selection_callbacks.append(callback)
 
     def planeRotation(self, event, delta=(0,0)):
         delta = np.asarray(delta, dtype=np.float32)

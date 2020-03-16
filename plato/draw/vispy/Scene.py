@@ -1,3 +1,4 @@
+import functools
 import logging
 
 import numpy as np
@@ -19,6 +20,14 @@ def set_orthographic_projection(camera, left, right, bottom, top, near, far):
     camera[3, 2] = -(far + near)/(far - near)
     camera[3, 3] = 1
 
+def selection_point(callback, scene, start, end, units='scene', **kwargs):
+    point = scene.transform(end, 'pixels_gui', units)
+    callback(point, **kwargs)
+
+def selection_rectangle(callback, scene, start, end, units='scene', **kwargs):
+    points = scene.transform([start, end], 'pixels_gui', units)
+    callback(points[0], points[1], **kwargs)
+
 class Scene(draw.Scene):
     __doc__ = (draw.Scene.__doc__ or '') + """
     This Scene supports the following features:
@@ -31,6 +40,8 @@ class Scene(draw.Scene):
     * *ssao*: Enable screen space ambient occlusion
     * *additive_rendering*: Enable additive rendering. This mode is good for visualizing densities projected through the viewing direction. Takes an optional 'invert' argument to invert the additive rendering (i.e., black-on-white instead of white-on-black).
     * *outlines*: Enable cartoony outlines. The given value indicates the width of the outlines (start small, perhaps 1e-5 to 1e-3).
+    * *select_point*: Perform a callback on the next mouse click. The callback receives the clicked position (in the coordinate system of the scene unless the 'units' parameter is set to another valid target for :py:meth:`Scene.transform`) and any additional keyword arguments passed in the feature config.
+    * *select_rect*: Perform a callback on the next mouse drag event. The callback receives the start and end point of the selected area (in the coordinate system of the scene unless the 'units' parameter is set to another valid target for :py:meth:`Scene.transform`) and any additional keyword arguments passed in the feature config.
     * *static*: Enable static rendering. When possible (when vispy is using a non-notebook backend), display a statically-rendered image of a scene instead of the live webGL version when `Scene.show()` is called.
     """
 
@@ -115,6 +126,32 @@ class Scene(draw.Scene):
             light = parameters.get('value', .25)
             for prim in self._primitives:
                 prim.ambientLight = light
+
+        elif name == 'select_point':
+            try:
+                callback_kwargs = dict(parameters)
+                callback = callback_kwargs.pop('value')
+            except KeyError:
+                raise ValueError(
+                    'A callback must be given for the select_point feature')
+
+            callback = functools.partial(
+                selection_point, callback, self, **callback_kwargs)
+            if self._canvas is not None:
+                self._canvas.grab_selection_area(callback)
+
+        elif name == 'select_rect':
+            try:
+                callback_kwargs = dict(parameters)
+                callback = callback_kwargs.pop('value')
+            except KeyError:
+                raise ValueError(
+                    'A callback must be given for the select_rect feature')
+
+            callback = functools.partial(
+                selection_rectangle, callback, self, **callback_kwargs)
+            if self._canvas is not None:
+                self._canvas.grab_selection_area(callback)
 
         if self._canvas is not None:
             if name in self._canvas._VALID_FEATURES:
