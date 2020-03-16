@@ -86,7 +86,7 @@ class Scene:
 
                 self.enable(feature, **config)
             else:
-                self.enable(feature, value=config)
+                self.enable(feature, auto_value=config)
 
         for name in kwargs:
             setattr(self, name, kwargs[name])

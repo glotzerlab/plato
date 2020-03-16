@@ -44,6 +44,13 @@ class Scene(draw.Scene):
         super(Scene, self).__init__(*args, **kwargs)
         self._canvas = Canvas(self, **canvas_kwargs)
 
+        # there is a cyclic dependency: many features depend on having
+        # a canvas initialized, but the canvas is what determines some
+        # of our attributes. Here we re-enable features that may have
+        # been skipped the first time around.
+        for (name, params) in list(self._enabled_features.items()):
+            self.enable(name, **params)
+
     @property
     def zoom(self):
         return self._zoom
