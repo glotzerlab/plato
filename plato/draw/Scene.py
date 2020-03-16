@@ -252,3 +252,55 @@ class Scene:
             backend_scene.add_primitive(backend_cls.copy(prim))
 
         return backend_scene
+
+    def transform(self, coords, source, dest='scene'):
+        """Transform one or more points between two coordinate systems.
+
+        :param coords: Nx2 array-like of coordinates to transform
+        :param source: Coordinate system of coords: one of 'pixels_gui' (display pixel units, top left is (0, 0)), 'pixels' (display pixel units, bottom left is (0, 0)), 'ndc' ((-1, -1) to (1, 1) at the two corners), or 'scene' (working scene world coordinates)
+        :param source: Coordinate system of returned values: one of 'pixels_gui' (display pixel units, top left is (0, 0)), 'pixels' (display pixel units, bottom left is (0, 0)), 'ndc' ((-1, -1) to (1, 1) at the two corners), or 'scene' (working scene world coordinates)
+        """
+        coords = np.array(coords, dtype=np.float32)
+        dim = coords.ndim
+        coords = np.atleast_2d(coords)
+
+        # use scene coordinates as the common representation
+        if source == 'pixels_gui':
+            coords -= 0.5*self.size*self.pixel_scale
+            coords[:, 1] *= -1
+            coords *= 1./(self.zoom*self.pixel_scale)
+            coords -= self.translation[:2]
+        elif source == 'pixels':
+            coords -= 0.5*self.size*self.pixel_scale
+            coords *= 1./(self.zoom*self.pixel_scale)
+            coords -= self.translation[:2]
+        elif source == 'ndc':
+            coords *= 0.5/self.zoom*self.size
+            coords -= self.translation[:2]
+        elif source == 'scene':
+            pass
+        else:
+            raise ValueError('Unknown source coordinate system: {}'.format(source))
+
+        if dest == 'pixels_gui':
+            coords += self.translation[:2]
+            coords /= 1./(self.zoom*self.pixel_scale)
+            coords[:, 1] *= -1
+            coords += 0.5*self.size*self.pixel_scale
+        elif dest == 'pixels':
+            coords += self.translation[:2]
+            coords /= 1./(self.zoom*self.pixel_scale)
+            coords += 0.5*self.size*self.pixel_scale
+        elif dest == 'ndc':
+            coords += self.translation[:2]
+            coords /= 0.5/self.zoom*self.size
+            pass
+        elif dest == 'scene':
+            pass
+        else:
+            raise ValueError(
+                'Unknown destination coordinate system: {}'.format(dest))
+
+        if dim < 2:
+            return coords[0]
+        return coords

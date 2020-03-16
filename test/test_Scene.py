@@ -97,5 +97,49 @@ class SceneTests(unittest.TestCase):
         with self.assertRaises(IndexError):
             scene[5]
 
+    def test_transform_identity(self):
+        scene = draw.Scene(
+            translation=(-1, 2, -3), rotation=(1./np.sqrt(2), 1./np.sqrt(2), 0, 0),
+            zoom=5)
+
+        vecs = [(0, 0), (5, 7)]
+
+        for space in ['pixels_gui', 'pixels', 'ndc', 'scene']:
+            transformed = scene.transform(vecs, space, space)
+            np.testing.assert_allclose(vecs, transformed, atol=1e-4)
+
+    def test_transform_center(self):
+        scene = draw.Scene(
+            translation=(-1, 2, -3), rotation=(1./np.sqrt(2), 1./np.sqrt(2), 0, 0),
+            zoom=7)
+
+        centers = dict(
+            pixels_gui=np.array(scene.size)*scene.pixel_scale/2,
+            pixels=np.array(scene.size)*scene.pixel_scale/2,
+            ndc=(0, 0),
+            scene=-scene.translation[:2],
+        )
+
+        for (dest_name, val) in centers.items():
+            transformed = scene.transform([(0, 0)], 'ndc', dest_name)
+            np.testing.assert_allclose([val], transformed, atol=1e-4)
+
+    def test_transform_corner(self):
+        scene = draw.Scene(
+            translation=(-1, 2, -3), rotation=(1./np.sqrt(2), 1./np.sqrt(2), 0, 0),
+            zoom=9)
+
+        # top right corner for each coordinate space
+        corners = dict(
+            pixels_gui=(scene.size[0]*scene.pixel_scale, 0),
+            pixels=scene.size*scene.pixel_scale,
+            ndc=(1, 1),
+            scene=(0.5*scene.size/scene.zoom - scene.translation[:2]),
+        )
+
+        for (dest_name, val) in corners.items():
+            transformed = scene.transform([(1, 1)], 'ndc', dest_name)
+            np.testing.assert_allclose([val], transformed, atol=1e-4)
+
 if __name__ == '__main__':
     unittest.main()
