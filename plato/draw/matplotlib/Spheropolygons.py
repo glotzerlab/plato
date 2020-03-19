@@ -4,6 +4,7 @@ from matplotlib.transforms import Affine2D
 import numpy as np
 
 from ... import draw
+from ... import mesh
 from .internal import PatchUser
 
 class Spheropolygons(draw.Spheropolygons, PatchUser):
@@ -11,6 +12,9 @@ class Spheropolygons(draw.Spheropolygons, PatchUser):
 
     def _render_patches(self, axes, aa_pixel_size=0, **kwargs):
         result = []
+
+        (shape_positions, shape_angles, shape_colors) = mesh.unfoldProperties([
+            self.positions, self.angles, self.colors])
 
         vertices = self.vertices
         # distance vector from each vertex to the next vertex in a given shape
@@ -63,11 +67,11 @@ class Spheropolygons(draw.Spheropolygons, PatchUser):
             path = Path(positions, commands)
 
             patches = []
-            for (position, angle) in zip(self.positions, self.angles):
+            for (position, (angle,)) in zip(shape_positions, shape_angles):
                 tf = Affine2D().rotate(angle).translate(*position)
                 patches.append(PathPatch(path.transformed(tf)))
-            outline_colors = np.zeros_like(self.colors)
-            outline_colors[:, 3] = self.colors[:, 3]
+            outline_colors = np.zeros_like(shape_colors)
+            outline_colors[:, 3] = shape_colors[:, 3]
 
             result.append((patches, outline_colors))
 
@@ -90,9 +94,9 @@ class Spheropolygons(draw.Spheropolygons, PatchUser):
         path = Path(positions, commands)
 
         patches = []
-        for (position, angle) in zip(self.positions, self.angles):
+        for (position, (angle,)) in zip(shape_positions, shape_angles):
             tf = Affine2D().rotate(angle).translate(*position)
             patches.append(PathPatch(path.transformed(tf)))
-        result.append((patches, self.colors))
+        result.append((patches, shape_colors))
 
         return result

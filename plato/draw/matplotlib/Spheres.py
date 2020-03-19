@@ -5,6 +5,7 @@ import numpy as np
 
 from ... import math
 from ... import draw
+from ... import mesh
 from ...draw import internal
 from .internal import PatchUser
 
@@ -28,21 +29,24 @@ class Spheres(draw.Spheres, PatchUser):
         light_magnitude = np.linalg.norm(directional_light)
         light_normal = directional_light/light_magnitude
 
-        rotated_positions = math.quatrot(rotation[np.newaxis], self.positions)
+        (positions, radii, shape_colors) = mesh.unfoldProperties([
+            self.positions, self.radii, self.colors])
+
+        rotated_positions = math.quatrot(rotation[np.newaxis], positions)
 
         patches = []
         for level_fraction in np.linspace(1, 0, self.light_levels + 1, endpoint=False):
             # base values for radius=1
             offset = -light_normal*level_fraction
 
-            these_colors = self.colors.copy()
+            these_colors = shape_colors.copy()
             light_level = level_fraction*(1 - np.abs(light_normal[2])) + (1 - level_fraction)*1
             these_colors[:, :3] *= ambient_light + light_level*light_magnitude
             these_colors.clip(0, 1, these_colors)
             colors.append(these_colors)
 
-            for (position, radius, color, index) in zip(
-                    rotated_positions, self.radii, these_colors, itertools.count()):
+            for (position, (radius,), color, index) in zip(
+                    rotated_positions, radii, these_colors, itertools.count()):
                 zorder = (position[2] - offset[2]*radius)
                 patch = Circle(position[:2] + offset[:2]*radius,
                                radius*level_fraction, zorder=zorder,

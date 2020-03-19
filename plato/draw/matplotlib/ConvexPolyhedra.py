@@ -3,6 +3,7 @@ from matplotlib.path import Path
 from matplotlib.patches import PathPatch, Polygon
 
 from ... import math
+from ... import mesh
 from ... import geometry
 from ... import draw
 from .internal import PatchUser
@@ -19,9 +20,12 @@ class ConvexPolyhedra(draw.ConvexPolyhedra, PatchUser):
         (vertices, faces_) = geometry.convexHull(self.vertices)
         faces = [np.array(face, dtype=np.uint32) for face in faces_]
 
-        rotated_positions = math.quatrot(rotation[np.newaxis], self.positions)
+        (positions, orientations, shape_colors) = mesh.unfoldProperties([
+            self.positions, self.orientations, self.colors])
+
+        rotated_positions = math.quatrot(rotation[np.newaxis], positions)
         vertex_orientations = math.quatquat(
-            self.orientations, rotation[np.newaxis])
+            orientations, rotation[np.newaxis])
         rotated_vertices = math.quatrot(
             vertex_orientations[:, np.newaxis], vertices[np.newaxis, :])
         rotated_vertices += rotated_positions[:, np.newaxis]
@@ -30,7 +34,7 @@ class ConvexPolyhedra(draw.ConvexPolyhedra, PatchUser):
 
         colors = []
         patches = []
-        for (vertices, color) in zip(rotated_vertices, self.colors):
+        for (vertices, color) in zip(rotated_vertices, shape_colors):
             for face in faces:
                 face_verts = vertices[face]
                 z = np.min(face_verts[:, 2])

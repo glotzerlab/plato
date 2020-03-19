@@ -3,6 +3,7 @@ from matplotlib.transforms import Affine2D
 import numpy as np
 
 from ... import draw
+from ... import mesh
 from .internal import PatchUser
 
 class DiskUnions(draw.DiskUnions, PatchUser):
@@ -12,37 +13,35 @@ class DiskUnions(draw.DiskUnions, PatchUser):
         result = []
 
         outline = self.outline
-        points = self.points
-        colors = self.colors
-        radii = self.radii
+        (points, colors, radii) = mesh.unfoldProperties([
+            self.points, self.colors, self.radii])
+        (positions, angles, orientations) = mesh.unfoldProperties([
+            self.positions, self.angles, self.orientations])
 
-        scale_factors = np.linalg.norm(self.orientations, axis=-1)**2
+        scale_factors = np.linalg.norm(orientations, axis=-1)**2
 
         if outline > 0:
             patches = []
-            for (position, angle, scale) in zip(self.positions, self.angles, scale_factors):
+            for (position, (angle,), scale) in zip(positions, angles, scale_factors):
                 tf = Affine2D().scale(scale).rotate(angle).translate(*position)
-                for i in range(len(self.points)):
-                    patches.append(Wedge(points[i], radii[i], 0, 360, width=outline, transform=tf))
-            outline_colors = np.zeros_like(self.colors)
-            outline_colors[:, 3] = self.colors[:, 3]
-            outline_colors = np.tile(outline_colors, (len(self.positions), 1))
+                for (point, (radius,)) in zip(points, radii):
+                    patches.append(Wedge(point, radius, 0, 360, width=outline, transform=tf))
+            outline_colors = np.zeros_like(colors)
+            outline_colors[:, 3] = colors[:, 3]
+            outline_colors = np.tile(outline_colors, (len(positions), 1))
 
-            # in case the user gave inconsistent numbers of positions/angles/colors
-            N = min(len(patches), len(outline_colors))
-            result.append((patches[:N], outline_colors[:N]))
+            result.append((patches, outline_colors))
         else:
             aa_pixel_size = 0
 
-        shifted_radii = self.radii - outline + aa_pixel_size
+        shifted_radii = radii - outline + aa_pixel_size
 
         patches = []
-        for (position, angle, scale) in zip(self.positions, self.angles, scale_factors):
+        for (position, (angle,), scale) in zip(positions, angles, scale_factors):
             tf = Affine2D().scale(scale).rotate(angle).translate(*position)
-            for i in range(len(self.points)):
-                patches.append(Circle(points[i], radius=shifted_radii[i], transform=tf))
-        colors = np.tile(self.colors, (len(self.positions), 1))
-        N = min(len(patches), len(colors))
-        result.append((patches[:N], colors[:N]))
+            for (point, (radius,)) in zip(points, shifted_radii):
+                patches.append(Circle(point, radius=radius, transform=tf))
+        colors = np.tile(colors, (len(positions), 1))
+        result.append((patches, colors))
 
         return result
