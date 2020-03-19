@@ -34,7 +34,7 @@ class Scene(draw.Scene):
             figure = pp.figure(figsize=real_size, dpi=dpi)
 
         if axes is None:
-            axes = figure.add_subplot(1, 1, 1)
+            axes = figure.add_axes([0, 0, 1, 1], frame_on=False, xmargin=0, ymargin=0)
 
         kwargs = dict(rotation=self.rotation,
                       size=self.size, pixel_scale=self.pixel_scale, zoom=self.zoom)
@@ -66,7 +66,9 @@ class Scene(draw.Scene):
 
         (width, height) = self.size.astype(np.float32)/self.zoom
         (shift_x, shift_y, _) = -self.translation
-        axes.axis('off')
+        axes.get_xaxis().set_visible(False)
+        axes.get_yaxis().set_visible(False)
+        axes.autoscale(False, tight=True)
         axes.set_xlim(-width/2 + shift_x, width/2 + shift_x)
         axes.set_ylim(-height/2 + shift_y, height/2 + shift_y)
         axes.set_aspect(1)
@@ -106,7 +108,8 @@ class Scene(draw.Scene):
         :param filename: target filename to save the image into
         """
         (figure, _) = self.render()
-        return figure.savefig(filename, dpi=figure.dpi)
+        return figure.savefig(filename, dpi=figure.dpi, bbox_inches='tight',
+                              pad_inches=0)
 
     def _ipython_display_(self):
         import IPython.display
