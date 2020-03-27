@@ -1,7 +1,13 @@
-## v1.10 (unreleased)
+## v1.10 - 2020/03/27
 
 - `mesh.SpheropolygonMesh` returned object now also includes integer types for each vertex indicating convexity and concavity (mspells)
 - Add `Arrows2D`, `Disks`, `Polygons`, and `Spheropolygons` to zdog backend (mspells)
+- Add `Box` and `Lines` to matplotlib backend (mspells)
+- Update matplotlib primitives to broadcast quantities of length 1 (mspells)
+- Remove margin when saving matplotlib scenes (mspells)
+- Fix some features not being properly enabled when passed into `Scene` constructor (mspells)
+- Add `Scene.transform()` (mspells)
+- Add features to select points and rectangles in vispy (mspells)
 
 ## v1.9 - 2020/02/26
 
