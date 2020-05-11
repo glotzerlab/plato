@@ -228,10 +228,12 @@ class Scene:
         :param compatibility: Behavior when unsupported primitives are encountered: 'warn', 'ignore', or 'error'
         :param kwargs: Additional keyword arguments to be passed into the backend `Scene` constructor
         """
-        backend_scene = backend.Scene(
+        scene_kwargs = dict(
             features=self._enabled_features, size=self.size, translation=self.translation,
-            rotation=self.rotation, zoom=self.zoom, pixel_scale=self.pixel_scale,
-            **kwargs)
+            rotation=self.rotation, zoom=self.zoom, pixel_scale=self.pixel_scale
+        )
+        scene_kwargs.update(kwargs)
+        backend_scene = backend.Scene(**scene_kwargs)
 
         for prim in self:
             name = type(prim).__name__
