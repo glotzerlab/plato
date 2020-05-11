@@ -3,16 +3,15 @@
 import os
 from setuptools import setup
 
-with open('plato/version.py') as version_file:
+THIS_DIR = os.path.dirname(os.path.abspath(__file__))
+
+version_fname = os.path.join(THIS_DIR, 'plato', 'version.py')
+with open(version_fname) as version_file:
     exec(version_file.read())
 
-long_description_lines = []
-with open(os.path.join('doc', 'source', 'index.rst'), 'r') as readme:
-    for line in readme:
-        if line.startswith('Contents'):
-            break
-        long_description_lines.append(line)
-long_description = ''.join(long_description_lines)
+readme_fname = os.path.join(THIS_DIR, 'README.md')
+with open(readme_fname) as readme_file:
+    long_description = readme_file.read()
 
 setup(name='plato-draw',
       author='Matthew Spellings',
@@ -33,6 +32,7 @@ setup(name='plato-draw',
       install_requires=['numpy', 'scipy', 'rowan'],
       license='BSD-3-Clause',
       long_description=long_description,
+      long_description_content_type='text/markdown',
       packages=[
           'plato', 'plato.draw',
           'plato.draw.blender',
