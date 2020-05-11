@@ -17,6 +17,7 @@ class Scene(draw.Scene):
     * *ambient_light*: Enable trivial ambient lighting. The given value indicates the magnitude of the light (in [0, 1]).
     * *directional_light*: Add directional lights. The given value indicates the magnitude*direction normal vector.
     * *multithreading*: Enable multithreaded rendering. The given value indicates the number of threads to use.
+    * *transparent_background*: Render with a transparent background when calling save() or show()
     """
 
     def render(self):
@@ -151,16 +152,24 @@ class Scene(draw.Scene):
         else:
             threads = None
 
+        if 'transparent_background' in self.enabled_features:
+            transparent_background = self.get_feature_config('transparent_background').get(
+                'value', True)
+        else:
+            transparent_background = False
+
         if filename.endswith('.pov'):
             with open(filename, 'w') as f:
                 f.write(povstring)
             return 0
         else:
             return self.call_povray(
-                povstring, filename, width, height, antialiasing, threads)
+                povstring, filename, width, height, antialiasing, threads,
+                transparent_background)
 
     @staticmethod
-    def call_povray(contents, filename, width, height, antialiasing=None, threads=None):
+    def call_povray(contents, filename, width, height, antialiasing=None,
+                    threads=None, transparent_background=False):
         povfile = filename + '.pov'
         with open(povfile, 'w') as f:
             f.write(contents)
@@ -173,6 +182,9 @@ class Scene(draw.Scene):
 
         if threads:
             command.append('+WT{}'.format(threads))
+
+        if transparent_background:
+            command.append('+UA')
 
         try:
             return subprocess.check_call(command)
