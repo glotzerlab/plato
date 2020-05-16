@@ -20,7 +20,7 @@ class ConvexPolyhedra(draw.ConvexPolyhedra):
 
     def render(self, rotation=(1, 0, 0, 0), name_suffix='', **kwargs):
         rotation = np.asarray(rotation)
-        (positions, orientations, colors) = pmesh.unfoldProperties([
+        (shape_positions, orientations, colors) = pmesh.unfoldProperties([
             self.positions, self.orientations, self.colors])
         quat_magnitude = np.linalg.norm(orientations, axis=-1, keepdims=True)
 
@@ -56,7 +56,7 @@ class ConvexPolyhedra(draw.ConvexPolyhedra):
             rotmat = rotmat.transpose([2, 1, 0]).reshape((-1, 9))
             rotmat[:] *= quat_magnitude[:, 0, np.newaxis]**2
 
-            positions = pmath.quatrot(rotation[np.newaxis, :], positions)
+            positions = pmath.quatrot(rotation[np.newaxis, :], shape_positions)
 
             for (p, m, a) in zip(positions, rotmat, 1 - colors[:, 3]):
                 args = [shapeName] + m.tolist() + p.tolist() + [0, 0, 0, a]
@@ -88,7 +88,7 @@ class ConvexPolyhedra(draw.ConvexPolyhedra):
         rotmat = rotmat.transpose([2, 1, 0]).reshape((-1, 9))
         rotmat *= quat_magnitude[:, 0, np.newaxis]**2
 
-        positions = pmath.quatrot(rotation[np.newaxis, :], positions)
+        positions = pmath.quatrot(rotation[np.newaxis, :], shape_positions)
 
         for (p, m, (r, g, b), a) in zip(positions, rotmat, colors[:, :3],
                                         1 - colors[:, 3]):
