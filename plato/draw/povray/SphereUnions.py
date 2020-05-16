@@ -7,7 +7,7 @@ from ... import mesh
 class SphereUnions(draw.SphereUnions):
     __doc__ = draw.SphereUnions.__doc__
 
-    def render(self, rotation=(1, 0, 0, 0), **kwargs):
+    def render(self, rotation=(1, 0, 0, 0), translation=(0, 0, 0), **kwargs):
         rotation = np.asarray(rotation)
 
         (positions, orientations) = mesh.unfoldProperties([
@@ -15,6 +15,7 @@ class SphereUnions(draw.SphereUnions):
 
         positions = np.tile(positions[:, np.newaxis, :], (1, len(self.points), 1))
         positions += math.quatrot(orientations[:, np.newaxis], self.points[np.newaxis])
+        positions += translation
 
         radii = np.repeat(self.radii[np.newaxis, :], len(positions),axis=0)
         colors = np.repeat(self.colors[np.newaxis, :], len(positions), axis=0)

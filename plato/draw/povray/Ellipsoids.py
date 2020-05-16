@@ -6,10 +6,11 @@ from ... import draw, mesh
 class Ellipsoids(draw.Ellipsoids):
     __doc__ = draw.Ellipsoids.__doc__
 
-    def render(self, rotation=(1, 0, 0, 0), **kwargs):
+    def render(self, rotation=(1, 0, 0, 0), translation=(0, 0, 0), **kwargs):
         (positions, orientations, colors) = mesh.unfoldProperties([
             self.positions, self.orientations, self.colors])
         positions = rowan.rotate(rotation, positions)
+        positions += translation
         orientations = rowan.multiply(
             rotation, rowan.normalize(orientations))
         rotations = np.degrees(rowan.to_euler(orientations))

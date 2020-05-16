@@ -7,7 +7,8 @@ from ... import mesh
 class Mesh(draw.Mesh):
     __doc__ = draw.Mesh.__doc__
 
-    def render(self, rotation=(1, 0, 0, 0), name_suffix='', **kwargs):
+    def render(self, rotation=(1, 0, 0, 0), name_suffix='',
+               translation=(0, 0, 0), **kwargs):
         lines = []
 
         verts = self.vertices
@@ -47,6 +48,7 @@ class Mesh(draw.Mesh):
         rotmats *= quat_magnitude[:, 0, np.newaxis]**2
 
         positions = pmath.quatrot(rotation[np.newaxis, :], positions)
+        positions += translation
 
         for (pos, rotmat, color) in zip(positions, rotmats, blended_colors):
 

@@ -15,13 +15,15 @@ class Lines(draw.Lines):
          'Cap mode for lines (0: default, 1: round)'),
         ]))
 
-    def render(self, rotation=(1, 0, 0, 0), **kwargs):
+    def render(self, rotation=(1, 0, 0, 0), translation=(0, 0, 0), **kwargs):
         rotation = np.asarray(rotation)
 
         lines = []
 
         start_points = pmath.quatrot(rotation[np.newaxis, :], self.start_points)
+        start_points += translation
         end_points = pmath.quatrot(rotation[np.newaxis, :], self.end_points)
+        end_points += translation
 
         for (start, end, width, color, a) in zip(start_points,
                                                  end_points,

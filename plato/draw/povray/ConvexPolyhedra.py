@@ -18,7 +18,8 @@ class ConvexPolyhedra(draw.ConvexPolyhedra):
          'Outline width for all particles')
     ]))
 
-    def render(self, rotation=(1, 0, 0, 0), name_suffix='', **kwargs):
+    def render(self, rotation=(1, 0, 0, 0), name_suffix='',
+               translation=(0, 0, 0), **kwargs):
         rotation = np.asarray(rotation)
         (shape_positions, orientations, colors) = pmesh.unfoldProperties([
             self.positions, self.orientations, self.colors])
@@ -57,6 +58,7 @@ class ConvexPolyhedra(draw.ConvexPolyhedra):
             rotmat[:] *= quat_magnitude[:, 0, np.newaxis]**2
 
             positions = pmath.quatrot(rotation[np.newaxis, :], shape_positions)
+            positions += translation
 
             for (p, m, a) in zip(positions, rotmat, 1 - colors[:, 3]):
                 args = [shapeName] + m.tolist() + p.tolist() + [0, 0, 0, a]
@@ -89,6 +91,7 @@ class ConvexPolyhedra(draw.ConvexPolyhedra):
         rotmat *= quat_magnitude[:, 0, np.newaxis]**2
 
         positions = pmath.quatrot(rotation[np.newaxis, :], shape_positions)
+        positions += translation
 
         for (p, m, (r, g, b), a) in zip(positions, rotmat, colors[:, :3],
                                         1 - colors[:, 3]):

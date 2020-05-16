@@ -8,7 +8,8 @@ from ... import math as pmath
 class ConvexSpheropolyhedra(draw.ConvexSpheropolyhedra):
     __doc__ = draw.ConvexSpheropolyhedra.__doc__
 
-    def render(self, rotation=(1, 0, 0, 0), name_suffix='', **kwargs):
+    def render(self, rotation=(1, 0, 0, 0), name_suffix='',
+               translation=(0, 0, 0), **kwargs):
         rotation = np.asarray(rotation)
         (positions, orientations, colors) = pmesh.unfoldProperties([
             self.positions, self.orientations, self.colors])
@@ -49,6 +50,7 @@ class ConvexSpheropolyhedra(draw.ConvexSpheropolyhedra):
         rotmat[:] *= quat_magnitude[:, 0, np.newaxis]**2
 
         positions = pmath.quatrot(rotation[np.newaxis, :], positions)
+        positions += translation
 
         for (p, m, c) in zip(positions, rotmat, colors[:, :3]):
             args = [shapeName] + m.tolist() + p.tolist() + c.tolist()
