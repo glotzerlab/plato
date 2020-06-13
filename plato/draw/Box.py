@@ -98,9 +98,6 @@ class Box(Lines):
         return cls(Lx=Lx, Ly=Ly, Lz=Lz, xy=xy, xz=xz, yz=yz, width=width, color=color)
 
     def _update_coordinates(self, *args, **kwargs):
-        # Infer dimensions
-        dimensions = 2 if self.Lz == 0 else 3
-
         box_tuple = (self.Lx, self.Ly, self.Lz, self.xy, self.xz, self.yz)
 
         fractions = np.array([[0, 0, 0], [1, 0, 0], [0, 1, 0], [0, 0, 1],
