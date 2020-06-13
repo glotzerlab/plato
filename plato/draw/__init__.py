@@ -9,6 +9,7 @@ from .Polygons import Polygons
 from .Spheropolygons import Spheropolygons
 from .Voronoi import Voronoi
 from .Lines import Lines
+from .PatchySpheres import PatchySpheres
 from .Spheres import Spheres
 from .SpherePoints import SpherePoints
 from .SphereUnions import SphereUnions

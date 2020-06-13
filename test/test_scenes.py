@@ -480,6 +480,19 @@ def field_scene(N=10, use='ellipsoids'):
         prim = draw.Ellipsoids(
             positions=positions, orientations=orientations, colors=colors,
             a=.5, b=.125, c=.125)
+    elif use == 'patchy_spheres':
+        orientations = rowan.vector_vector_rotation([(1, 0, 0)], units)
+        unit_angles = [
+            (1, 0, 0, np.pi/8),
+            (0, 1, 0, np.pi/8),
+            (0, 0, 1, np.pi/8),
+        ]
+        patch_colors = np.array(unit_angles)
+        patch_colors[:, 3] = 1
+        prim = draw.PatchySpheres(
+            positions=positions, orientations=orientations, colors=colors,
+            patch_unit_angles=unit_angles, patch_colors=patch_colors,
+            shape_color_fraction=.5)
     elif use == 'lines':
         features['ambient_light'] = 1
         starts = positions - units/2
@@ -503,6 +516,10 @@ def field_lines(N=10):
 @register_scene
 def field_ellipsoids(N=10):
     return field_scene(N, 'ellipsoids')
+
+@register_scene
+def field_patchy_spheres(N=10):
+    return field_scene(N, 'patchy_spheres')
 
 @register_scene
 def simple_cubes_octahedra(N=4):

@@ -48,6 +48,9 @@ Vispy Backend
 .. autoclass:: Mesh
    :members:
 
+.. autoclass:: PatchySpheres
+   :members:
+
 .. autoclass:: SpherePoints
    :members:
 
