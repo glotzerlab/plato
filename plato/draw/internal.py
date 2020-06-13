@@ -50,7 +50,7 @@ class Shape:
         attr_lengths = list(map(lambda attr: len(self._attributes[attr.name]),
                                 filter(lambda attr: attr.per_shape, self._ATTRIBUTES)))
         try:
-            return min(attr_lengths)
+            return min(length for length in attr_lengths if length > 1)
         except ValueError:
             return 1
 
