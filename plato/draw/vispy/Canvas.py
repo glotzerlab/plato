@@ -1,3 +1,5 @@
+import bisect
+
 import numpy as np
 import vispy, vispy.app
 import vispy.gloo as gloo
@@ -439,9 +441,41 @@ void main(void)
 }
 """
 
+def pick_callback(point, fbo, callback_scene, shape_callback, persist=True):
+    index = point.astype(np.int32)
+    callback_scene._canvas.set_current()
+    prim_indices = []
+    count = 0
+    with fbo:
+        gloo.clear(color=(1, 1, 1, 1), depth=True)
+        gloo.set_state(
+            preset='opaque', blend=False, depth_test=True, depth_mask=True)
+        for prim in callback_scene._primitives:
+            prim_indices.append(count)
+            prim.render_pick(count)
+            count += len(prim)
+        prim_indices.append(count)
+        img = fbo.read()
+
+    pixel_value = np.ascontiguousarray(img[index[1], index[0]]).view(np.int32)
+    index = pixel_value[0]
+    if index != -1:
+        prim_index = bisect.bisect_right(prim_indices, index) - 1
+        shape_index = index - prim_indices[prim_index]
+
+        callback_scene.disable('pick', strict=False)
+        shape_callback(
+            scene=callback_scene, primitive_index=prim_index, shape_index=shape_index)
+    elif not persist:
+        callback_scene.disable('pick', strict=False)
+
+def fallback_default_pick_callback(scene, primitive_index, shape_index):
+    print('Default pick callback on scene {}, primitive {}, shape {}'.format(
+        scene, primitive_index, shape_index))
 
 class Canvas(vispy.app.Canvas):
-    _VALID_FEATURES = ['translucency', 'outlines', 'fxaa', 'ssao', 'additive_rendering']
+    _VALID_FEATURES = ['translucency', 'outlines', 'fxaa', 'ssao',
+                       'additive_rendering', 'pick']
 
     def __init__(self, scene, **kwargs):
         self._fbos = {}
@@ -459,7 +493,7 @@ class Canvas(vispy.app.Canvas):
         gloo.set_viewport(0, 0, *scene.size_pixels.astype(np.uint32))
 
         for feature in self._scene.enabled_features:
-            if feature in self._VALID_FEATURES:
+            if feature in self._VALID_FEATURES and feature not in self._scene._PROTECTED_FEATURES:
                 self._enable_feature(**{feature: self._scene.get_feature_config(feature)})
 
     def on_resize(self, event):
@@ -483,6 +517,7 @@ class Canvas(vispy.app.Canvas):
 
         clear_color = (1, 1, 1, 1)
         gloo.set_depth_func('lequal')
+
         if 'additive_rendering' in self._scene.enabled_features:
             config = self._scene.get_feature_config('additive_rendering')
 
@@ -839,6 +874,21 @@ class Canvas(vispy.app.Canvas):
                 self._final_render_target = self._fbos['ssao_target']
             elif feature == 'additive_rendering':
                 pass
+            elif feature == 'pick':
+                params = param_features[feature] if feature in param_features else {}
+
+                tex = self._textures['pick_target'] = vispy.gloo.Texture2D(
+                    shape=(size[1], size[0], 4))
+                depth = self._textures['pick_target_depth'] = vispy.gloo.RenderBuffer(
+                    (size[1], size[0]))
+                fbo = self._fbos['pick_target'] = vispy.gloo.FrameBuffer(color=tex, depth=depth)
+
+                callback = params.get('value', None) or fallback_default_pick_callback
+                persist = params.get('persist', True)
+
+                self._scene.enable(
+                    'select_point', pick_callback, units='pixels_gui', fbo=fbo,
+                    callback_scene=self._scene, shape_callback=callback, persist=persist)
             else:
                 raise RuntimeError('Unknown rendering feature {}'.format(feature))
 

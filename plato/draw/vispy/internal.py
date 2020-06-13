@@ -24,8 +24,10 @@ class GLPrimitive:
         self._shader_substitutions = {}
 
         self._color_programs = []
+        self._pick_programs = []
         self._plane_programs = []
-        self._all_program_sets = [self._color_programs, self._plane_programs]
+        self._all_program_sets = [
+            self._color_programs, self._pick_programs, self._plane_programs]
 
         self._webgl = 'webgl' in vispy.app.use_app().backend_name
 
@@ -53,6 +55,12 @@ class GLPrimitive:
         prelude = self.make_prelude(config)
         vertex = self.make_shader_substitutions(prelude + self.shaders['vertex'])
         fragment = self.make_shader_substitutions(prelude + self.shaders['fragment'])
+        return gloo.Program(vertex, fragment)
+
+    def make_pick_program(self, config={}):
+        prelude = self.make_prelude(config)
+        vertex = self.make_shader_substitutions(prelude + self.shaders['vertex'])
+        fragment = self.make_shader_substitutions(prelude + self.shaders['fragment_pick'])
         return gloo.Program(vertex, fragment)
 
     def make_plane_program(self, config={}):
@@ -112,6 +120,13 @@ class GLPrimitive:
         self._gl_uniforms['render_positions'] = -1
         self._dirty_uniforms.add('render_positions')
         self.render_generic(self._plane_programs, self.make_plane_program)
+
+    def render_pick(self, index=0):
+        index = np.array([index], dtype=np.uint32).view(np.uint8)
+        index = index.astype(np.float32)/255
+        self._gl_uniforms['pick_prim_index'] = index
+        self._dirty_uniforms.add('pick_prim_index')
+        self.render_generic(self._pick_programs, self.make_pick_program)
 
     def render_positions(self):
         self._gl_uniforms['render_positions'] = 1

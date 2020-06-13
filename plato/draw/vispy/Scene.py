@@ -32,18 +32,22 @@ class Scene(draw.Scene):
     __doc__ = (draw.Scene.__doc__ or '') + """
     This Scene supports the following features:
 
-    * *pan*: If enabled, mouse movement will translate the scene instead of rotating it
+    * *pan*: If enabled, mouse movement will translate the scene instead of rotating it.
     * *directional_light*: Add directional lights. The given value indicates the magnitude*direction normal vector.
     * *ambient_light*: Enable trivial ambient lighting. The given value indicates the magnitude of the light (in [0, 1]).
-    * *translucency*: Enable order-independent transparency rendering
-    * *fxaa*: Enable fast approximate anti-aliasing
-    * *ssao*: Enable screen space ambient occlusion
+    * *translucency*: Enable order-independent transparency rendering.
+    * *fxaa*: Enable fast approximate anti-aliasing.
+    * *ssao*: Enable screen space ambient occlusion.
     * *additive_rendering*: Enable additive rendering. This mode is good for visualizing densities projected through the viewing direction. Takes an optional 'invert' argument to invert the additive rendering (i.e., black-on-white instead of white-on-black).
     * *outlines*: Enable cartoony outlines. The given value indicates the width of the outlines (start small, perhaps 1e-5 to 1e-3).
+    * *pick*: Select a single particle with the mouse on the next mouse click. The given callback function receives the scene, primitive index within the scene, and shape index within the primitive that are selected. If no particle is selected, the callback is not run but pick mode remains enabled until a particle is selected; to disable this behavior, set the optional `persist` argument to False.
     * *select_point*: Perform a callback on the next mouse click. The callback receives the clicked position (in the coordinate system of the scene unless the 'units' parameter is set to another valid target for :py:meth:`Scene.transform`) and any additional keyword arguments passed in the feature config.
     * *select_rect*: Perform a callback on the next mouse drag event. The callback receives the start and end point of the selected area (in the coordinate system of the scene unless the 'units' parameter is set to another valid target for :py:meth:`Scene.transform`) and any additional keyword arguments passed in the feature config.
     * *static*: Enable static rendering. When possible (when vispy is using a non-notebook backend), display a statically-rendered image of a scene instead of the live webGL version when `Scene.show()` is called.
     """
+
+    # features that should be carefully enabled only once for the scene at a time
+    _PROTECTED_FEATURES = {'select_point', 'select_rect', 'pick'}
 
     def __init__(self, *args, canvas_kwargs={}, **kwargs):
         self.camera = np.eye(4, dtype=np.float32)
@@ -54,7 +58,6 @@ class Scene(draw.Scene):
         self._canvas = None
         super(Scene, self).__init__(*args, **kwargs)
         self._canvas = Canvas(self, **canvas_kwargs)
-
         # there is a cyclic dependency: many features depend on having
         # a canvas initialized, but the canvas is what determines some
         # of our attributes. Here we re-enable features that may have
@@ -104,6 +107,8 @@ class Scene(draw.Scene):
         super(Scene, self).add_primitive(primitive)
         self._update_camera()
         for feature in list(self.enabled_features):
+            if feature in self._PROTECTED_FEATURES:
+                continue
             self.enable(feature, **self.get_feature_config(feature))
 
     def enable(self, name, auto_value=None, **parameters):
