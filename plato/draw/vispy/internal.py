@@ -122,6 +122,10 @@ class GLPrimitive:
         self.render_generic(self._plane_programs, self.make_plane_program)
 
     def render_pick(self, index=0):
+        # skip rendering shapes that don't have a pick shader
+        if 'fragment_pick' not in self.shaders:
+            return
+
         index = np.array([index], dtype=np.uint32).view(np.uint8)
         index = index.astype(np.float32)/255
         self._gl_uniforms['pick_prim_index'] = index
