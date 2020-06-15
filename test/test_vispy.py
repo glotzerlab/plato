@@ -120,5 +120,15 @@ for i, (name, scene) in enumerate(test_scenes.translate_usable_scenes(draw)):
                                                  name=name)))
     getattr(VispyTests, new_name).__name__ = new_name
 
+if os.environ.get('LIVE_VISPY_TESTS', None):
+    for i, (name, scene) in enumerate(test_scenes.translate_usable_scenes(draw)):
+        scene.enable('pick')
+        new_name = 'test_pick_{}'.format(name)
+        setattr(
+            VispyTests, new_name, (lambda *args, scene=scene, name=name, **kwargs:
+                                   VispyTests.render(*args, scene=scene,
+                                                     name=name)))
+        getattr(VispyTests, new_name).__name__ = new_name
+
 if __name__ == '__main__':
     unittest.main()
