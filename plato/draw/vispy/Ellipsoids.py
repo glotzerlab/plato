@@ -28,12 +28,14 @@ class Ellipsoids(draw.Ellipsoids, GLPrimitive):
        attribute vec4 orientation;
        attribute vec3 position;
        attribute vec2 image;
+       attribute vec4 shape_id;
 
        varying vec4 v_color;
        varying vec3 v_position;
        varying vec2 v_image;
        varying float v_radius;
        varying float v_depth;
+       varying vec4 v_shape_id;
 
        vec3 rotate(vec3 point, vec4 quat)
        {
@@ -100,6 +102,7 @@ class Ellipsoids(draw.Ellipsoids, GLPrimitive):
            v_image = image;
            v_radius = 1.0;
            v_depth = vertexPos.z;
+           v_shape_id = shape_id;
        }
        """
 
@@ -107,7 +110,9 @@ class Ellipsoids(draw.Ellipsoids, GLPrimitive):
 
     shaders['fragment_plane'] = Spheres.shaders['fragment_plane']
 
-    _vertex_attribute_names = ['position', 'orientation', 'color', 'image']
+    shaders['fragment_pick'] = Spheres.shaders['fragment_pick']
+
+    _vertex_attribute_names = ['shape_id', 'position', 'orientation', 'color', 'image']
 
     _GL_UNIFORMS = list(itertools.starmap(ShapeAttribute, [
         ('a', np.float32, .5, 0, False,
@@ -148,8 +153,11 @@ class Ellipsoids(draw.Ellipsoids, GLPrimitive):
             # vertices for a square patch
             image = np.array([[-1, -1], [-1, 1], [1, -1], [1, 1]], dtype=np.float32)
 
+            shape_ids = np.arange(len(self), dtype=np.uint32).view(np.uint8).reshape((-1, 4))
+            shape_ids = shape_ids.astype(np.float32)/255
+
             vertex_arrays = mesh.unfoldProperties(
-                [self.positions, self.orientations, self.colors],
+                [shape_ids, self.positions, self.orientations, self.colors],
                 [image])
 
             unfolded_shape = vertex_arrays[0].shape[:-1]

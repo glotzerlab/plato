@@ -24,12 +24,14 @@ class Spheres(draw.Spheres, GLPrimitive):
        attribute vec3 position;
        attribute vec2 image;
        attribute float radius;
+       attribute vec4 shape_id;
 
        varying vec4 v_color;
        varying vec3 v_position;
        varying vec2 v_image;
        varying float v_radius;
        varying float v_depth;
+       varying vec4 v_shape_id;
 
        vec3 rotate(vec3 point, vec4 quat)
        {
@@ -59,6 +61,7 @@ class Spheres(draw.Spheres, GLPrimitive):
            v_radius = radius;
            v_position = vertexPos;
            v_depth = vertexPos.z;
+           v_shape_id = shape_id;
        }
        """
 
@@ -171,7 +174,37 @@ class Spheres(draw.Spheres, GLPrimitive):
        }
        """
 
-    _vertex_attribute_names = ['position', 'color', 'radius', 'image']
+    shaders['fragment_pick'] = """
+       uniform mat4 camera;
+       uniform vec4 pick_prim_index;
+
+       varying vec3 v_position;
+       varying vec2 v_image;
+       varying float v_radius;
+       varying float v_depth;
+       varying vec4 v_shape_id;
+
+       void main()
+       {
+           float rsq = dot(v_image, v_image);
+           float Rsq = v_radius*v_radius;
+
+           if(rsq > Rsq)
+               discard;
+
+           vec3 r_local = vec3(v_image.xy, sqrt(Rsq - rsq));
+           vec3 normal = normalize(r_local);
+           #ifndef WEBGL
+           float depth = v_depth + r_local.z;
+           gl_FragDepth = 0.5*(camera[2][2]*depth + camera[3][2] +
+               camera[2][3]*depth + camera[3][3])/(camera[2][3]*depth + camera[3][3]);
+           #endif
+
+           gl_FragColor = pick_prim_index + v_shape_id;
+       }
+       """
+
+    _vertex_attribute_names = ['shape_id', 'position', 'color', 'radius', 'image']
 
     _GL_UNIFORMS = list(itertools.starmap(ShapeAttribute, [
         ('camera', np.float32, np.eye(4), 2, False,
@@ -208,8 +241,11 @@ class Spheres(draw.Spheres, GLPrimitive):
                                  [-1, np.sqrt(3)],
                                  [-1, -np.sqrt(3)]], dtype=np.float32)*1.01
 
+            shape_ids = np.arange(len(self), dtype=np.uint32).view(np.uint8).reshape((-1, 4))
+            shape_ids = shape_ids.astype(np.float32)/255
+
             vertex_arrays = mesh.unfoldProperties(
-                [self.positions, self.colors, self.radii.reshape((-1, 1))],
+                [shape_ids, self.positions, self.colors, self.radii.reshape((-1, 1))],
                 [triangle])
 
             unfolded_shape = vertex_arrays[0].shape[:-1]

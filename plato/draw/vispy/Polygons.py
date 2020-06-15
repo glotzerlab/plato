@@ -25,8 +25,10 @@ class Polygons(draw.Polygons, GLPrimitive):
        attribute vec2 image;
        attribute vec2 outline_image;
        attribute vec4 orientation;
+       attribute vec4 shape_id;
 
        varying vec4 v_color;
+       varying vec4 v_shape_id;
 
        vec2 rotate(vec2 point, vec4 quat)
        {
@@ -51,6 +53,7 @@ class Polygons(draw.Polygons, GLPrimitive):
            // transform to screen coordinates
            gl_Position = screenPosition;
            v_color = currentColor;
+           v_shape_id = shape_id;
        }
        """
 
@@ -63,7 +66,18 @@ class Polygons(draw.Polygons, GLPrimitive):
        }
        """
 
-    _vertex_attribute_names = ['position', 'orientation', 'color', 'image', 'outline_image']
+    shaders['fragment_pick'] = """
+       uniform vec4 pick_prim_index;
+
+       varying vec4 v_shape_id;
+
+       void main()
+       {
+           gl_FragColor = pick_prim_index + v_shape_id;
+       }
+       """
+
+    _vertex_attribute_names = ['shape_id', 'position', 'orientation', 'color', 'image', 'outline_image']
 
     _GL_UNIFORMS = list(itertools.starmap(ShapeAttribute, [
         ('camera', np.float32, np.eye(4), 2, False,
@@ -102,8 +116,11 @@ class Polygons(draw.Polygons, GLPrimitive):
             vertices = self._gl_attributes['triangulation'].outer.vertices
             outline_vertices = self._gl_attributes['triangulation'].inner.vertices
 
+            shape_ids = np.arange(len(self), dtype=np.uint32).view(np.uint8).reshape((-1, 4))
+            shape_ids = shape_ids.astype(np.float32)/255
+
             vertex_arrays = mesh.unfoldProperties(
-                [self.positions, self.orientations, self.colors],
+                [shape_ids, self.positions, self.orientations, self.colors],
                 [vertices, outline_vertices])
 
             unfolded_shape = vertex_arrays[0].shape[:-1]

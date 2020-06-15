@@ -26,11 +26,13 @@ class ConvexSpheropolyhedra(draw.ConvexSpheropolyhedra, GLPrimitive):
        attribute vec3 normal;
        attribute vec3 inner_image;
        attribute vec3 image;
+       attribute vec4 shape_id;
 
        varying vec4 v_color;
        varying vec3 v_normal;
        varying vec3 v_imageDelta;
        varying vec3 v_position;
+       varying vec4 v_shape_id;
 
        vec3 rotate(vec3 point, vec4 quat)
        {
@@ -65,6 +67,7 @@ class ConvexSpheropolyhedra(draw.ConvexSpheropolyhedra, GLPrimitive):
            v_normal = rotate(normal, quatquat(rotation, orientation));
            v_imageDelta = rotate(image - inner_image, quatquat(rotation, orientation));
            v_position = vertexPos;
+           v_shape_id = shape_id;
        }
        """
 
@@ -168,7 +171,34 @@ class ConvexSpheropolyhedra(draw.ConvexSpheropolyhedra, GLPrimitive):
        }
        """
 
-    _vertex_attribute_names = ['position', 'orientation', 'color', 'image', 'inner_image', 'normal']
+    shaders['fragment_pick'] = """
+       uniform float radius;
+       uniform vec4 pick_prim_index;
+
+       varying vec3 v_normal;
+       varying vec3 v_imageDelta;
+       varying vec4 v_shape_id;
+
+       void main()
+       {
+           vec3 normal = v_normal;
+           float deltasq = dot(v_imageDelta, v_imageDelta);
+           vec3 tangent = v_imageDelta - dot(v_imageDelta, v_normal)*v_normal;
+           float tangentsq = dot(tangent, tangent);
+
+           if(tangentsq > 1e-6*radius*radius)
+           {
+           }
+           else if(deltasq <= radius*radius*(1.0 + 1e-5))
+           {
+           }
+           else discard;
+
+           gl_FragColor = pick_prim_index + v_shape_id;
+       }
+       """
+
+    _vertex_attribute_names = ['shape_id', 'position', 'orientation', 'color', 'image', 'inner_image', 'normal']
 
     _GL_UNIFORMS = list(itertools.starmap(ShapeAttribute, [
         ('camera', np.float32, np.eye(4), 2, False,
@@ -217,8 +247,11 @@ class ConvexSpheropolyhedra(draw.ConvexSpheropolyhedra, GLPrimitive):
                     self._gl_vertex_arrays[name][:] = self._attributes[name]
                     self._dirty_vertex_attribs.add(name)
         except (ValueError, KeyError):
+            shape_ids = np.arange(len(self), dtype=np.uint32).view(np.uint8).reshape((-1, 4))
+            shape_ids = shape_ids.astype(np.float32)/255
+
             vertex_arrays = mesh.unfoldProperties(
-                [self.positions, self.orientations, self.colors],
+                [shape_ids, self.positions, self.orientations, self.colors],
                 [self._gl_attributes[name] for name in ['image', 'inner_image', 'normal']])
 
             unfolded_shape = vertex_arrays[0].shape[:-1]

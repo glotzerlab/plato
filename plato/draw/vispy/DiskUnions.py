@@ -25,10 +25,12 @@ class DiskUnions(draw.DiskUnions, GLPrimitive):
        attribute vec2 point;
        attribute vec2 image;
        attribute float radius;
+       attribute vec4 shape_id;
 
        varying vec4 v_color;
        varying vec2 v_image;
        varying float v_radius;
+       varying vec4 v_shape_id;
 
        vec2 rotate(vec2 point, vec4 quat)
        {
@@ -55,6 +57,7 @@ class DiskUnions(draw.DiskUnions, GLPrimitive):
            v_color = currentColor;
            v_image = radius*image;
            v_radius = radius;
+           v_shape_id = shape_id;
        }
        """
 
@@ -115,7 +118,26 @@ class DiskUnions(draw.DiskUnions, GLPrimitive):
        }
        """
 
-    _vertex_attribute_names = ['position', 'orientation', 'color', 'point', 'radius', 'image']
+    shaders['fragment_pick'] = """
+       uniform vec4 pick_prim_index;
+
+       varying vec2 v_image;
+       varying float v_radius;
+       varying vec4 v_shape_id;
+
+       void main()
+       {
+           float rsq = dot(v_image, v_image);
+
+           float r = sqrt(rsq);
+
+           if(r > v_radius) discard;
+
+           gl_FragColor = pick_prim_index + v_shape_id;
+       }
+       """
+
+    _vertex_attribute_names = ['shape_id', 'position', 'orientation', 'color', 'point', 'radius', 'image']
 
     _GL_UNIFORMS = list(itertools.starmap(ShapeAttribute, [
         ('camera', np.float32, np.eye(4), 2, False,
@@ -144,8 +166,11 @@ class DiskUnions(draw.DiskUnions, GLPrimitive):
                                  [-1, np.sqrt(3)],
                                  [-1, -np.sqrt(3)]], dtype=np.float32)*1.01
 
+            shape_ids = np.arange(len(self), dtype=np.uint32).view(np.uint8).reshape((-1, 4))
+            shape_ids = shape_ids.astype(np.float32)/255
+
             vertex_arrays = mesh.unfoldProperties(
-              [self.positions, self.orientations],
+              [shape_ids, self.positions, self.orientations],
               [self.colors, self.points, self.radii.reshape((-1, 1))],
               [triangle])
 

@@ -21,8 +21,10 @@ class SpherePoints(draw.SpherePoints, GLPrimitive):
         uniform float blur;
 
         attribute vec3 points;
+        attribute vec4 shape_id;
 
         varying vec3 v_point;
+        varying vec4 v_shape_id;
 
         vec3 rotate(vec3 point, vec4 quat)
         {
@@ -50,6 +52,7 @@ class SpherePoints(draw.SpherePoints, GLPrimitive):
             vertexPos = v_point + translation;
             gl_Position = camera * vec4(vertexPos, 1.0);
             gl_PointSize = blur;
+            v_shape_id = shape_id;
         }
        """
 
@@ -87,7 +90,32 @@ class SpherePoints(draw.SpherePoints, GLPrimitive):
         }
        """
 
-    _vertex_attribute_names = ['points']
+    shaders['fragment_pick'] = """
+        uniform float blur;
+        uniform int draw_front;
+        uniform vec4 pick_prim_index;
+
+        varying vec3 v_point;
+        varying vec4 v_shape_id;
+
+        void main()
+        {
+            vec2 delta = gl_PointCoord - vec2(0.5, 0.5);
+            float rsq = dot(delta, delta);
+            if(rsq > 0.25)
+                discard;
+
+            if(v_point.z < 0.0)
+            {
+            }
+            else if(draw_front == 0)
+                discard;
+
+            gl_FragColor = pick_prim_index + v_shape_id;
+        }
+       """
+
+    _vertex_attribute_names = ['shape_id', 'points']
 
     _GL_UNIFORMS = list(itertools.starmap(ShapeAttribute, [
         ('camera', np.float32, np.eye(4), 2, False,
@@ -117,8 +145,13 @@ class SpherePoints(draw.SpherePoints, GLPrimitive):
                 self._gl_vertex_arrays[name][:] = self._attributes[name]
                 self._dirty_vertex_attribs.add(name)
         except (ValueError, KeyError):
+            shape_ids = np.arange(len(self), dtype=np.uint32).view(np.uint8).reshape((-1, 4))
+            shape_ids = shape_ids.astype(np.float32)/255
+
             self._gl_vertex_arrays['points'] = self.points
+            self._gl_vertex_arrays['shape_id'] = shape_ids
             self._dirty_vertex_attribs.add('points')
+            self._dirty_vertex_attribs.add('shape_id')
 
         self._dirty_attributes.clear()
 

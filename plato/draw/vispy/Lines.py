@@ -25,11 +25,13 @@ class Lines(draw.Lines, GLPrimitive):
        attribute vec3 end_point;
        attribute vec3 image;
        attribute float width;
+       attribute vec4 shape_id;
 
        varying vec4 v_color;
        varying vec3 v_normal;
        varying float v_width;
        varying vec3 v_position;
+       varying vec4 v_shape_id;
 
        vec3 rotate(vec3 point, vec4 quat)
        {
@@ -79,6 +81,7 @@ class Lines(draw.Lines, GLPrimitive):
            v_normal = normal;
            v_width = width;
            v_position = (vertexPos - core)/width*2.0;
+           v_shape_id = shape_id;
        }
 
     """
@@ -127,7 +130,32 @@ class Lines(draw.Lines, GLPrimitive):
        }
        """
 
-    _vertex_attribute_names = ['start_point', 'end_point', 'color', 'width', 'image']
+    shaders['fragment_pick'] = """
+       uniform mat4 camera;
+       uniform vec4 pick_prim_index;
+
+       varying float v_width;
+       varying vec3 v_position;
+       varying vec3 v_normal;
+       varying vec4 v_shape_id;
+
+       void main()
+       {
+           vec3 normal = v_position;
+           float rsq = dot(normal.xy, normal.xy);
+           if(rsq > 1.0)
+               discard;
+           normal.z = sqrt(1.0 - rsq);
+
+           #ifndef WEBGL
+           gl_FragDepth = gl_FragCoord.z + normal.z*v_width*camera[2][2];
+           #endif
+
+           gl_FragColor = pick_prim_index + v_shape_id;
+       }
+       """
+
+    _vertex_attribute_names = ['shape_id', 'start_point', 'end_point', 'color', 'width', 'image']
 
     _GL_UNIFORMS = list(itertools.starmap(ShapeAttribute, [
         ('camera', np.float32, np.eye(4), 2, False,
@@ -170,8 +198,11 @@ class Lines(draw.Lines, GLPrimitive):
                 [1/2, 1, 1],
             ], dtype=np.float32)
 
+            shape_ids = np.arange(len(self), dtype=np.uint32).view(np.uint8).reshape((-1, 4))
+            shape_ids = shape_ids.astype(np.float32)/255
+
             vertex_arrays = mesh.unfoldProperties(
-                [self.start_points, self.end_points, self.colors, self.widths],
+                [shape_ids, self.start_points, self.end_points, self.colors, self.widths],
                 [vertices])
 
             unfolded_shape = vertex_arrays[0].shape[:-1]

@@ -22,9 +22,11 @@ class Voronoi(draw.Voronoi, GLPrimitive):
        attribute vec4 color;
        attribute vec2 position;
        attribute vec3 image;
+       attribute vec4 shape_id;
 
        varying vec4 v_color;
        varying vec2 v_position;
+       varying vec4 v_shape_id;
 
        vec2 rotate(vec2 point, vec4 quat)
        {
@@ -46,6 +48,7 @@ class Voronoi(draw.Voronoi, GLPrimitive):
            gl_Position = screenPosition;
            v_position = position + image.xy*radius;
            v_color = color;
+           v_shape_id = shape_id;
        }
        """
 
@@ -67,7 +70,26 @@ class Voronoi(draw.Voronoi, GLPrimitive):
        }
        """
 
-    _vertex_attribute_names = ['position', 'color', 'image']
+    shaders['fragment_pick'] = """
+       uniform mat2 clip_extent;
+       uniform vec4 pick_prim_index;
+
+       varying vec2 v_position;
+       varying vec4 v_shape_id;
+
+       void main()
+       {
+           vec2 boundaries = clip_extent*v_position;
+
+           if(boundaries.x > 1.0 || boundaries.y > 1.0 ||
+              boundaries.x < -1.0 || boundaries.y < -1.0)
+               discard;
+
+           gl_FragColor = pick_prim_index + v_shape_id;
+       }
+       """
+
+    _vertex_attribute_names = ['shape_id', 'position', 'color', 'image']
 
     _GL_UNIFORMS = list(itertools.starmap(ShapeAttribute, [
         ('camera', np.float32, np.eye(4), 2, False,
@@ -105,8 +127,11 @@ class Voronoi(draw.Voronoi, GLPrimitive):
             triangleIndices[:, 2] = np.arange(self.num_vertices - 1) + 2
             triangleIndices[-1, 2] = 1
 
+            shape_ids = np.arange(len(self), dtype=np.uint32).view(np.uint8).reshape((-1, 4))
+            shape_ids = shape_ids.astype(np.float32)/255
+
             vertex_arrays = mesh.unfoldProperties(
-                [self.positions, self.colors],
+                [shape_ids, self.positions, self.colors],
                 [vertices])
 
             unfolded_shape = vertex_arrays[0].shape[:-1]

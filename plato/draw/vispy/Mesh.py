@@ -27,11 +27,13 @@ class Mesh(draw.Mesh, GLPrimitive):
        attribute vec3 position;
        attribute vec4 orientation;
        attribute vec4 shape_color;
+       attribute vec4 shape_id;
 
        varying vec4 v_color;
        varying vec3 v_normal;
        varying float v_light[NUM_DIFFUSELIGHT];
        varying vec3 v_position;
+       varying vec4 v_shape_id;
 
        vec3 rotate(vec3 point, vec4 quat)
        {
@@ -64,6 +66,7 @@ class Mesh(draw.Mesh, GLPrimitive):
            for(int i = 0; i < NUM_DIFFUSELIGHT; ++i)
                v_light[i] = -dot(rotatedNormal, diffuseLight[i]);
            v_position = vertexPos;
+           v_shape_id = shape_id;
        }
        """
 
@@ -131,7 +134,19 @@ class Mesh(draw.Mesh, GLPrimitive):
        }
        """
 
-    _vertex_attribute_names = ['position', 'orientation', 'shape_color', 'color', 'normal', 'image']
+    shaders['fragment_pick'] = """
+       uniform mat4 camera;
+       uniform vec4 pick_prim_index;
+
+       varying vec4 v_shape_id;
+
+       void main()
+       {
+           gl_FragColor = pick_prim_index + v_shape_id;
+       }
+       """
+
+    _vertex_attribute_names = ['shape_id', 'position', 'orientation', 'shape_color', 'color', 'normal', 'image']
 
     _GL_UNIFORMS = list(itertools.starmap(ShapeAttribute, [
         ('camera', np.float32, np.eye(4), 2, False,
@@ -184,8 +199,11 @@ class Mesh(draw.Mesh, GLPrimitive):
                 self._gl_vertex_arrays[name][:] = self._attributes[name]
                 self._dirty_vertex_attribs.add(name)
         except (ValueError, KeyError):
+            shape_ids = np.arange(len(self), dtype=np.uint32).view(np.uint8).reshape((-1, 4))
+            shape_ids = shape_ids.astype(np.float32)/255
+
             vertex_arrays = mesh.unfoldProperties(
-                [self.positions, self.orientations, self.shape_colors],
+                [shape_ids, self.positions, self.orientations, self.shape_colors],
                 [self.colors] + [self._gl_attributes[name] for name in ['normal', 'image']]
                 )
 

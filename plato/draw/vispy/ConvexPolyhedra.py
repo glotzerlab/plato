@@ -27,11 +27,13 @@ class ConvexPolyhedra(draw.ConvexPolyhedra, GLPrimitive):
        attribute vec3 normal;
        attribute vec3 image;
        attribute vec3 outline_delta;
+       attribute vec4 shape_id;
 
        varying vec4 v_color;
        varying vec3 v_normal;
        varying vec3 v_position;
        varying float v_depth;
+       varying vec4 v_shape_id;
 
        vec3 rotate(vec3 point, vec4 quat)
        {
@@ -71,6 +73,7 @@ class ConvexPolyhedra(draw.ConvexPolyhedra, GLPrimitive):
            v_normal = rot_normal;
            v_position = vertexPos;
            v_depth = vertexPos.z;
+           v_shape_id = shape_id;
        }
        """
 
@@ -133,7 +136,18 @@ class ConvexPolyhedra(draw.ConvexPolyhedra, GLPrimitive):
        }
        """
 
-    _vertex_attribute_names = ['position', 'orientation', 'color', 'image', 'normal', 'outline_delta']
+    shaders['fragment_pick'] = """
+       uniform vec4 pick_prim_index;
+
+       varying vec4 v_shape_id;
+
+       void main()
+       {
+           gl_FragColor = pick_prim_index + v_shape_id;
+       }
+       """
+
+    _vertex_attribute_names = ['shape_id', 'position', 'orientation', 'color', 'image', 'normal', 'outline_delta']
 
     _GL_UNIFORMS = list(itertools.starmap(ShapeAttribute, [
         ('camera', np.float32, np.eye(4), 2, False,
@@ -181,8 +195,11 @@ class ConvexPolyhedra(draw.ConvexPolyhedra, GLPrimitive):
                     self._gl_vertex_arrays[name][:] = self._attributes[name]
                     self._dirty_vertex_attribs.add(name)
         except (ValueError, KeyError):
+            shape_ids = np.arange(len(self), dtype=np.uint32).view(np.uint8).reshape((-1, 4))
+            shape_ids = shape_ids.astype(np.float32)/255
+
             vertex_arrays = mesh.unfoldProperties(
-                [self.positions, self.orientations, self.colors],
+                [shape_ids, self.positions, self.orientations, self.colors],
                 [self._gl_attributes[name] for name in ['image', 'normal', 'outline_delta']])
 
             unfolded_shape = vertex_arrays[0].shape[:-1]
