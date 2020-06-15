@@ -35,6 +35,9 @@ and Z directly snap the scene to look down the x, y, or z axes,
 respectively.
 """
 
+import vispy
+vispy.set_log_level('warning')
+
 from .Scene import Scene
 
 from .Box import Box
