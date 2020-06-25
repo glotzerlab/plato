@@ -1,3 +1,11 @@
+## v1.11 - 2020/06/25
+
+- Add `transparent_background` feature to povray backend (mspells)
+- Fix ConvexPolyhedra being disconnected from their outlines in povray, introduced in v1.9 (mspells)
+- Support scene translation in povray (mspells)
+- Fix `len(Shape)` for shapes using default values of attributes (mspells)
+- Add `pick` feature to vispy Scenes (mspells)
+
 ## v1.10 - 2020/03/27
 
 - `mesh.SpheropolygonMesh` returned object now also includes integer types for each vertex indicating convexity and concavity (mspells)
