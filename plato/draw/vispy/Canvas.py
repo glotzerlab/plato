@@ -1,8 +1,11 @@
 import bisect
+import logging
 
 import numpy as np
 import vispy, vispy.app
 import vispy.gloo as gloo
+
+logger = logging.getLogger(__name__)
 
 class NoopContextManager:
     def __enter__(self, *args, **kwargs):
@@ -803,7 +806,7 @@ class Canvas(vispy.app.Canvas):
                 self._programs['translucency_post']['a_position'] = [(-1, -1), (-1, 1), (1, -1), (1, 1)]
             elif feature == 'outlines':
                 if self._webgl:
-                    raise RuntimeWarning('Can\'t use outlines with webgl')
+                    logger.warning('Can\'t use outlines with webgl')
                     continue
 
                 self._programs['outlines_post'] = vispy.gloo.Program(
@@ -827,7 +830,7 @@ class Canvas(vispy.app.Canvas):
                 self._programs['outlines_post']['a_position'] = [(-1, -1), (-1, 1), (1, -1), (1, 1)]
             elif feature == 'fxaa':
                 if self._webgl:
-                    raise RuntimeWarning('Can\'t use FXAA with webgl')
+                    logger.warning('Can\'t use FXAA with webgl')
                     continue
 
                 self._programs['fxaa_post'] = vispy.gloo.Program(
@@ -848,7 +851,7 @@ class Canvas(vispy.app.Canvas):
                     self._final_render_target = self._fbos['fxaa_target']
             elif feature == 'ssao':
                 if self._webgl:
-                    raise RuntimeWarning('Can\'t use SSAO with webgl')
+                    logger.warning('Can\'t use SSAO with webgl')
                     continue
 
                 self._programs['ssao_post'] = vispy.gloo.Program(
@@ -875,6 +878,10 @@ class Canvas(vispy.app.Canvas):
             elif feature == 'additive_rendering':
                 pass
             elif feature == 'pick':
+                if self._webgl:
+                    logger.warning('Can\'t use picking rendering with webgl')
+                    continue
+
                 params = param_features[feature] if feature in param_features else {}
 
                 tex = self._textures['pick_target'] = vispy.gloo.Texture2D(
