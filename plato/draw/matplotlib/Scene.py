@@ -102,12 +102,12 @@ class Scene(draw.Scene):
         (figure, _) = self.render(figure, axes)
         return figure.show()
 
-    def save(self, filename):
+    def save(self, filename, figure=None, axes=None):
         """Render and save an image of this Scene.
 
         :param filename: target filename to save the image into
         """
-        (figure, _) = self.render()
+        (figure, _) = self.render(figure, axes)
         return figure.savefig(filename, dpi=figure.dpi, bbox_inches='tight',
                               pad_inches=0)
 
