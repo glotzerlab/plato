@@ -1,28 +1,27 @@
 import fresnel
 
-DEFAULT_MATERIAL = fresnel.material.Material(solid=0,
-                                             color=(0, 0, 0),
-                                             primitive_color_mix=1,
-                                             roughness=0.3,
-                                             specular=0.5,
-                                             spec_trans=0,
-                                             metal=0)
 
-SOLID_MATERIAL = fresnel.material.Material(solid=1,
-                                           color=(0, 0, 0),
-                                           primitive_color_mix=1,
-                                           roughness=0.3,
-                                           specular=0.5,
-                                           spec_trans=0,
-                                           metal=0)
+def _get_default_material(solid=0):
+    """Return a default material type.
+
+    2D shapes should use ``solid=1`` to remove lighting effects.
+    """
+    return fresnel.material.Material(
+        solid=solid,
+        color=(0, 0, 0),
+        primitive_color_mix=1,
+        roughness=0.3,
+        specular=0.5,
+        spec_trans=0,
+        metal=0,
+    )
 
 
 class FresnelPrimitive(object):
-    """A mixin class that defines a default :py:class:`fresnel.material.Material`.
-    """
+    """A mixin class that defines a default :py:class:`fresnel.material.Material`."""
 
     def __init__(self, *args, **kwargs):
-        self._material = kwargs.get('material', DEFAULT_MATERIAL)
+        self._material = kwargs.get("material", _get_default_material(solid=0))
         super().__init__(*args, **kwargs)
 
 
@@ -34,5 +33,5 @@ class FresnelPrimitiveSolid(FresnelPrimitive):
     """
 
     def __init__(self, *args, **kwargs):
-        kwargs.setdefault('material', SOLID_MATERIAL)
+        kwargs.setdefault("material", _get_default_material(solid=1))
         super().__init__(*args, **kwargs)
