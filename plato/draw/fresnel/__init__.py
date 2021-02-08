@@ -21,6 +21,7 @@ from .ConvexPolyhedra import ConvexPolyhedra
 from .Disks import Disks
 from .Ellipsoids import Ellipsoids
 from .Lines import Lines
+from .Mesh import Mesh
 from .Polygons import Polygons
 from .Spheres import Spheres
 from .SphereUnions import SphereUnions

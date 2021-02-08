@@ -36,6 +36,9 @@ Fresnel Backend
 .. autoclass:: Lines
    :members:
 
+.. autoclass:: Mesh
+   :members:
+
 .. autoclass:: SphereUnions
    :members:
 
