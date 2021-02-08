@@ -1,4 +1,5 @@
 import itertools
+import warnings
 
 import fresnel
 import numpy as np
@@ -22,7 +23,17 @@ class Mesh(FresnelPrimitive, draw.Mesh):
         # shape (num_triangles, 3) to (3 * num_triangles, 3) array
         vertices = self.vertices[self.indices].reshape(-1, 3)
         color = fresnel.color.linear(self.colors)[self.indices].reshape(-1, 3)
-        self._material.primitive_color_mix = self.shape_color_fraction
+        # The fresnel backend does not support separate shape colors for
+        # each replica. The closest approximation is to set the material
+        # color and primitive color mix for all replicas.
+        if not np.allclose(self.shape_colors, self.shape_colors[0]):
+            warnings.warn(
+                "Multiple shape colors were provided, but only the first "
+                "provided shape color will be used for all mesh replicas "
+                "in the primitive.")
+        # Blend colors to match the specified shape color (only the first shape color is used)
+        self._material.color = fresnel.color.linear(self.shape_colors[0])
+        self._material.primitive_color_mix = 1-self.shape_color_fraction
         geometry = fresnel.geometry.Mesh(
             scene=scene,
             vertices=vertices,
