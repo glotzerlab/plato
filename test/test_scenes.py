@@ -1,6 +1,7 @@
 import collections
 import itertools
 import numpy as np
+import os
 import plato
 import plato.draw as draw
 import rowan
@@ -8,6 +9,8 @@ import rowan
 ALL_TEST_SCENES = []
 
 EXCLUDED_SCENES = collections.defaultdict(set)
+
+DATA_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data")
 
 def register_scene(f):
     ALL_TEST_SCENES.append(f)
@@ -555,3 +558,22 @@ def boxes_2d():
     prim3 = draw.Box.from_box([2, 1.5],
                     width=0.1, color=[0.5, 0.5, 0.5, 1])
     return draw.Scene((prim, prim2, prim3), zoom=3)
+
+@register_scene
+def low_poly_stanford_bunny():
+    """Low-poly Stanford Bunny 3D model.
+
+    Model data from https://www.thingiverse.com/thing:151081 by johnny6, licensed CC BY-NC 4.0.
+
+    This example shows a mesh with nonzero outline width and vertex colors.
+    """
+    data = np.load(os.path.join(DATA_DIR, "low_poly_stanford_bunny", "data.npz"))
+    vertices = data["vertices"]
+    indices = data["indices"]
+    colors = data["colors"]
+    prim = draw.Mesh(vertices=vertices,
+                     indices=indices,
+                     colors=colors,
+                     outline=2e-2)
+    rotation = [-0.795798,  0.58683366, -0.12027311, -0.08869123]
+    return draw.Scene(prim, rotation=rotation, zoom=2)
