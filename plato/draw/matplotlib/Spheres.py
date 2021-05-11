@@ -48,7 +48,7 @@ class Spheres(draw.Spheres, PatchUser):
             for (position, (radius,), color, index) in zip(
                     rotated_positions, radii, these_colors, itertools.count()):
                 zorder = (position[2] - offset[2]*radius)
-                patch = Circle(position[:2] + offset[:2]*radius,
+                patch = Circle(position[:2] + (offset[:2] + light_normal[:2])*radius,
                                radius*level_fraction, zorder=zorder,
                                color=color)
 
