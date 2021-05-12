@@ -8,7 +8,7 @@ class Scene(draw.Scene):
     __doc__ = (draw.Scene.__doc__ or '') + """
     This Scene supports the following features:
 
-    * *antialiasing*: Enable antialiasing, for the preview tracer only. This uses fresnel's aa_level=3 if set, 0 otherwise.
+    * *antialiasing*: Enable antialiasing, for the preview tracer only.
     * *pathtracer*: Enable the path tracer. Accepts parameter ``samples`` with default value 64.
     * *directional_light*: Add directional lights. The given vector(s) indicates the light direction. The length of the vector(s) determines the magnitude of the light(s).
     * *ambient_light*: Enable ambient lighting. The given value indicates the magnitude of the light.
@@ -67,7 +67,12 @@ class Scene(draw.Scene):
         camera_position = rowan.rotate(rowan.conjugate(self.rotation), -self.translation)
         camera_look_at = camera_position + rowan.rotate(rowan.conjugate(self.rotation), [0, 0, -1])
         camera_height = self.size[1]/self.zoom
-        self._fresnel_scene.camera = fresnel.camera.orthographic(
+        try:
+            orthographic_camera = fresnel.camera.Orthographic
+        except AttributeError:
+            # Support fresnel < 0.13.0
+            orthographic_camera = fresnel.camera.orthographic
+        self._fresnel_scene.camera = orthographic_camera(
             position=camera_position,
             look_at=camera_look_at,
             up=camera_up,
@@ -106,7 +111,7 @@ class Scene(draw.Scene):
         else:
             # Use preview tracer by default
             tracer = self._preview_tracer
-            tracer.aa_level = 3 if 'antialiasing' in self.enabled_features else 0
+            tracer.anti_alias = 'antialiasing' in self.enabled_features
             render_function = tracer.render
 
         self._output = render_function(self._fresnel_scene)
