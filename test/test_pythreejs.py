@@ -11,7 +11,7 @@ class PythreejsTests(unittest.TestCase):
         fname = get_fname('pythreejs_test_scenes.html')
 
         NbConvertApp.launch_instance(
-            argv=['--execute', '--output', fname, src])
+            argv=['--execute', '--to', 'html', '--output', fname, src])
 
 if __name__ == '__main__':
     unittest.main()
