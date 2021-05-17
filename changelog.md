@@ -1,5 +1,6 @@
-## v1.12 - *unreleased*
+## v1.12 - 2021/05/17
 
+- Add `Mesh` to fresnel backend (bdice@umich)
 - Update fresnel backend to support fresnel 0.13.0, drops support for fresnel < 0.12.0 (bdice@umich)
 - Allow matplotlib scenes to specify figure or axis when saving (thomasaarholt@uio)
 
