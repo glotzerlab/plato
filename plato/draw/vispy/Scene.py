@@ -205,15 +205,15 @@ class Scene(draw.Scene):
 
     def show(self):
         """Display this Scene object."""
+        import vispy.app
+
+        vispy_backend = vispy.app.use_app().backend_name
         cfg = self.get_feature_config('static')
 
         if cfg and cfg.get('value', False):
             import imageio
             import io
             import IPython.display
-            import vispy.app
-
-            vispy_backend = vispy.app.use_app().backend_name
             if 'webgl' not in vispy_backend:
                 target = io.BytesIO()
                 img = self._canvas.render()
@@ -226,6 +226,10 @@ class Scene(draw.Scene):
                    'before importing plato, for example:\n    import vispy.app; '
                    'vispy.app.use_app("pyglet")'.format(vispy_backend))
             logger.warning(msg)
+
+        if vispy_backend == 'jupyter_rfb':
+            import IPython.display
+            IPython.display.display(self._canvas)
 
         return self._canvas.show()
 
