@@ -83,6 +83,9 @@ Base Drawing Module
 .. autoclass:: Mesh
    :members:
 
+.. autoclass:: PatchySpheres
+   :members:
+
 .. autoclass:: SpherePoints
    :members:
 
