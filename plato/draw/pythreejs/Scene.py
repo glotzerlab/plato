@@ -65,7 +65,10 @@ class Scene(draw.Scene):
         camera = self._backend_objects['camera']
         norm_out = np.array(camera.position)
         norm_out /= np.linalg.norm(norm_out)
-        norm_up = np.array(camera.up)
+        if np.dot(camera.up, camera.up) < 1e-5:
+            norm_up = np.array([0, 1., 0])
+        else:
+            norm_up = np.array(camera.up)
         norm_up -= np.dot(norm_up, norm_out) * norm_out
         norm_up /= np.linalg.norm(norm_up)
         norm_right = np.cross(norm_up, norm_out)
